@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="generator.mapper.UsUserMapper">
+
+    <resultMap id="BaseResultMap" type="generator.domain.UsUser">
+            <id property="id" column="ID" jdbcType="INTEGER"/>
+            <result property="account" column="account" jdbcType="INTEGER"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="face" column="face" jdbcType="VARCHAR"/>
+            <result property="nickname" column="nickname" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="TINYINT"/>
+            <result property="ageBegin" column="age_begin" jdbcType="SMALLINT"/>
+            <result property="ageEnd" column="age_end" jdbcType="SMALLINT"/>
+            <result property="grade" column="grade" jdbcType="TINYINT"/>
+            <result property="background" column="background" jdbcType="VARCHAR"/>
+            <result property="familyId" column="family_id" jdbcType="INTEGER"/>
+            <result property="roleId" column="role_id" jdbcType="TINYINT"/>
+            <result property="role" column="role" jdbcType="TINYINT"/>
+            <result property="districtId" column="district_id" jdbcType="SMALLINT"/>
+            <result property="districtName" column="district_name" jdbcType="VARCHAR"/>
+            <result property="jobId" column="job_id" jdbcType="SMALLINT"/>
+            <result property="jobName" column="job_name" jdbcType="VARCHAR"/>
+            <result property="memberTypeId" column="member_type_id" jdbcType="INTEGER"/>
+            <result property="memberName" column="member_name" jdbcType="VARCHAR"/>
+            <result property="expirationTime" column="expiration_time" jdbcType="TIMESTAMP"/>
+            <result property="tel" column="tel" jdbcType="VARCHAR"/>
+            <result property="notice" column="notice" jdbcType="TINYINT"/>
+            <result property="bells" column="bells" jdbcType="TINYINT"/>
+            <result property="vibrate" column="vibrate" jdbcType="TINYINT"/>
+            <result property="privacyRecommend" column="privacy_recommend" jdbcType="TINYINT"/>
+            <result property="privacyCamera" column="privacy_camera" jdbcType="TINYINT"/>
+            <result property="privacyAlbum" column="privacy_album" jdbcType="TINYINT"/>
+            <result property="privacyMike" column="privacy_mike" jdbcType="TINYINT"/>
+            <result property="teenageMode" column="teenage_mode" jdbcType="TINYINT"/>
+            <result property="balance" column="balance" jdbcType="DOUBLE"/>
+            <result property="cancellation" column="cancellation" jdbcType="TINYINT"/>
+            <result property="countTask" column="count_task" jdbcType="SMALLINT"/>
+            <result property="countTool" column="count_tool" jdbcType="SMALLINT"/>
+            <result property="countQuestions" column="count_questions" jdbcType="SMALLINT"/>
+            <result property="countTest" column="count_test" jdbcType="SMALLINT"/>
+            <result property="createdUserId" column="created_user_id" jdbcType="INTEGER"/>
+            <result property="updateUserId" column="update_user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="flagDelete" column="flag_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,account,password,
+        face,nickname,sex,
+        age_begin,age_end,grade,
+        background,family_id,role_id,
+        role,district_id,district_name,
+        job_id,job_name,member_type_id,
+        member_name,expiration_time,tel,
+        notice,bells,vibrate,
+        privacy_recommend,privacy_camera,privacy_album,
+        privacy_mike,teenage_mode,balance,
+        cancellation,count_task,count_tool,
+        count_questions,count_test,created_user_id,
+        update_user_id,created_time,update_time,
+        flag_delete
+    </sql>
+</mapper>

@@ -53,10 +53,17 @@
             <artifactId>oshi-core</artifactId>
         </dependency>
 
-        <!-- 系统模块-->
+        <!-- 系统模块 -->
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-system</artifactId>
+        </dependency>
+
+        <!-- 用户模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-us</artifactId>
+            <version>3.8.7</version>
         </dependency>
 
     </dependencies>
