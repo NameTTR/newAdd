@@ -157,11 +157,46 @@ public class UsUserController extends BaseController
                 return error("格式不符合");
             }
         }
-
         if(StringUtils.isNotEmpty(usUser.getTel())){
             if(!usUserService.checkTelUnique(usUser)){
                 return error("修改用户失败，手机号码已存在");
             }
+        }
+        if(usUser.getBalance() != null) {
+            if(usUser.getBalance() < 0){
+                return error("格式不符合");
+            }
+            nowUsUser.setBalance(usUser.getBalance());
+        }
+        if(usUser.getCancellation() != null){
+            if(usUser.getCancellation() == 0 || usUser.getCancellation() == 1){
+                return error("格式不符合");
+            }
+            nowUsUser.setCancellation(usUser.getCancellation());
+        }
+        if(usUser.getCountTask() != null) {
+            if(usUser.getCountTask() < 0){
+                return error("格式不符合");
+            }
+            nowUsUser.setCountTask(usUser.getCountTask());
+        }
+        if(usUser.getCountTool() != null){
+            if(usUser.getCountTool() < 0){
+                return error("格式不符合");
+            }
+            nowUsUser.setCountTool(usUser.getCountTool());
+        }
+        if(usUser.getCountQuestions() != null){
+            if(usUser.getCountQuestions() < 0){
+                return error("格式不符合");
+            }
+            nowUsUser.setCountQuestions(usUser.getCountQuestions());
+        }
+        if(usUser.getCountTest() != null){
+            if(usUser.getCountTest() < 0){
+                return error("格式不符合");
+            }
+            nowUsUser.setCountTest(usUser.getCountTest());
         }
         return toAjax(usUserService.updateUsUser(nowUsUser));
     }
