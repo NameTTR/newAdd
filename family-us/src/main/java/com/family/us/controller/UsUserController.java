@@ -94,6 +94,10 @@ public class UsUserController extends BaseController
         if(StringUtils.isNotEmpty(usUser.getJobName())) {
             nowUsUser.setJobName(usUser.getJobName());
         }
+        if(StringUtils.isNotEmpty(usUser.getMemberName())) {
+            nowUsUser.setMemberName(usUser.getMemberName());
+        }
+
         if(StringUtils.isNotEmpty(usUser.getTel())){
             if(!usUserService.checkTelUnique(usUser)){
                 return error("修改用户失败，手机号码已存在");
