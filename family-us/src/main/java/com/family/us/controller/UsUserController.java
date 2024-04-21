@@ -49,7 +49,7 @@ public class UsUserController extends BaseController
         if(StringUtils.isNotEmpty(usUser.getNickname())) {
             nowUsUser.setNickname(usUser.getNickname());
         }
-        if(usUser.getSex() == null) {
+        if(usUser.getSex() != null) {
             if(usUser.getSex() == 1 || usUser.getSex() == 2) {
                 nowUsUser.setSex(usUser.getSex());
             } else{
@@ -58,16 +58,16 @@ public class UsUserController extends BaseController
         }
         if(usUser.getAgeBegin() != null) {
             if(usUser.getAgeBegin() >= 150){
-                return error("年龄过大");
+                return error("格式不符合");
             }
             nowUsUser.setAgeBegin(usUser.getAgeBegin());
         }
         if(usUser.getAgeEnd() != null) {
             if(usUser.getAgeEnd() == null){
-                return error("未设置开始年龄");
+                return error("格式不符合");
             }
             if(usUser.getAgeEnd() >= 150){
-                return error("年龄过大");
+                return error("格式不符合");
             }
             nowUsUser.setAgeEnd(usUser.getAgeEnd());
         }
@@ -79,8 +79,11 @@ public class UsUserController extends BaseController
             }
         }
         if(usUser.getRole() != null) {
-            if(usUser.getRole() >= 0 && usUser.getRole() <= 4) {
+            if(usUser.getRole() >= 1 && usUser.getRole() <= 4) {
                 nowUsUser.setNickname(usUser.getNickname());
+                if(usUser.getRole() == 3 || usUser.getRole() == 4){
+                    nowUsUser.setTeenageMode(1);
+                }
             } else{
                 return error("格式不符合");
             }
@@ -170,9 +173,11 @@ public class UsUserController extends BaseController
         }
         if(usUser.getCancellation() != null){
             if(usUser.getCancellation() == 0 || usUser.getCancellation() == 1){
+                nowUsUser.setCancellation(usUser.getCancellation());
+            }else {
                 return error("格式不符合");
+
             }
-            nowUsUser.setCancellation(usUser.getCancellation());
         }
         if(usUser.getCountTask() != null) {
             if(usUser.getCountTask() < 0){
@@ -230,7 +235,7 @@ public class UsUserController extends BaseController
     /**
      * 头像上传
      */
-    @PostMapping("/avatar")
+    @PostMapping("/updateAvatar")
     public AjaxResult avatar(@RequestParam("ID") Integer ID, @RequestParam("avatarfile") MultipartFile file) throws Exception
     {
         if (!file.isEmpty())
@@ -250,7 +255,7 @@ public class UsUserController extends BaseController
     /**
      * 修改用户背景
      */
-    @PostMapping("/background")
+    @PostMapping("/updateBackground")
     public AjaxResult background(@RequestParam("ID") Integer ID, @RequestParam("backgroundfile") MultipartFile file) throws Exception
     {
         if (!file.isEmpty())
