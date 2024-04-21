@@ -37,8 +37,8 @@ public class UsUserController extends BaseController
     /**
      * 修改用户信息
      */
-    @PutMapping("/updateProfile")
-    public AjaxResult edit(@RequestBody UsUser usUser) {
+    @PutMapping("/update/profile")
+    public AjaxResult updateProfile(@RequestBody UsUser usUser) {
 
         UsUser nowUsUser = usUserService.selectUsUserByID(usUser.getID());
 
@@ -209,8 +209,8 @@ public class UsUserController extends BaseController
     /**
      * 重置密码
      */
-    @PutMapping("/updatePwd")
-    public AjaxResult updatePwd(@RequestParam("ID") Integer ID,
+    @PutMapping("/update/password")
+    public AjaxResult updatePassword(@RequestParam("ID") Integer ID,
                                 @RequestParam("oldPassword") String oldPassword,
                                 @RequestParam("newPassword") String newPassword)
     {
@@ -235,8 +235,8 @@ public class UsUserController extends BaseController
     /**
      * 头像上传
      */
-    @PostMapping("/updateAvatar")
-    public AjaxResult avatar(@RequestParam("ID") Integer ID, @RequestParam("avatarfile") MultipartFile file) throws Exception
+    @PostMapping("/update/avatar")
+    public AjaxResult updateAvatar(@RequestParam("ID") Integer ID, @RequestParam("avatarfile") MultipartFile file) throws Exception
     {
         if (!file.isEmpty())
         {
@@ -255,8 +255,8 @@ public class UsUserController extends BaseController
     /**
      * 修改用户背景
      */
-    @PostMapping("/updateBackground")
-    public AjaxResult background(@RequestParam("ID") Integer ID, @RequestParam("backgroundfile") MultipartFile file) throws Exception
+    @PostMapping("/update/background")
+    public AjaxResult updateBackground(@RequestParam("ID") Integer ID, @RequestParam("backgroundfile") MultipartFile file) throws Exception
     {
         if (!file.isEmpty())
         {
