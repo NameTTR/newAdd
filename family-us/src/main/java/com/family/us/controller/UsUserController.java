@@ -261,7 +261,7 @@ public class UsUserController extends BaseController
         if (!file.isEmpty())
         {
             UsUser nowUsUser = usUserService.selectUsUserByID(ID);
-            String background = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
+            String background = FileUploadUtils.upload(RuoYiConfig.getBackgroundPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
             if (usUserService.updateUserBackground(nowUsUser.getID(), background))
             {
                 AjaxResult ajax = AjaxResult.success();

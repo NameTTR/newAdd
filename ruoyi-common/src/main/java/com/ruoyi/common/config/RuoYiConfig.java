@@ -105,6 +105,14 @@ public class RuoYiConfig
     }
 
     /**
+     * 获取背景图上传路径
+     */
+    public static String getBackgroundPath()
+    {
+        return getProfile() + "/background";
+    }
+
+    /**
      * 获取下载路径
      */
     public static String getDownloadPath()
