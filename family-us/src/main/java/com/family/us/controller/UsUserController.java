@@ -29,8 +29,8 @@ public class UsUserController extends BaseController
     /**
      * 获取用户详细信息
      */
-    @GetMapping(value = "/info/{ID}")
-    public AjaxResult getInfo(@PathVariable("ID") Integer ID) {
+    @GetMapping(value = "/info")
+    public AjaxResult getInfo(@RequestParam("ID") Integer ID) {
         return success(usUserService.selectUsUserByID(ID));
     }
 

@@ -2,6 +2,7 @@ package com.family.us.mapper;
 
 import com.family.us.domain.UsUser;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -19,7 +20,7 @@ public interface UsUserMapper
      * @param ID 用户主键
      * @return 用户
      */
-    public UsUser selectUsUserByID(Integer ID);
+    public UsUser selectUsUserByID(@RequestParam("ID") Integer ID);
 
     /**
      * 修改用户
