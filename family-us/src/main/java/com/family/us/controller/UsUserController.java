@@ -10,8 +10,11 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 
 /**
  * 用户Controller
@@ -21,6 +24,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/family/us")
+@CrossOrigin(origins = "*")
 public class UsUserController extends BaseController
 {
     @Autowired
@@ -56,21 +60,13 @@ public class UsUserController extends BaseController
                 return error("格式不符合");
             }
         }
-        if(usUser.getAgeBegin() != null) {
-            if(usUser.getAgeBegin() >= 150){
-                return error("格式不符合");
-            }
-            nowUsUser.setAgeBegin(usUser.getAgeBegin());
-        }
-        if(usUser.getAgeEnd() != null) {
-            if(usUser.getAgeEnd() == null){
-                return error("格式不符合");
-            }
-            if(usUser.getAgeEnd() >= 150){
-                return error("格式不符合");
-            }
-            nowUsUser.setAgeEnd(usUser.getAgeEnd());
-        }
+       if(usUser.getBorn() != null) {
+           LocalDate now = LocalDate.now();
+           if(usUser.getBorn() > now.getYear()){
+               return error("格式不符合");
+           }
+           nowUsUser.setBorn(usUser.getBorn());
+       }
         if(usUser.getGrade() != null) {
             if(usUser.getGrade() >= 0 && usUser.getGrade() <= 22){
                 nowUsUser.setGrade(usUser.getGrade());
