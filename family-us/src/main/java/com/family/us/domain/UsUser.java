@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * 测试对象 us_user
  *
- * @author ruoyi
+ * @author 高俊炜
  * @date 2024-04-17
  */
 public class UsUser extends BaseEntity

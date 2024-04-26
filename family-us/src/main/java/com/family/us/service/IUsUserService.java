@@ -7,7 +7,7 @@ import java.util.List;
 /**
  * 用户Service接口
  * 
- * @author ruoyi
+ * @author 高俊炜
  * @date 2024-04-17
  */
 public interface IUsUserService 
