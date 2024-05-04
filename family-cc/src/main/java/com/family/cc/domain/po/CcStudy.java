@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+import java.util.Date;
 
 import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
@@ -21,6 +22,7 @@ import lombok.experimental.Accessors;
  */
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Data
 @TableName("cc_study")
 public class CcStudy extends BaseEntity implements Serializable {
 
@@ -56,6 +58,7 @@ public class CcStudy extends BaseEntity implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
-
-
+    public Date getUpdateTime() {
+        return super.getUpdateTime();
+    }
 }

@@ -1,6 +1,7 @@
 package com.family.cc.domain.dto;
 
 import com.family.cc.domain.po.CcChapter;
+import com.family.cc.domain.po.CcUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -30,5 +31,5 @@ public class CcUnitListDTO {
     /**
      * 单元列表
      */
-    private List<CcChapter> unitList;
+    private List<CcUnit> unitList;
 }

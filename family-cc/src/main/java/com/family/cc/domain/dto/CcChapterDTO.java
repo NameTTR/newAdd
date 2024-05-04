@@ -1,5 +1,6 @@
 package com.family.cc.domain.dto;
 
+import com.family.cc.domain.po.CcChapter;
 import com.family.cc.domain.po.CcCharacter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,9 +23,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CcChapterDTO{
     /**
-     * 章节名称
+     * 章节信息
      */
-    private String chapterName;
+    private CcChapter chapter;
 
     /**
      * 章节中的汉字列表

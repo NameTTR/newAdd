@@ -21,6 +21,7 @@ import lombok.experimental.Accessors;
  */
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Data
 @TableName("cc_chapter")
 public class CcChapter extends BaseEntity implements Serializable {
 
@@ -33,9 +34,9 @@ public class CcChapter extends BaseEntity implements Serializable {
     private Integer id;
 
     /**
-     * 章节
+     * 章节名称
      */
-    private String unit;
+    private String chapter;
 
     /**
      * 排序

@@ -22,6 +22,6 @@ public class CcCharacterDTO extends CcCharacter {
     /**
      *  状态  0：未学；1：已学完；2：未掌握
      */
-    private Integer status;
+    private Integer state;
 
 }

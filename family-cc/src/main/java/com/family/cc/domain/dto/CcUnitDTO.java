@@ -1,6 +1,7 @@
 package com.family.cc.domain.dto;
 
 
+import com.family.cc.domain.po.CcUnit;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,9 +23,9 @@ import java.util.List;
 @NoArgsConstructor
 public class CcUnitDTO {
     /**
-     * 单元名称
+     * 单元信息
      */
-    private String unitName;
+    private CcUnit unit;
 
     /**
      * 单元的内容

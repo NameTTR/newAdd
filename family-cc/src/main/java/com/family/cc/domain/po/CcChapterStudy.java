@@ -23,6 +23,7 @@ import lombok.experimental.Accessors;
 
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Data
 @TableName("cc_chapter_study")
 public class CcChapterStudy extends BaseEntity implements Serializable {
 
@@ -58,6 +59,8 @@ public class CcChapterStudy extends BaseEntity implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
-
+    public Date getUpdateTime() {
+        return super.getUpdateTime();
+    }
 
 }

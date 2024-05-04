@@ -21,6 +21,7 @@ import lombok.experimental.Accessors;
  */
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Data
 @TableName("cc_character")
 public class CcCharacter extends BaseEntity implements Serializable {
 

@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
  */
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
+@Data
 @TableName("cc_unit")
 public class CcUnit extends BaseEntity implements Serializable {
 
