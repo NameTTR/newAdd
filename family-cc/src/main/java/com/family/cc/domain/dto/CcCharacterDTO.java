@@ -7,10 +7,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
 
-import java.util.List;
-
 /**
- * 单个章节DTO
+ * 单个汉字DTO
  *
  * @author 陈文杰
  * @since 2024-05-04
@@ -20,14 +18,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class CcChapterDTO{
+public class CcCharacterDTO extends CcCharacter {
     /**
-     * 章节名称
+     *  状态  0：未学；1：已学完；2：未掌握
      */
-    private String chapterName;
+    private Integer status;
 
-    /**
-     * 章节中的汉字列表
-     */
-    private List<CcCharacterDTO> characters;
 }

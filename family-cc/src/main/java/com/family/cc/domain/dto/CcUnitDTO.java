@@ -1,6 +1,6 @@
 package com.family.cc.domain.dto;
 
-import com.family.cc.domain.po.CcCharacter;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 import java.util.List;
 
 /**
- * 单个章节DTO
+ * 单个单元DTO
  *
  * @author 陈文杰
  * @since 2024-05-04
@@ -20,14 +20,15 @@ import java.util.List;
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class CcChapterDTO{
+public class CcUnitDTO {
     /**
-     * 章节名称
+     * 单元名称
      */
-    private String chapterName;
+    private String unitName;
 
     /**
-     * 章节中的汉字列表
+     * 单元的内容
      */
-    private List<CcCharacterDTO> characters;
+    private List<CcChapterDTO> unitDate;
+
 }

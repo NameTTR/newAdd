@@ -1,7 +1,7 @@
 package com.family.cc.controller;
 
 
-import com.family.cc.domain.po.CcChapterStudy;
+import com.family.cc.domain.dto.CcChapterDTO;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +17,10 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/family/cc/chapter")
 public class CcChapterController extends BaseController {
-
     @GetMapping("/test")
     public AjaxResult test() {
-        return AjaxResult.success();
+        CcChapterDTO ccChapterDTO = new CcChapterDTO();
+
+        return AjaxResult.success("测试成功");
     }
 }
