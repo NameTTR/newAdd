@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @TableName("cc_test_detail")
-public class CcTestDetail extends BaseEntity implements Serializable {
+public class CcTestDetail implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

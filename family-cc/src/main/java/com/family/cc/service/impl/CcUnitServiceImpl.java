@@ -45,7 +45,8 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
     @Override
     public AjaxResult getUnitList() {
         //获取当前用户的id
-        Long userId = SecurityUtils.getUserId();
+//        Long userId = SecurityUtils.getUserId();
+        Long userId = 1L;
 
         //1. 查询所有单元
         List<CcUnit> units = lambdaQuery().orderByAsc(CcUnit::getSort).list();
@@ -87,7 +88,8 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
     @Override
     public AjaxResult getUnit(Integer id) {
         //获取当前用户id
-        Long userId = SecurityUtils.getUserId();
+//        Long userId = SecurityUtils.getUserId();
+        Long userId = 1L;
 
         //1. 查询当前单元
         CcUnit unit = getById(id);
@@ -106,8 +108,8 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
             List<CcCharacter> characters = ccCharacterService.lambdaQuery()
                     .eq(CcCharacter::getChapterId, chapter.getId())
                     .list();
-            List<Integer> characterIds = new ArrayList<>(chapters.size());
-            chapters.forEach(c -> characterIds.add(c.getId()));
+            List<Integer> characterIds = new ArrayList<>(characters.size());
+            characters.forEach(c -> characterIds.add(c.getId()));
 
             //3.2 查询汉字的学习情况
             String idsStr = StrUtil.join(",", characterIds);

@@ -23,7 +23,7 @@ import java.time.LocalDateTime;
 @Accessors(chain = true)
 @Data
 @TableName("cc_unit")
-public class CcUnit extends BaseEntity implements Serializable {
+public class CcUnit implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

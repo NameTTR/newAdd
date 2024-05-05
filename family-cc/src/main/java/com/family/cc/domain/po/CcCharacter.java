@@ -1,5 +1,6 @@
 package com.family.cc.domain.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -23,7 +24,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @TableName("cc_character")
-public class CcCharacter extends BaseEntity implements Serializable {
+public class CcCharacter implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -36,6 +37,7 @@ public class CcCharacter extends BaseEntity implements Serializable {
     /**
      * 汉字
      */
+    @TableField(value = "`character`")
     private String character;
 
     /**

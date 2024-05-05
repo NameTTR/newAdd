@@ -24,7 +24,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @TableName("cc_study")
-public class CcStudy extends BaseEntity implements Serializable {
+public class CcStudy implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -58,7 +58,4 @@ public class CcStudy extends BaseEntity implements Serializable {
      * 更新时间
      */
     private LocalDateTime updateTime;
-    public Date getUpdateTime() {
-        return super.getUpdateTime();
-    }
 }

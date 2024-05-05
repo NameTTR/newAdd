@@ -23,7 +23,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @Data
 @TableName("cc_character_group")
-public class CcCharacterGroup extends BaseEntity implements Serializable {
+public class CcCharacterGroup implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

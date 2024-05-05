@@ -25,7 +25,7 @@ import lombok.experimental.SuperBuilder;
 @Accessors(chain = true)
 @Data
 @TableName("cc_test")
-public class CcTest extends BaseEntity implements Serializable {
+public class CcTest implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -55,7 +55,4 @@ public class CcTest extends BaseEntity implements Serializable {
      */
     private LocalDateTime updateTime;
 
-    public Date getUpdateTime() {
-        return super.getUpdateTime();
-    }
 }
