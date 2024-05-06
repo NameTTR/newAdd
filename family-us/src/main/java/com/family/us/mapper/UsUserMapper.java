@@ -61,4 +61,6 @@ public interface UsUserMapper
      * @return 结果
      */
     public int updateUserBackground(@Param("ID") Integer ID, @Param("background") String background);
+
+    public UsUser selectUsUserByAccount(@Param("account") String account);
 }

@@ -1,29 +1,28 @@
-package com.family.us.service;
+package com.family.us.mapper;
 
 import com.family.us.domain.UsUser;
-
-import java.util.List;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 /**
- * 用户Service接口
+ * 用户Mapper接口
  * 
  * @author 高俊炜
  * @date 2024-04-17
  */
-public interface IUsUserService 
+public interface UsLoginTelMapper
 {
     /**
      * 查询用户
+     *
      * @param ID 用户主键
      * @return 用户
      */
-    public UsUser selectUsUserByID(Integer ID);
-
-    public UsUser selectUsUserByAccount(String account);
+    public UsUser selectUsUserByID(@RequestParam("ID") Integer ID);
 
     /**
      * 修改用户
-     * 
+     *
      * @param usUser 用户
      * @return 结果
      */
@@ -32,10 +31,10 @@ public interface IUsUserService
     /**
      * 检查手机号是否唯一
      *
-     * @param usUser 需要用户
+     * @param tel 需要用户手机号
      * @return 结果
      */
-    public boolean checkTelUnique(UsUser usUser);
+    public UsUser checkTelUnique(String tel);
 
     /**
      * 重置密码
@@ -43,7 +42,7 @@ public interface IUsUserService
      * @param ID,newPassword 需要用户主键和新密码
      * @return 结果
      */
-    public int resetUserPwd(Integer ID, String newPassword);
+    public int resetUserPwd(@Param("ID") Integer ID, @Param("newPassword") String newPassword);
 
     /**
      * 更换图片
@@ -51,7 +50,7 @@ public interface IUsUserService
      * @param ID,avatar 需要用户主键和图片路径
      * @return 结果
      */
-    public boolean updateUserAvatar(Integer ID, String avatar);
+    public int updateUserAvatar(@Param("ID") Integer ID, @Param("avatar") String avatar);
 
     /**
      * 更换背景图
@@ -59,5 +58,5 @@ public interface IUsUserService
      * @param ID,background 需要用户主键和图片路径
      * @return 结果
      */
-    public boolean updateUserBackground(Integer ID, String background);
+    public int updateUserBackground(@Param("ID") Integer ID, @Param("background") String background);
 }

@@ -24,7 +24,6 @@ import java.time.LocalDate;
  */
 @RestController
 @RequestMapping("/family/us")
-@CrossOrigin(origins = "*")
 public class UsUserController extends BaseController
 {
     @Autowired
@@ -38,6 +37,10 @@ public class UsUserController extends BaseController
         return success(usUserService.selectUsUserByID(ID));
     }
 
+    @GetMapping(value = "/infoByAccount")
+    public AjaxResult getInfoByAccount(@RequestParam("account") String account) {
+        return success(usUserService.selectUsUserByAccount(account));
+    }
     /**
      * 修改用户信息
      */
@@ -75,7 +78,7 @@ public class UsUserController extends BaseController
             }
         }
         if(usUser.getRole() != null) {
-            if(usUser.getRole() >= 1 && usUser.getRole() <= 4) {
+            if(usUser.getRole() >= 1 && usUser.getRole() <= 8) {
                 nowUsUser.setNickname(usUser.getNickname());
                 if(usUser.getRole() == 3 || usUser.getRole() == 4){
                     nowUsUser.setTeenageMode(1);

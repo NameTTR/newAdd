@@ -35,6 +35,11 @@ public class UsUserServiceImpl implements IUsUserService
         return usUserMapper.selectUsUserByID(ID);
     }
 
+    @Override
+    public UsUser selectUsUserByAccount(String account) {
+        return usUserMapper.selectUsUserByAccount(account);
+    }
+
     /**
      * 修改用户
      * 

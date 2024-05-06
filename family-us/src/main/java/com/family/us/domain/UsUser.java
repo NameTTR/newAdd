@@ -26,7 +26,7 @@ public class UsUser extends BaseEntity
     /** 账号 */
     @Excel(name = "账号")
     @JsonProperty(value = "account")
-    private Integer account;
+    private String account;
 
     /** 密码 */
     @Excel(name = "密码")
@@ -218,12 +218,12 @@ public class UsUser extends BaseEntity
     {
         return ID;
     }
-    public void setAccount(Integer account)
+    public void setAccount(String account)
     {
         this.account = account;
     }
 
-    public Integer getAccount()
+    public String getAccount()
     {
         return account;
     }

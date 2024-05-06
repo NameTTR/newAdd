@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.family.us.mapper.UsUserMapper">
+<mapper namespace="com.family.us.mapper.UsLoginTelMapper">
 
     <resultMap type="UsUser" id="UsUserResult">
         <result property="ID"    column="ID"    />
@@ -55,15 +55,10 @@
         where ID = #{ID}
     </select>
 
-    <select id="selectUsUserByAccount" parameterType="String" resultMap="UsUserResult">
-        <include refid="selectUsUserVo"/>
-        where account = #{account}
-    </select>
-
     <update id="updateUsUser" parameterType="UsUser">
         update us_user
         <trim prefix="SET" suffixOverrides=",">
-            <if test="account != null">account = #{account},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
             <if test="password != null and password != ''">password = #{password},</if>
             <if test="face != null and face != ''">face = #{face},</if>
             <if test="nickname != null and nickname != ''">nickname = #{nickname},</if>
