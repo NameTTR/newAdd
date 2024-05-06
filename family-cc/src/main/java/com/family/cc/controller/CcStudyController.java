@@ -1,10 +1,11 @@
 package com.family.cc.controller;
 
 
+import com.family.cc.service.ICcStudyService;
 import com.ruoyi.common.core.controller.BaseController;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import org.springframework.web.bind.annotation.RestController;
+import com.ruoyi.common.core.domain.AjaxResult;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -17,5 +18,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/family/cc/study")
 public class CcStudyController extends BaseController {
+    @Autowired
+    private ICcStudyService ccStudyService;
 
+    /**
+     * 更新汉字学习记录
+     * @param characterId 汉字id
+     * @return
+     */
+    @PutMapping("{characterId}")
+    public AjaxResult updateStudyRecord(@PathVariable("characterId") Long characterId) {
+        return ccStudyService.updateStudyRecord(characterId);
+    }
 }

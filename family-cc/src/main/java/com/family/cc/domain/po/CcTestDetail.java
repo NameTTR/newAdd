@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
+import com.family.cc.enums.CcChaptersTestStatus;
 import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -31,17 +32,17 @@ public class CcTestDetail implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 汉字测试表外键，汉字测试表ID
      */
-    private Integer testId;
+    private Long testId;
 
     /**
      * 汉字表外键，汉字表ID
      */
-    private Integer characterId;
+    private Long characterId;
 
     /**
      * 汉字
@@ -51,12 +52,12 @@ public class CcTestDetail implements Serializable {
     /**
      * 测试结果：0：错；1：对
      */
-    private Integer result;
+    private CcChaptersTestStatus result;
 
     /**
      * 用户表外键，用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

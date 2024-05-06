@@ -26,5 +26,5 @@ public interface ICcUnitService extends IService<CcUnit> {
      * @param id 获取的单元id
      * @return
      */
-    AjaxResult getUnit(Integer id);
+    AjaxResult getUnit(Long id);
 }

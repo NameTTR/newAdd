@@ -2,6 +2,7 @@ package com.family.cc.service;
 
 import com.family.cc.domain.po.CcStudy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.core.domain.AjaxResult;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICcStudyService extends IService<CcStudy> {
 
+    /**
+     * 更新汉字学习记录
+     * @param characterId 汉字id
+     * @return
+     */
+    AjaxResult updateStudyRecord(Long characterId);
 }

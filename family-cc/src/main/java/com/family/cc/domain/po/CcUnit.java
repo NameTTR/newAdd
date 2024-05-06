@@ -31,7 +31,7 @@ public class CcUnit implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 单元名称

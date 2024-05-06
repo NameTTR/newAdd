@@ -39,7 +39,7 @@ public class CcUnitController extends BaseController {
      * @return
      */
     @GetMapping("{unitId}")
-    public AjaxResult getUnit(@PathVariable("unitId") Integer id) {
+    public AjaxResult getUnit(@PathVariable("unitId") Long id) {
         return ccUnitService.getUnit(id);
     }
 }

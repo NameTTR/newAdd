@@ -3,18 +3,16 @@ package com.family.cc.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.family.cc.domain.dto.CcChapterDTO;
 import com.family.cc.domain.dto.CcCharacterDTO;
 import com.family.cc.domain.dto.CcUnitDTO;
 import com.family.cc.domain.dto.CcUnitListDTO;
 import com.family.cc.domain.po.*;
 import com.family.cc.enums.CcChapterStatus;
-import com.family.cc.mapper.CcChapterMapper;
 import com.family.cc.mapper.CcUnitMapper;
 import com.family.cc.service.*;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.SecurityUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -30,18 +28,11 @@ import java.util.List;
  */
 @Service
 public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> implements ICcUnitService {
-    @Autowired
-    private ICcChapterService ccChapterService;
 
-    @Autowired
-    private ICcChapterStudyService ccChapterStudyService;
-
-    @Autowired
-    private ICcCharacterService ccCharacterService;
-
-    @Autowired
-    private ICcStudyService ccStudyService;
-
+    /**
+     * 获取单元列表
+     * @return
+     */
     @Override
     public AjaxResult getUnitList() {
         //获取当前用户的id
@@ -55,13 +46,13 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         String unitName = ""; //最后找到的正在学习的单元名称
         for (CcUnit unit : units) {
             //2.1 查询该单元下的所有章节
-            List<CcChapter> chapters = ccChapterService.lambdaQuery()
+            List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class)
                     .eq(CcChapter::getUnitId, unit.getId())
                     .list();
             //2.2 查询该用户在该单元下的所有章节学习进度
             int sign = 0;
             for (CcChapter chapter : chapters) {
-                List<CcChapterStudy> studies = ccChapterStudyService.lambdaQuery()
+                List<CcChapterStudy> studies = Db.lambdaQuery(CcChapterStudy.class)
                         .eq(CcChapterStudy::getChapterId, chapter.getId())
                         .eq(CcChapterStudy::getUserId, userId)
                         .eq(CcChapterStudy::getState, CcChapterStatus.LEARNING)
@@ -85,8 +76,13 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         }
     }
 
+    /**
+     * 获取单元信息
+     * @param id 获取的单元id
+     * @return
+     */
     @Override
-    public AjaxResult getUnit(Integer id) {
+    public AjaxResult getUnit(Long id) {
         //获取当前用户id
 //        Long userId = SecurityUtils.getUserId();
         Long userId = 1L;
@@ -97,7 +93,7 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         // 用于存放单元信息
         List<CcChapterDTO> unitDate = new ArrayList<>();
         //2. 查询当前单元的所有章节
-        List<CcChapter> chapters = ccChapterService.lambdaQuery()
+        List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class)
                 .eq(CcChapter::getUnitId, id)
                 .orderByAsc(CcChapter::getSort)
                 .list();
@@ -105,15 +101,15 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         //3. 查询所有章节的汉字信息
         for (CcChapter chapter : chapters) {
             //3.1 查询当前章节的汉字信息
-            List<CcCharacter> characters = ccCharacterService.lambdaQuery()
+            List<CcCharacter> characters = Db.lambdaQuery(CcCharacter.class)
                     .eq(CcCharacter::getChapterId, chapter.getId())
                     .list();
-            List<Integer> characterIds = new ArrayList<>(characters.size());
+            List<Long> characterIds = new ArrayList<>(characters.size());
             characters.forEach(c -> characterIds.add(c.getId()));
 
             //3.2 查询汉字的学习情况
             String idsStr = StrUtil.join(",", characterIds);
-            List<CcStudy> studies = ccStudyService.lambdaQuery()
+            List<CcStudy> studies = Db.lambdaQuery(CcStudy.class)
                     .in(CcStudy::getCharacterId, characterIds)
                     .eq(CcStudy::getUserId, userId)
                     .last("ORDER BY FIELD(id," + idsStr + ")")

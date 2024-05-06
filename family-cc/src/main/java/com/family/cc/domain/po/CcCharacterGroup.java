@@ -31,12 +31,12 @@ public class CcCharacterGroup implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 汉字表外键，汉字表ID
      */
-    private Integer characterId;
+    private Long characterId;
 
     /**
      * 类别：1：组词；2：近义词；3：反义词

@@ -32,7 +32,7 @@ public class CcCharacter implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 汉字
@@ -63,7 +63,7 @@ public class CcCharacter implements Serializable {
     /**
      * 汉字章节表外键，汉字章节表ID
      */
-    private Integer chapterId;
+    private Long chapterId;
 
     /**
      * 创建时间

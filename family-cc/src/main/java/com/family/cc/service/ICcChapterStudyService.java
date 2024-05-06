@@ -2,6 +2,7 @@ package com.family.cc.service;
 
 import com.family.cc.domain.po.CcChapterStudy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.core.domain.AjaxResult;
 
 /**
  * <p>
@@ -13,4 +14,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICcChapterStudyService extends IService<CcChapterStudy> {
 
+    /**
+     * 更新章节学习记录
+     * @param chapterId     章节ID
+     * @param nextChapterId 下一章节ID
+     * @return
+     */
+    AjaxResult updateChapterStudy(Long chapterId,Long nextChapterId);
 }

@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.io.Serializable;
 import java.util.Date;
 
+import com.family.cc.enums.CcChapterStatus;
 import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -33,22 +34,22 @@ public class CcChapterStudy implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 汉字章节表外键，汉字章节表ID
      */
-    private Integer chapterId;
+    private Long chapterId;
 
     /**
      * 学习状态：0：未学；1：学习中；2：已学完
      */
-    private Integer state;
+    private CcChapterStatus state;
 
     /**
      * 用户表外键，用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

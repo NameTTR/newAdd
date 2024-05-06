@@ -31,7 +31,7 @@ public class CcChapter implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 章节名称
@@ -44,9 +44,9 @@ public class CcChapter implements Serializable {
     private Integer sort;
 
     /**
-     * 单元id
+     * 单元表外键，单元id
      */
-    private Integer unitId;
+    private Long unitId;
 
     /**
      * 创建时间

@@ -33,17 +33,17 @@ public class CcTest implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 汉字章节表外键，汉字章节表ID
      */
-    private Integer chapterId;
+    private Long chapterId;
 
     /**
      * 用户表外键，用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

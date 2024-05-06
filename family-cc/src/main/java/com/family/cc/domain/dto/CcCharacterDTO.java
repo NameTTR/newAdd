@@ -1,6 +1,7 @@
 package com.family.cc.domain.dto;
 
 import com.family.cc.domain.po.CcCharacter;
+import com.family.cc.enums.CcCharacterStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -22,6 +23,6 @@ public class CcCharacterDTO extends CcCharacter {
     /**
      *  状态  0：未学；1：已学完；2：未掌握
      */
-    private Integer state;
+    private CcCharacterStatus state;
 
 }

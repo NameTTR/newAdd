@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum CcCharacterStatus {
     UnLEARNED(0, "未学习"),   // 未学习
-    LEARNING(1, "学习中"),    // 学习中
+    LEARNED_FINISH(1, "已学完"),    // 已学完
     NOT_MASTERED(2, "未掌握")   // 未掌握
     ;
     @EnumValue
