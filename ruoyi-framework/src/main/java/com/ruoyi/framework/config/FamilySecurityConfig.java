@@ -29,7 +29,7 @@ import org.springframework.web.filter.CorsFilter;
  * 
  * @author ruoyi
  */
-//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class FamilySecurityConfig extends WebSecurityConfigurerAdapter
 {
 
@@ -133,7 +133,7 @@ public class FamilySecurityConfig extends WebSecurityConfigurerAdapter
         // 添加JWT filter
         httpSecurity.addFilterBefore(authenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);
         // 添加CORS filter
-        httpSecurity.addFilterBefore(corsFilter, JwtAuthenticationTokenFilter.class);
+        httpSecurity.addFilterBefore(corsFilter, FamilyJwtAuthenticationTokenFilter.class);
         httpSecurity.addFilterBefore(corsFilter, LogoutFilter.class);
     }
 

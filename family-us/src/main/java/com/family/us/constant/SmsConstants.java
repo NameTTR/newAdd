@@ -17,5 +17,5 @@ public class SmsConstants extends Constants {
     /**
      * 短信验证码有效期（分钟）
      */
-    public static final Integer SMS_EXPIRATION = 1;
+    public static final Integer SMS_EXPIRATION = 3;
 }

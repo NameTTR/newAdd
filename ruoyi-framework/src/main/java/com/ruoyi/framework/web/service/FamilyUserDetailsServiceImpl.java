@@ -10,6 +10,7 @@ import com.ruoyi.common.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
  *
  * @author ruoyi
  */
+@Primary
 @Service
 public class FamilyUserDetailsServiceImpl extends UserDetailsServiceImpl
 {
@@ -52,6 +54,6 @@ public class FamilyUserDetailsServiceImpl extends UserDetailsServiceImpl
 
     public UserDetails createLoginUser(UsUser user)
     {
-        return new UsLoginUser(user.getID(), user);
+        return new UsLoginUser(user, null);
     }
 }

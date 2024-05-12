@@ -21,7 +21,7 @@ import com.ruoyi.system.service.ISysUserService;
  *
  * @author ruoyi
  */
-@Primary
+
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService
 {

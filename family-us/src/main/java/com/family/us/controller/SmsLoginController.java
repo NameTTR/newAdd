@@ -2,6 +2,7 @@ package com.family.us.controller;
 
 import com.family.us.domain.SmsLoginBody;
 import com.family.us.service.SmsLoginService;
+import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * 作者：Name
  * 日期：2024/5/11 15:09
  */
+@Anonymous
 @RestController
 @RequestMapping("/sms")
 public class SmsLoginController {

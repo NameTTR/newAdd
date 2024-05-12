@@ -17,10 +17,10 @@ public class UsLoginUser implements UserDetails
 {
     private static final long serialVersionUID = 1L;
 
-    /**
-     * 用户ID
-     */
-    private Integer userId;
+//    /**
+//     * 用户ID
+//     */
+//    private Integer userId;
 
     /**
      * 用户唯一标识
@@ -77,28 +77,13 @@ public class UsLoginUser implements UserDetails
         this.permissions = permissions;
     }
 
-    public UsLoginUser(Integer userId, UsUser user)
-    {
-        this.userId = userId;
-        this.user = user;
-    }
 
     public UsLoginUser(Integer userId, Long deptId, UsUser user, Set<String> permissions)
     {
-        this.userId = userId;
         this.user = user;
         this.permissions = permissions;
     }
 
-    public Integer getUserId()
-    {
-        return userId;
-    }
-
-    public void setUserId(Integer userId)
-    {
-        this.userId = userId;
-    }
 
     public String getToken()
     {
@@ -135,7 +120,7 @@ public class UsLoginUser implements UserDetails
 
     /**
      * 指定用户是否解锁,锁定的用户无法进行身份验证
-     * 
+     *
      * @return
      */
     @JSONField(serialize = false)
@@ -147,7 +132,7 @@ public class UsLoginUser implements UserDetails
 
     /**
      * 指示是否已过期的用户的凭据(密码),过期的凭据防止认证
-     * 
+     *
      * @return
      */
     @JSONField(serialize = false)
@@ -159,7 +144,7 @@ public class UsLoginUser implements UserDetails
 
     /**
      * 是否可用 ,禁用的用户不能身份验证
-     * 
+     *
      * @return
      */
     @JSONField(serialize = false)

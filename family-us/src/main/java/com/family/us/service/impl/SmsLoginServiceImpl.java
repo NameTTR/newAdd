@@ -10,12 +10,14 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.StringUtils;
-import com.sun.org.apache.bcel.internal.Const;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.Map;
@@ -25,6 +27,7 @@ import java.util.Map;
  * 作者：Name
  * 日期：2024/5/11 15:13
  */
+@Service
 public class SmsLoginServiceImpl implements SmsLoginService {
 
     @Autowired
@@ -56,7 +59,8 @@ public class SmsLoginServiceImpl implements SmsLoginService {
 
     private void checkSmsCode(String tel, String inputCode, String uuid){
         String verifyKey = SmsConstants.SMS_CAPTCHA_CODE_KEY + uuid;
-        Map<String, Object> smsCode = redisCache.getCacheMap(verifyKey);
+        Map<String, Object> smsCode =  redisCache.getCacheObject(verifyKey);
+        redisCache.deleteObject(verifyKey);
         if(StringUtils.isEmpty(inputCode)){
             throw new BadCredentialsException("验证码不能为空");
         }

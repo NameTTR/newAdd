@@ -10,12 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 /**
  * 功能：
  * 作者：Name
  * 日期：2024/5/12 13:25
  */
+@Service
 public class SmsUserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
