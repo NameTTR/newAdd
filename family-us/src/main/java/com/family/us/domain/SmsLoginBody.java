@@ -5,12 +5,12 @@ package com.family.us.domain;
  * 
  * @author ruoyi
  */
-public class FamilyTelLoginBody
+public class SmsLoginBody
 {
     /**
      * 手机号
      */
-    private String Tel;
+    private String tel;
 
     /**
      * 验证码
@@ -24,12 +24,12 @@ public class FamilyTelLoginBody
 
     public String getTel()
     {
-        return Tel;
+        return tel;
     }
 
     public void setTel(String Tel)
     {
-        this.Tel = Tel;
+        this.tel = Tel;
     }
 
     public String getCode()

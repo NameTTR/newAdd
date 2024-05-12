@@ -1,7 +1,7 @@
 package com.family.us.controller;
 
 import com.family.us.domain.UsUser;
-import com.family.us.service.IUsUserService;
+import com.family.us.service.UsUserService;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -10,7 +10,6 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -27,7 +26,7 @@ import java.time.LocalDate;
 public class UsUserController extends BaseController
 {
     @Autowired
-    private IUsUserService usUserService;
+    private UsUserService usUserService;
 
     /**
      * 获取用户详细信息

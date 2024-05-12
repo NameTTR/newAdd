@@ -10,7 +10,7 @@ import java.util.List;
  * @author 高俊炜
  * @date 2024-04-17
  */
-public interface IUsUserService 
+public interface UsUserService
 {
     /**
      * 查询用户
@@ -20,6 +20,8 @@ public interface IUsUserService
     public UsUser selectUsUserByID(Integer ID);
 
     public UsUser selectUsUserByAccount(String account);
+
+    public UsUser selectUsUserByTel(String tel);
 
     /**
      * 修改用户

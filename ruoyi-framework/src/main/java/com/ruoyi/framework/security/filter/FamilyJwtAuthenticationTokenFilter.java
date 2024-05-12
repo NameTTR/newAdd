@@ -1,11 +1,9 @@
 package com.ruoyi.framework.security.filter;
 
-import com.family.us.domain.FamilyLoginUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
+import com.family.us.domain.UsLoginUser;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.web.service.FamilyTokenService;
-import com.ruoyi.framework.web.service.TokenService;
+import com.family.us.service.FamilyTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -34,7 +32,7 @@ public class FamilyJwtAuthenticationTokenFilter extends OncePerRequestFilter
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException
     {
-        FamilyLoginUser loginUser = tokenService.getLoginUser(request);
+        UsLoginUser loginUser = tokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser) && StringUtils.isNull(SecurityUtils.getAuthentication()))
         {
             tokenService.verifyToken(loginUser);

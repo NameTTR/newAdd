@@ -1,5 +1,6 @@
 package com.ruoyi.framework.config;
 
+import com.family.us.smsConfig.SmsCodeAuthenticationSecurityConfig;
 import com.ruoyi.framework.config.properties.PermitAllUrlProperties;
 import com.ruoyi.framework.security.filter.FamilyJwtAuthenticationTokenFilter;
 import com.ruoyi.framework.security.filter.JwtAuthenticationTokenFilter;
@@ -31,11 +32,14 @@ import org.springframework.web.filter.CorsFilter;
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class FamilySecurityConfig extends WebSecurityConfigurerAdapter
 {
+
+    @Autowired
+    private SmsCodeAuthenticationSecurityConfig smsCodeAuthenticationSecurityConfig;
     /**
      * 自定义用户认证逻辑
      */
     @Autowired
-    private FamilyUserDetailsServiceImpl userDetailsService;
+    private UserDetailsService userDetailsService;
     
     /**
      * 认证失败处理类
@@ -103,6 +107,7 @@ public class FamilySecurityConfig extends WebSecurityConfigurerAdapter
         permitAllUrl.getUrls().forEach(url -> registry.antMatchers(url).permitAll());
 
         httpSecurity
+                .apply(smsCodeAuthenticationSecurityConfig).and()
                 // CSRF禁用，因为不使用session
                 .csrf().disable()
                 // 禁用HTTP响应标头
@@ -118,7 +123,7 @@ public class FamilySecurityConfig extends WebSecurityConfigurerAdapter
                 // 静态资源，可匿名访问
                 .antMatchers(HttpMethod.GET, "/", "/*.html", "/**/*.html", "/**/*.css", "/**/*.js", "/profile/**").permitAll()
                 .antMatchers("/swagger-ui.html", "/swagger-resources/**", "/webjars/**", "/*/api-docs", "/druid/**").permitAll()
-                .antMatchers("/family/**").permitAll()
+                //.antMatchers("/family/**").permitAll()
                 // 除上面外的所有请求全部需要鉴权认证
                 .anyRequest().authenticated()
                 .and()

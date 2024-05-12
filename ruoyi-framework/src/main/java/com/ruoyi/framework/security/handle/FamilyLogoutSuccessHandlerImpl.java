@@ -1,17 +1,12 @@
 package com.ruoyi.framework.security.handle;
 
 import com.alibaba.fastjson2.JSON;
-import com.family.us.domain.FamilyLoginUser;
-import com.ruoyi.common.constant.Constants;
+import com.family.us.domain.UsLoginUser;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.framework.manager.AsyncManager;
-import com.ruoyi.framework.manager.factory.AsyncFactory;
-import com.ruoyi.framework.web.service.FamilyTokenService;
-import com.ruoyi.framework.web.service.TokenService;
+import com.family.us.service.FamilyTokenService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.core.Authentication;
@@ -42,7 +37,7 @@ public class FamilyLogoutSuccessHandlerImpl implements LogoutSuccessHandler
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
             throws IOException, ServletException
     {
-         FamilyLoginUser loginUser = tokenService.getLoginUser(request);
+         UsLoginUser loginUser = tokenService.getLoginUser(request);
         if (StringUtils.isNotNull(loginUser))
         {
             String userName = loginUser.getUsername();

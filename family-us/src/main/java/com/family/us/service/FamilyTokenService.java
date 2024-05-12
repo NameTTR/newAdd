@@ -1,9 +1,8 @@
-package com.ruoyi.framework.web.service;
+package com.family.us.service;
 
-import com.family.us.domain.FamilyLoginUser;
+import com.family.us.domain.UsLoginUser;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.redis.RedisCache;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -61,7 +60,7 @@ public class FamilyTokenService
      *
      * @return 用户信息
      */
-    public FamilyLoginUser getLoginUser(HttpServletRequest request)
+    public UsLoginUser getLoginUser(HttpServletRequest request)
     {
         // 获取请求携带的令牌
         String token = getToken(request);
@@ -73,7 +72,7 @@ public class FamilyTokenService
                 // 解析对应的权限以及用户信息
                 String uuid = (String) claims.get(Constants.LOGIN_USER_KEY);
                 String userKey = getTokenKey(uuid);
-                FamilyLoginUser user = redisCache.getCacheObject(userKey);
+                UsLoginUser user = redisCache.getCacheObject(userKey);
                 return user;
             }
             catch (Exception e)
@@ -87,7 +86,7 @@ public class FamilyTokenService
     /**
      * 设置用户身份信息
      */
-    public void setLoginUser(FamilyLoginUser loginUser)
+    public void setLoginUser(UsLoginUser loginUser)
     {
         if (StringUtils.isNotNull(loginUser) && StringUtils.isNotEmpty(loginUser.getToken()))
         {
@@ -113,7 +112,7 @@ public class FamilyTokenService
      * @param loginUser 用户信息
      * @return 令牌
      */
-    public String createToken(FamilyLoginUser loginUser)
+    public String createToken(UsLoginUser loginUser)
     {
         String token = IdUtils.fastUUID();
         loginUser.setToken(token);
@@ -131,7 +130,7 @@ public class FamilyTokenService
      * @param loginUser
      * @return 令牌
      */
-    public void verifyToken(FamilyLoginUser loginUser)
+    public void verifyToken(UsLoginUser loginUser)
     {
         long expireTime = loginUser.getExpireTime();
         long currentTime = System.currentTimeMillis();
@@ -146,7 +145,7 @@ public class FamilyTokenService
      *
      * @param loginUser 登录信息
      */
-    public void refreshToken(FamilyLoginUser loginUser)
+    public void refreshToken(UsLoginUser loginUser)
     {
         loginUser.setLoginTime(System.currentTimeMillis());
         loginUser.setExpireTime(loginUser.getLoginTime() + expireTime * MILLIS_MINUTE);
@@ -160,7 +159,7 @@ public class FamilyTokenService
      *
      * @param loginUser 登录信息
      */
-    public void setUserAgent(FamilyLoginUser loginUser)
+    public void setUserAgent(UsLoginUser loginUser)
     {
         UserAgent userAgent = UserAgent.parseUserAgentString(ServletUtils.getRequest().getHeader("User-Agent"));
         String ip = IpUtils.getIpAddr();

@@ -60,6 +60,11 @@
         where account = #{account}
     </select>
 
+    <select id="selectUsUserByTel" parameterType="String" resultMap="UsUserResult">
+        <include refid="selectUsUserVo"/>
+        where tel = #{tel}
+    </select>
+
     <update id="updateUsUser" parameterType="UsUser">
         update us_user
         <trim prefix="SET" suffixOverrides=",">

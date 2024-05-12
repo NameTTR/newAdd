@@ -2,14 +2,12 @@ package com.family.us.service.impl;
 
 import com.family.us.domain.UsUser;
 import com.family.us.mapper.UsUserMapper;
-import com.family.us.service.IUsUserService;
+import com.family.us.service.UsUserService;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 /**
  * 用户Service业务层处理
@@ -18,7 +16,7 @@ import java.util.List;
  * @date 2024-04-17
  */
 @Service
-public class UsUserServiceImpl implements IUsUserService
+public class UsUserServiceImpl implements UsUserService
 {
     @Autowired
     private UsUserMapper usUserMapper;
@@ -38,6 +36,11 @@ public class UsUserServiceImpl implements IUsUserService
     @Override
     public UsUser selectUsUserByAccount(String account) {
         return usUserMapper.selectUsUserByAccount(account);
+    }
+
+    @Override
+    public UsUser selectUsUserByTel(String tel) {
+        return usUserMapper.selectUsUserByTel(tel);
     }
 
     /**

@@ -13,7 +13,7 @@ import java.util.Set;
  * 
  * @author ruoyi
  */
-public class FamilyLoginUser implements UserDetails
+public class UsLoginUser implements UserDetails
 {
     private static final long serialVersionUID = 1L;
 
@@ -67,23 +67,23 @@ public class FamilyLoginUser implements UserDetails
      */
     private UsUser user;
 
-    public FamilyLoginUser()
+    public UsLoginUser()
     {
     }
 
-    public FamilyLoginUser(UsUser user, Set<String> permissions)
+    public UsLoginUser(UsUser user, Set<String> permissions)
     {
         this.user = user;
         this.permissions = permissions;
     }
 
-    public FamilyLoginUser(Integer userId, UsUser user)
+    public UsLoginUser(Integer userId, UsUser user)
     {
         this.userId = userId;
         this.user = user;
     }
 
-    public FamilyLoginUser(Integer userId, Long deptId, UsUser user, Set<String> permissions)
+    public UsLoginUser(Integer userId, Long deptId, UsUser user, Set<String> permissions)
     {
         this.userId = userId;
         this.user = user;

@@ -1,20 +1,16 @@
 package com.ruoyi.framework.web.service;
 
-import com.family.us.domain.FamilyLoginUser;
+import com.family.us.domain.UsLoginUser;
 import com.family.us.domain.UsUser;
-import com.family.us.service.IUsUserService;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.core.domain.model.LoginUser;
+import com.family.us.service.UsUserService;
 import com.ruoyi.common.enums.UserStatus;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.system.service.ISysUserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -29,7 +25,7 @@ public class FamilyUserDetailsServiceImpl extends UserDetailsServiceImpl
     private static final Logger log = LoggerFactory.getLogger(FamilyUserDetailsServiceImpl.class);
 
     @Autowired
-    private IUsUserService userService;
+    private UsUserService userService;
     
     @Autowired
     private FamilyPasswordService passwordService;
@@ -56,6 +52,6 @@ public class FamilyUserDetailsServiceImpl extends UserDetailsServiceImpl
 
     public UserDetails createLoginUser(UsUser user)
     {
-        return new FamilyLoginUser(user.getID(), user);
+        return new UsLoginUser(user.getID(), user);
     }
 }
