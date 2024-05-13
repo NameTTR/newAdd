@@ -183,6 +183,7 @@
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
         <module>family-us</module>
+        <module>family-common</module>
     </modules>
     <packaging>pom</packaging>
 

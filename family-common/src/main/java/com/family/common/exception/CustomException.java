@@ -1,4 +1,4 @@
-package com.ruoyi.common.exception;
+package com.family.common.exception;
 
 public class CustomException extends RuntimeException
 {

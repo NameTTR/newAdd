@@ -2,21 +2,20 @@ package com.family.us.service.impl;
 
 import com.family.us.constant.SmsConstants;
 import com.family.us.domain.UsLoginUser;
+import com.family.us.domain.VO.UsUserRegister;
 import com.family.us.service.FamilyTokenService;
 import com.family.us.service.SmsLoginService;
 import com.family.us.smsConfig.SmsCodeAuthenticationToken;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.core.redis.RedisCache;
-import com.ruoyi.common.exception.CustomException;
+import com.family.common.exception.CustomException;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.stereotype.Component;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -69,7 +68,7 @@ public class SmsLoginServiceImpl implements SmsLoginService {
         }
         String applyTel = (String) smsCode.get("tel");
         int code = (int) smsCode.get("code");
-        if(!applyTel.equals(applyTel)){
+        if(!applyTel.equals(tel)){
             throw new BadCredentialsException("手机号码不一致");
         }
         if(code != Integer.parseInt(inputCode)){

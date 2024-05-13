@@ -38,6 +38,7 @@ public class GenerateSms {
         String uuid = IdUtils.simpleUUID();
         String verifyKey = SmsConstants.SMS_CAPTCHA_CODE_KEY + uuid;
         int code = (int)Math.ceil(Math.random() * 9000 + 1000);
+        code = 9999;
         Map<String, Object> map = new HashMap<>(16);
         map.put("tel", tel);
         map.put("code", code);

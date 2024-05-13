@@ -9,6 +9,8 @@ import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
+
 /**
  * 用户Service业务层处理
  * 
@@ -28,7 +30,7 @@ public class UsUserServiceImpl implements UsUserService
      * @return 用户
      */
     @Override
-    public UsUser selectUsUserByID(Integer ID)
+    public UsUser selectUsUserByID(Long ID)
     {
         return usUserMapper.selectUsUserByID(ID);
     }
@@ -41,6 +43,11 @@ public class UsUserServiceImpl implements UsUserService
     @Override
     public UsUser selectUsUserByTel(String tel) {
         return usUserMapper.selectUsUserByTel(tel);
+    }
+
+    @Override
+    public boolean registerUser(UsUser user) {
+        return usUserMapper.insertUsUser(user);
     }
 
     /**
@@ -81,7 +88,7 @@ public class UsUserServiceImpl implements UsUserService
      * @return 结果
      */
     @Override
-    public int resetUserPwd(Integer ID, String newPassword) {
+    public int resetUserPwd(Long ID, String newPassword) {
         return usUserMapper.resetUserPwd(ID, newPassword);
     }
 
@@ -92,7 +99,7 @@ public class UsUserServiceImpl implements UsUserService
      * @return 结果
      */
     @Override
-    public boolean updateUserAvatar(Integer ID, String avatar) {
+    public boolean updateUserAvatar(Long ID, String avatar) {
         return usUserMapper.updateUserAvatar(ID, avatar) > 0;
     }
 
@@ -103,7 +110,7 @@ public class UsUserServiceImpl implements UsUserService
      * @return 结果
      */
     @Override
-    public boolean updateUserBackground(Integer ID, String background) {
+    public boolean updateUserBackground(Long ID, String background) {
         return usUserMapper.updateUserBackground(ID, background) > 0;
     }
 }

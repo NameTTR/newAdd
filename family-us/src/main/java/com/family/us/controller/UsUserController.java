@@ -3,7 +3,6 @@ package com.family.us.controller;
 import com.family.us.domain.UsUser;
 import com.family.us.service.UsUserService;
 import com.ruoyi.common.config.RuoYiConfig;
-import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
@@ -23,7 +22,7 @@ import java.time.LocalDate;
  */
 @RestController
 @RequestMapping("/family/us")
-public class UsUserController extends BaseController
+public class UsUserController extends FamilyBaseController
 {
     @Autowired
     private UsUserService usUserService;
@@ -32,8 +31,8 @@ public class UsUserController extends BaseController
      * 获取用户详细信息
      */
     @GetMapping(value = "/info")
-    public AjaxResult getInfo(@RequestParam("ID") Integer ID) {
-        return success(usUserService.selectUsUserByID(ID));
+    public AjaxResult getInfo() {
+        return success(getUsUser());
     }
 
     @GetMapping(value = "/infoByAccount")
@@ -46,7 +45,7 @@ public class UsUserController extends BaseController
     @PutMapping("/update/profile")
     public AjaxResult updateProfile(@RequestBody UsUser usUser) {
 
-        UsUser nowUsUser = usUserService.selectUsUserByID(usUser.getID());
+        UsUser nowUsUser = getUsUser();
 
         if(nowUsUser == null){
             return error("该用户不存在");
@@ -78,7 +77,7 @@ public class UsUserController extends BaseController
         }
         if(usUser.getRole() != null) {
             if(usUser.getRole() >= 1 && usUser.getRole() <= 8) {
-                nowUsUser.setNickname(usUser.getNickname());
+                nowUsUser.setRole(usUser.getRole());
                 if(usUser.getRole() == 3 || usUser.getRole() == 4){
                     nowUsUser.setTeenageMode(1);
                 }
@@ -212,11 +211,11 @@ public class UsUserController extends BaseController
      * 重置密码
      */
     @PutMapping("/update/password")
-    public AjaxResult updatePassword(@RequestParam("ID") Integer ID,
+    public AjaxResult updatePassword(@RequestParam("ID") Long ID,
                                 @RequestParam("oldPassword") String oldPassword,
                                 @RequestParam("newPassword") String newPassword)
     {
-        UsUser nowUsUser = usUserService.selectUsUserByID(ID);
+        UsUser nowUsUser = getUsUser();
         String password = nowUsUser.getPassword();
         if (!SecurityUtils.matchesPassword(oldPassword, password))
         {
@@ -238,11 +237,11 @@ public class UsUserController extends BaseController
      * 头像上传
      */
     @PostMapping("/update/avatar")
-    public AjaxResult updateAvatar(@RequestParam("ID") Integer ID, @RequestParam("avatarfile") MultipartFile file) throws Exception
+    public AjaxResult updateAvatar(@RequestParam("avatarfile") MultipartFile file) throws Exception
     {
         if (!file.isEmpty())
         {
-            UsUser nowUsUser = usUserService.selectUsUserByID(ID);
+            UsUser nowUsUser = getUsUser();
             String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
             if (usUserService.updateUserAvatar(nowUsUser.getID(), avatar))
             {
@@ -258,11 +257,11 @@ public class UsUserController extends BaseController
      * 修改用户背景
      */
     @PostMapping("/update/background")
-    public AjaxResult updateBackground(@RequestParam("ID") Integer ID, @RequestParam("backgroundfile") MultipartFile file) throws Exception
+    public AjaxResult updateBackground(@RequestParam("backgroundfile") MultipartFile file) throws Exception
     {
         if (!file.isEmpty())
         {
-            UsUser nowUsUser = usUserService.selectUsUserByID(ID);
+            UsUser nowUsUser = getUsUser();
             String background = FileUploadUtils.upload(RuoYiConfig.getBackgroundPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
             if (usUserService.updateUserBackground(nowUsUser.getID(), background))
             {

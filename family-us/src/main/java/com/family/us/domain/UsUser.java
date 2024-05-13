@@ -21,7 +21,7 @@ public class UsUser extends BaseEntity
 
     /** 编号 ; 主键 */
     @JsonProperty(value = "ID")
-    private Integer ID;
+    private Long ID;
 
     /** 账号 */
     @Excel(name = "账号")
@@ -196,7 +196,7 @@ public class UsUser extends BaseEntity
     /** 更新用户 */
     @Excel(name = "更新用户")
     @JsonProperty(value = "updateUserId")
-    private Integer updateUserId;
+    private Long updateUserId;
 
     /** 创建时间 */
     @JsonFormat(pattern = "yyyy-MM-dd")
@@ -209,12 +209,12 @@ public class UsUser extends BaseEntity
     @JsonProperty(value = "flagDelete")
     private Integer flagDelete;
 
-    public void setID(Integer ID)
+    public void setID(Long ID)
     {
         this.ID = ID;
     }
 
-    public Integer getID()
+    public Long getID()
     {
         return ID;
     }
@@ -520,12 +520,12 @@ public class UsUser extends BaseEntity
     {
         return createdUserId;
     }
-    public void setUpdateUserId(Integer updateUserId)
+    public void setUpdateUserId(Long updateUserId)
     {
         this.updateUserId = updateUserId;
     }
 
-    public Integer getUpdateUserId()
+    public Long getUpdateUserId()
     {
         return updateUserId;
     }
