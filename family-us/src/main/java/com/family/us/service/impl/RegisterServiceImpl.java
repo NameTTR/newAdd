@@ -42,6 +42,10 @@ public class RegisterServiceImpl implements RegisterService {
     @Override
     public AjaxResult register(UsUserRegister registerBody) {
 
+        UsUser nowUser = userService.selectUsUserByTel(registerBody.getTel());
+        if(nowUser != null){
+            return AjaxResult.error("用户已存在");
+        }else {
         String account = registerBody.getTel(), password = registerBody.getPassword();
         Integer role = registerBody.getRole();
         UsUser user = new UsUser();
@@ -56,34 +60,34 @@ public class RegisterServiceImpl implements RegisterService {
             return AjaxResult.error("密码长度必须在5到20个字符之间");
 
         } else {
-            if (role == 3 || role == 4) {
-                user.setTeenageMode(1);
-            } else {
-                user.setTeenageMode(0);
-            }
-            user.setTel(registerBody.getTel());
-            user.setRole(registerBody.getRole());
-            user.setSex(registerBody.getSex());
-            user.setNickname(registerBody.getNickname());
-            user.setPassword(SecurityUtils.encryptPassword(password));
-            System.out.println(password);
-            boolean regFlag = userService.registerUser(user);
-            if (!regFlag) {
-                return AjaxResult.error("注册失败");
-            } else {
-                Authentication authentication = null;
-                try {
-                    authentication = authenticationManager
-                            .authenticate(new SmsCodeAuthenticationToken(account));
-                } catch (Exception e) {
-                    throw new CustomException(e.getMessage());
+                if (role == 3 || role == 4) {
+                    user.setTeenageMode(1);
+                } else {
+                    user.setTeenageMode(0);
                 }
-                UsLoginUser loginUser = (UsLoginUser) authentication.getPrincipal();
-                AjaxResult ajax = AjaxResult.success();
+                user.setTel(registerBody.getTel());
+                user.setRole(registerBody.getRole());
+                user.setSex(registerBody.getSex());
+                user.setNickname(registerBody.getNickname());
+                user.setPassword(SecurityUtils.encryptPassword(password));
+                boolean regFlag = userService.registerUser(user);
+                if (!regFlag) {
+                    return AjaxResult.error("注册失败");
+                } else {
+                    Authentication authentication = null;
+                    try {
+                        authentication = authenticationManager
+                                .authenticate(new SmsCodeAuthenticationToken(account));
+                    } catch (Exception e) {
+                        throw new CustomException(e.getMessage());
+                    }
+                    UsLoginUser loginUser = (UsLoginUser) authentication.getPrincipal();
+                    AjaxResult ajax = AjaxResult.success();
 
-                String token = tokenService.createToken(loginUser);
-                ajax.put(Constants.TOKEN, token);
-                return ajax;
+                    String token = tokenService.createToken(loginUser);
+                    ajax.put(Constants.TOKEN, token);
+                    return ajax;
+                }
             }
         }
     }

@@ -211,8 +211,7 @@ public class UsUserController extends FamilyBaseController
      * 重置密码
      */
     @PutMapping("/update/password")
-    public AjaxResult updatePassword(@RequestParam("ID") Long ID,
-                                @RequestParam("oldPassword") String oldPassword,
+    public AjaxResult updatePassword(@RequestParam("oldPassword") String oldPassword,
                                 @RequestParam("newPassword") String newPassword)
     {
         UsUser nowUsUser = getUsUser();
@@ -226,7 +225,7 @@ public class UsUserController extends FamilyBaseController
             return error("新密码不能与旧密码相同");
         }
         newPassword = SecurityUtils.encryptPassword(newPassword);
-        if (usUserService.resetUserPwd(ID, newPassword) > 0)
+        if (usUserService.resetUserPwd(nowUsUser.getID(), newPassword) > 0)
         {
             return success();
         }
