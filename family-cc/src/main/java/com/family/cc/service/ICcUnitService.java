@@ -27,4 +27,10 @@ public interface ICcUnitService extends IService<CcUnit> {
      * @return
      */
     AjaxResult getUnit(Long id);
+
+    /**
+     * 查询单元和对应的章节信息
+     * @return
+     */
+    AjaxResult getUnitChapter();
 }

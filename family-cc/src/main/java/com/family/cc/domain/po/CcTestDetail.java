@@ -1,13 +1,13 @@
 package com.family.cc.domain.po;
 
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
 
-import com.family.cc.enums.CcChaptersTestStatus;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.family.cc.enums.CcCharacterTestState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -47,12 +47,13 @@ public class CcTestDetail implements Serializable {
     /**
      * 汉字
      */
+    @TableField(value = "`character`")
     private String character;
 
     /**
-     * 测试结果：0：错；1：对
+     * 测试结果：0：错；1：对；2：未测
      */
-    private CcChaptersTestStatus result;
+    private CcCharacterTestState result;
 
     /**
      * 用户表外键，用户ID

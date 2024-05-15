@@ -17,8 +17,9 @@ public interface ICcChapterStudyService extends IService<CcChapterStudy> {
     /**
      * 更新章节学习记录
      * @param chapterId     章节ID
-     * @param nextChapterId 下一章节ID
+     * @param nextChapterId 下一章节ID/下一单元ID
+     * @param sign          标记 0：下一章节id，1：下一单元id
      * @return
      */
-    AjaxResult updateChapterStudy(Long chapterId,Long nextChapterId);
+    AjaxResult updateChapterStudy(Long chapterId,Long nextChapterId,int sign);
 }

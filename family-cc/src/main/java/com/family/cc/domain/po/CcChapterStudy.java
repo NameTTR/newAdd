@@ -5,10 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import java.util.Date;
 
-import com.family.cc.enums.CcChapterStatus;
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.family.cc.enums.CcChapterState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -44,7 +42,7 @@ public class CcChapterStudy implements Serializable {
     /**
      * 学习状态：0：未学；1：学习中；2：已学完
      */
-    private CcChapterStatus state;
+    private CcChapterState state;
 
     /**
      * 用户表外键，用户ID

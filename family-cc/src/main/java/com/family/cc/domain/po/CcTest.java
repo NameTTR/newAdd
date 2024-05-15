@@ -5,13 +5,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-import java.util.Date;
 
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.family.cc.enums.CcTestState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
-import lombok.experimental.SuperBuilder;
 
 /**
  * <p>
@@ -44,6 +42,11 @@ public class CcTest implements Serializable {
      * 用户表外键，用户ID
      */
     private Long userId;
+
+    /**
+     * 测试状态：0：未完成；1：已完成
+     */
+    private CcTestState state;
 
     /**
      * 创建时间

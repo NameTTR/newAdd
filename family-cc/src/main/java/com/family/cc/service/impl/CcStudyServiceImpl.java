@@ -11,8 +11,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
 
-import static com.family.cc.enums.CcCharacterStatus.LEARNED_FINISH;
-import static com.family.cc.enums.CcCharacterStatus.NOT_MASTERED;
+import static com.family.cc.enums.CcCharacterState.LEARNED_FINISH;
+import static com.family.cc.enums.CcCharacterState.NOT_MASTERED;
 
 /**
  * <p>

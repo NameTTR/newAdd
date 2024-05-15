@@ -4,12 +4,9 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
-import com.family.cc.domain.dto.CcChapterDTO;
-import com.family.cc.domain.dto.CcCharacterDTO;
-import com.family.cc.domain.dto.CcUnitDTO;
-import com.family.cc.domain.dto.CcUnitListDTO;
+import com.family.cc.domain.dto.*;
 import com.family.cc.domain.po.*;
-import com.family.cc.enums.CcChapterStatus;
+import com.family.cc.enums.CcChapterState;
 import com.family.cc.mapper.CcUnitMapper;
 import com.family.cc.service.*;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -17,6 +14,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -55,7 +54,7 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
                 List<CcChapterStudy> studies = Db.lambdaQuery(CcChapterStudy.class)
                         .eq(CcChapterStudy::getChapterId, chapter.getId())
                         .eq(CcChapterStudy::getUserId, userId)
-                        .eq(CcChapterStudy::getState, CcChapterStatus.LEARNING)
+                        .eq(CcChapterStudy::getState, CcChapterState.LEARNING)
                         .list();
                 //2.3 如果该用户在该章节有学习进度，则找到该单元名称并返回
                 if (!studies.isEmpty()){
@@ -127,5 +126,24 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
 
         //3. 返回结果
         return AjaxResult.success(CcUnitDTO.of(unit,unitDate));
+    }
+
+    @Override
+    public AjaxResult getUnitChapter() {
+        //1. 获取单元信息
+        List<CcUnit> units = lambdaQuery().orderByAsc(CcUnit::getSort).list();
+        List<Long> unitIds = units.stream().map(CcUnit::getId).collect(Collectors.toList());
+
+        //2. 获取章节信息
+        List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class).in(CcChapter::getUnitId, unitIds).orderByAsc(CcChapter::getSort).list();
+        Map<Long, List<CcChapter>> listMap= chapters.stream().collect(Collectors.groupingBy(CcChapter::getUnitId));
+
+        //3. 返回结果
+        List<CcUnitChapterDTO> unitChapterDTOList = new ArrayList<>(units.size());
+        for (CcUnit unit : units) {
+            CcUnitChapterDTO unitChapterDTO = CcUnitChapterDTO.of(unit, listMap.get(unit.getId()));
+            unitChapterDTOList.add(unitChapterDTO);
+        }
+        return AjaxResult.success(unitChapterDTOList);
     }
 }

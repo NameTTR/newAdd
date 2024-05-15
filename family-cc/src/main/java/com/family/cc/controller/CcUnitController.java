@@ -42,4 +42,13 @@ public class CcUnitController extends BaseController {
     public AjaxResult getUnit(@PathVariable("unitId") Long id) {
         return ccUnitService.getUnit(id);
     }
+
+    /**
+     * 查询单元和对应的章节信息
+     * @return
+     */
+    @GetMapping("/unit-chapter")
+    public AjaxResult getUnitChapter() {
+        return ccUnitService.getUnitChapter();
+    }
 }

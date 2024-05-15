@@ -25,11 +25,15 @@ public class CcChapterStudyController extends BaseController {
     /**
      * 更新章节学习记录
      * @param chapterId     章节ID
-     * @param nextChapterId 下一章节ID
+     * @param nextChapterId 下一章节ID/下一单元ID
+     * @param sign          标记 0：下一章节id，1：下一单元id
      * @return
      */
     @PutMapping
-    public AjaxResult updateChapterStudy(@RequestParam("chapterId") Long chapterId, @RequestParam(value = "nextChapterId",defaultValue = "-1") Long nextChapterId) {
-        return ccChapterStudyService.updateChapterStudy(chapterId,nextChapterId);
+    public AjaxResult updateChapterStudy(
+            @RequestParam("chapterId") Long chapterId,
+            @RequestParam(value = "nextChapterId",defaultValue = "-1") Long nextChapterId,
+            @RequestParam(value = "sign",defaultValue = "0") int sign) {
+        return ccChapterStudyService.updateChapterStudy(chapterId,nextChapterId,sign);
     }
 }
