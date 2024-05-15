@@ -21,7 +21,7 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 功能：生成验证
+ * 功能：生成验证码
  * 作者：Name
  * 日期：2024/5/11 14:51
  */

@@ -17,7 +17,7 @@ import static com.ruoyi.common.core.domain.AjaxResult.error;
 import static com.ruoyi.common.core.domain.AjaxResult.success;
 
 /**
- * 功能：
+ * 功能：注册接口
  * 作者：Name
  * 日期：2024/5/13 16:17
  */

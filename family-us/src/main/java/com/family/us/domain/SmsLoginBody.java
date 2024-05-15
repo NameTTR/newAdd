@@ -1,7 +1,7 @@
 package com.family.us.domain;
 
 /**
- * 用户登录对象
+ * 用户手机号登录对象
  * 
  * @author ruoyi
  */

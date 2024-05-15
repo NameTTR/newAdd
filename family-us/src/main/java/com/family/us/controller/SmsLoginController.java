@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
- * 功能：
- * 作者：Name
+ * 功能：手机号登录
+ * 作者：gaojunwei
  * 日期：2024/5/11 15:09
  */
 @Anonymous

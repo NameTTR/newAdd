@@ -6,7 +6,7 @@ import com.family.us.utils.FamilySecurityUtils;
 import com.ruoyi.common.core.controller.BaseController;
 
 /**
- * 功能：
+ * 功能：获取当前用户缓存信息
  * 作者：Name
  * 日期：2024/5/13 15:01
  */
