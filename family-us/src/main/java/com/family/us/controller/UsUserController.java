@@ -1,6 +1,8 @@
 package com.family.us.controller;
 
+import com.family.us.domain.UsLoginUser;
 import com.family.us.domain.UsUser;
+import com.family.us.service.FamilyTokenService;
 import com.family.us.service.UsUserService;
 import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -8,6 +10,7 @@ import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUploadUtils;
 import com.ruoyi.common.utils.file.MimeTypeUtils;
+import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +27,10 @@ import java.time.LocalDate;
 @RequestMapping("/family/us")
 public class UsUserController extends FamilyBaseController
 {
+    @Autowired
+    private FamilyTokenService tokenService;
+
+
     @Autowired
     private UsUserService usUserService;
 
@@ -45,6 +52,7 @@ public class UsUserController extends FamilyBaseController
     @PutMapping("/update/profile")
     public AjaxResult updateProfile(@RequestBody UsUser usUser) {
 
+        UsLoginUser loginUser = getUsLoginUser();
         UsUser nowUsUser = getUsUser();
 
         if(nowUsUser == null){
@@ -204,7 +212,12 @@ public class UsUserController extends FamilyBaseController
             }
             nowUsUser.setCountTest(usUser.getCountTest());
         }
-        return toAjax(usUserService.updateUsUser(nowUsUser));
+        if(usUserService.updateUsUser(nowUsUser) > 0){
+            loginUser.setUser(nowUsUser);
+            tokenService.setLoginUser(loginUser);
+            return AjaxResult.success();
+        }
+        return AjaxResult.error();
     }
 
     /**
@@ -214,8 +227,8 @@ public class UsUserController extends FamilyBaseController
     public AjaxResult updatePassword(@RequestParam("oldPassword") String oldPassword,
                                 @RequestParam("newPassword") String newPassword)
     {
-        UsUser nowUsUser = getUsUser();
-        String password = nowUsUser.getPassword();
+        UsLoginUser loginUser = getUsLoginUser();
+        String password = loginUser.getPassword();
         if (!SecurityUtils.matchesPassword(oldPassword, password))
         {
             return error("修改密码失败，旧密码错误");
@@ -225,8 +238,10 @@ public class UsUserController extends FamilyBaseController
             return error("新密码不能与旧密码相同");
         }
         newPassword = SecurityUtils.encryptPassword(newPassword);
-        if (usUserService.resetUserPwd(nowUsUser.getID(), newPassword) > 0)
+        if (usUserService.resetUserPwd(loginUser.getID(), newPassword) > 0)
         {
+            loginUser.getUser().setPassword(newPassword);
+            tokenService.setLoginUser(loginUser);
             return success();
         }
         return error("修改密码异常，请联系管理员");
@@ -240,12 +255,14 @@ public class UsUserController extends FamilyBaseController
     {
         if (!file.isEmpty())
         {
-            UsUser nowUsUser = getUsUser();
+            UsLoginUser loginUser = getUsLoginUser();
             String avatar = FileUploadUtils.upload(RuoYiConfig.getAvatarPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
-            if (usUserService.updateUserAvatar(nowUsUser.getID(), avatar))
+            if (usUserService.updateUserAvatar(loginUser.getID(), avatar))
             {
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", avatar);
+                loginUser.getUser().setFace(avatar);
+                tokenService.setLoginUser(loginUser);
                 return ajax;
             }
         }
@@ -260,12 +277,14 @@ public class UsUserController extends FamilyBaseController
     {
         if (!file.isEmpty())
         {
-            UsUser nowUsUser = getUsUser();
+            UsLoginUser loginUser = getUsLoginUser();
             String background = FileUploadUtils.upload(RuoYiConfig.getBackgroundPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
-            if (usUserService.updateUserBackground(nowUsUser.getID(), background))
+            if (usUserService.updateUserBackground(loginUser.getID(), background))
             {
                 AjaxResult ajax = AjaxResult.success();
                 ajax.put("imgUrl", background);
+                loginUser.getUser().setBackground(background);
+                tokenService.setLoginUser(loginUser);
                 return ajax;
             }
         }

@@ -108,6 +108,7 @@ public class UsLoginUser implements UserDetails
         return user.getAccount();
     }
 
+    public Long getID(){return user.getID();}
     /**
      * 账户是否未过期,过期无法验证
      */
