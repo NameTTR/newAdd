@@ -94,12 +94,12 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
 
     @Override
     public AjaxResult getTestFinished() {
-        return AjaxResult.success(getTestDetailsDTOList(CcTestState.FINISHED));
+        return AjaxResult.success(getTestDetailsDTOList(0));
     }
 
     @Override
     public AjaxResult getTestNotFinished() {
-        return AjaxResult.success(getTestDetailsDTOList(CcTestState.NOTFINISHED));
+        return AjaxResult.success(getTestDetailsDTOList(1));
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -132,17 +132,32 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
         }
     }
 
-    private List<CcTestDetailsDTO> getTestDetailsDTOList(CcTestState state) {
+    /**
+     * 获取测试详情列表
+     * @param sign 0:已完成的数据，1:未完成/进行中的数据
+     * @return
+     */
+    private List<CcTestDetailsDTO> getTestDetailsDTOList(int sign) {
         //1. 获取用户id
 //        Long userId = SecurityUtils.getUserId();
         Long userId = 1L;
 
         //2. 获取测试表
-        List<CcTest> test = Db.lambdaQuery(CcTest.class)
-                .eq(CcTest::getUserId, userId)
-                .eq(CcTest::getState, state)
-                .orderByDesc(CcTest::getCreatedTime)
-                .list();
+        List<CcTest> test;
+        if (sign == 0) {
+             test = Db.lambdaQuery(CcTest.class)
+                    .eq(CcTest::getUserId, userId)
+                    .eq(CcTest::getState, CcTestState.FINISHED)
+                    .orderByDesc(CcTest::getCreatedTime)
+                    .list();
+        }else {
+            test = Db.lambdaQuery(CcTest.class)
+                    .eq(CcTest::getUserId, userId)
+                    .ne(CcTest::getState, CcTestState.FINISHED)
+                    .orderByDesc(CcTest::getCreatedTime)
+                    .list();
+            test = test.stream().sorted((t1,t2) -> t2.getState().compareTo(t1.getState())).collect(Collectors.toList());
+        }
         if (test == null || test.isEmpty()) return Collections.emptyList();
         List<Long> testIds = test.stream().map(CcTest::getId).collect(Collectors.toList());
 

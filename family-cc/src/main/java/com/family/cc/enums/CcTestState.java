@@ -2,6 +2,7 @@ package com.family.cc.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
+import lombok.Getter;
 
 /**
  * 测试 状态枚举类
@@ -11,7 +12,8 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum CcTestState {
     NOTFINISHED(0, "未完成"), // 未完成
-    FINISHED(1, "已完成"), // 已完成
+    DOING(1, "进行中"), // 进行中
+    FINISHED(2, "已完成"), // 已完成
     ;
     @EnumValue
     @JsonValue
@@ -21,4 +23,5 @@ public enum CcTestState {
         this.value = value;
         this.decs = decs;
     }
+
 }
