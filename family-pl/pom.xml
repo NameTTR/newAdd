@@ -10,13 +10,12 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.family</groupId>
-    <artifactId>family-us</artifactId>
+    <artifactId>family-pl</artifactId>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
     </properties>
-
     <dependencies>
         <!-- 通用工具-->
         <dependency>
@@ -41,6 +40,12 @@
             <artifactId>family-common</artifactId>
             <version>3.8.7</version>
         </dependency>
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-us</artifactId>
+            <version>3.8.7</version>
+        </dependency>
     </dependencies>
+
 
 </project>

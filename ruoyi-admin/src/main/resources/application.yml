@@ -116,6 +116,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+      logic-delete-field: deleted
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
