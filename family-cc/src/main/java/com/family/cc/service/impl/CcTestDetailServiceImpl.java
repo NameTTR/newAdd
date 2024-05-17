@@ -110,16 +110,13 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
 //        Long userId = SecurityUtils.getUserId();
             Long userId = 1L;
 
-            //2. 获取测试表
-            CcTest test = Db.lambdaQuery(CcTest.class).eq(CcTest::getId, testID).eq(CcTest::getUserId, userId).one();
-
-            //3. 删除测试明细表
+            //2. 删除测试明细表
             boolean isSuccess = lambdaUpdate().eq(CcTestDetail::getTestId, testID).eq(CcTestDetail::getUserId, userId).remove();
             if (!isSuccess){
                 return AjaxResult.error("删除测试记录失败，请重试！");
             }
 
-            //4. 删除测试表
+            //3. 删除测试表
             boolean isSuccess2 = Db.lambdaUpdate(CcTest.class).eq(CcTest::getId, testID).eq(CcTest::getUserId, userId).remove();
             if (!isSuccess2){
                 throw new RuntimeException("删除测试记录失败，请重试！");
