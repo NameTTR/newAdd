@@ -5,15 +5,15 @@
 <mapper namespace="com.family.pl.mapper.SetupMapper">
 
     <resultMap id="BaseResultMap" type="com.family.pl.domain.Setup">
-            <id property="ID" column="ID" jdbcType="BIGINT"/>
+            <id property="id" column="ID" jdbcType="BIGINT"/>
             <result property="repeat" column="repeat" jdbcType="OTHER"/>
-            <result property="hide_complete" column="hide_complete" jdbcType="TINYINT"/>
-            <result property="selected_groups" column="selected_groups" jdbcType="TINYINT"/>
-            <result property="selected_order" column="selected_order" jdbcType="TINYINT"/>
-            <result property="remind_wechat" column="remind_wechat" jdbcType="TINYINT"/>
-            <result property="remind_calendar" column="remind_calendar" jdbcType="TINYINT"/>
-            <result property="user_id" column="user_id" jdbcType="INTEGER"/>
-            <result property="created_time" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="hideComplete" column="hide_complete" jdbcType="TINYINT"/>
+            <result property="selectedGroups" column="selected_groups" jdbcType="TINYINT"/>
+            <result property="selectedOrder" column="selected_order" jdbcType="TINYINT"/>
+            <result property="remindWechat" column="remind_wechat" jdbcType="TINYINT"/>
+            <result property="remindCalendar" column="remind_calendar" jdbcType="TINYINT"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">

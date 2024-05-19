@@ -5,26 +5,26 @@
 <mapper namespace="com.family.pl.mapper.StatisticsWeekMapper">
 
     <resultMap id="BaseResultMap" type="com.family.pl.domain.StatisticsWeek">
-            <id property="ID" column="ID" jdbcType="BIGINT"/>
-            <result property="task_year" column="task_year" jdbcType="SMALLINT"/>
-            <result property="task_week" column="task_week" jdbcType="TINYINT"/>
-            <result property="begin_date" column="begin_date" jdbcType="DATE"/>
-            <result property="end_date" column="end_date" jdbcType="DATE"/>
-            <result property="count_task" column="count_task" jdbcType="SMALLINT"/>
-            <result property="count_complete_task" column="count_complete_task" jdbcType="SMALLINT"/>
-            <result property="count_ontime_task" column="count_ontime_task" jdbcType="SMALLINT"/>
-            <result property="count_high_task" column="count_high_task" jdbcType="SMALLINT"/>
-            <result property="count_complete_high_task" column="count_complete_high_task" jdbcType="SMALLINT"/>
-            <result property="count_mid_task" column="count_mid_task" jdbcType="SMALLINT"/>
-            <result property="count_complete_mid_task" column="count_complete_mid_task" jdbcType="SMALLINT"/>
-            <result property="count_low_task" column="count_low_task" jdbcType="SMALLINT"/>
-            <result property="count_complete_low_task" column="count_complete_low_task" jdbcType="SMALLINT"/>
-            <result property="count_no_task" column="count_no_task" jdbcType="SMALLINT"/>
-            <result property="count_complete_no_task" column="count_complete_no_task" jdbcType="SMALLINT"/>
-            <result property="user_id" column="user_id" jdbcType="INTEGER"/>
-            <result property="created_time" column="created_time" jdbcType="TIMESTAMP"/>
-            <result property="update_time" column="update_time" jdbcType="TIMESTAMP"/>
-            <result property="flag_delete" column="flag_delete" jdbcType="TINYINT"/>
+            <id property="id" column="ID" jdbcType="BIGINT"/>
+            <result property="taskYear" column="task_year" jdbcType="SMALLINT"/>
+            <result property="taskWeek" column="task_week" jdbcType="TINYINT"/>
+            <result property="beginDate" column="begin_date" jdbcType="DATE"/>
+            <result property="endDate" column="end_date" jdbcType="DATE"/>
+            <result property="countTask" column="count_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteTask" column="count_complete_task" jdbcType="SMALLINT"/>
+            <result property="countOntimeTask" column="count_ontime_task" jdbcType="SMALLINT"/>
+            <result property="countHighTask" column="count_high_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteHighTask" column="count_complete_high_task" jdbcType="SMALLINT"/>
+            <result property="countMidTask" column="count_mid_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteMidTask" column="count_complete_mid_task" jdbcType="SMALLINT"/>
+            <result property="countLowTask" column="count_low_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteLowTask" column="count_complete_low_task" jdbcType="SMALLINT"/>
+            <result property="countNoTask" column="count_no_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteNoTask" column="count_complete_no_task" jdbcType="SMALLINT"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="flagDelete" column="flag_delete" jdbcType="TINYINT"/>
     </resultMap>
 
     <sql id="Base_Column_List">

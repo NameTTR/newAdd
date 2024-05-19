@@ -19,7 +19,7 @@ public class Label implements Serializable {
      * 
      */
     @TableId(value = "ID")
-    private Long ID;
+    private Long id;
 
     /**
      * 标签
@@ -31,13 +31,13 @@ public class Label implements Serializable {
      * 用户ID
      */
     @TableField(value = "user_id")
-    private Integer user_id;
+    private Long userId;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    private Date created_time;
+    private Date createdTime;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -54,20 +54,20 @@ public class Label implements Serializable {
             return false;
         }
         Label other = (Label) that;
-        return (this.getID() == null ? other.getID() == null : this.getID().equals(other.getID()))
+        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getName() == null ? other.getName() == null : this.getName().equals(other.getName()))
-            && (this.getUser_id() == null ? other.getUser_id() == null : this.getUser_id().equals(other.getUser_id()))
-            && (this.getCreated_time() == null ? other.getCreated_time() == null : this.getCreated_time().equals(other.getCreated_time()));
+            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getID() == null) ? 0 : getID().hashCode());
+        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getName() == null) ? 0 : getName().hashCode());
-        result = prime * result + ((getUser_id() == null) ? 0 : getUser_id().hashCode());
-        result = prime * result + ((getCreated_time() == null) ? 0 : getCreated_time().hashCode());
+        result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+        result = prime * result + ((getCreatedTime() == null) ? 0 : getCreatedTime().hashCode());
         return result;
     }
 
@@ -77,10 +77,10 @@ public class Label implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", ID=").append(ID);
+        sb.append(", id=").append(id);
         sb.append(", name=").append(name);
-        sb.append(", user_id=").append(user_id);
-        sb.append(", created_time=").append(created_time);
+        sb.append(", userId=").append(userId);
+        sb.append(", createdTime=").append(createdTime);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

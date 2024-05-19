@@ -19,49 +19,49 @@ public class StatisticsDate implements Serializable {
      * 
      */
     @TableId(value = "ID")
-    private Long ID;
+    private Long id;
 
     /**
      * 日期
      */
     @TableField(value = "task_date")
-    private Date task_date;
+    private Date taskDate;
 
     /**
      * 任务数
      */
     @TableField(value = "count_task")
-    private Integer count_task;
+    private Integer countTask;
 
     /**
      * 完成任务数
      */
     @TableField(value = "count_complete_task")
-    private Integer count_complete_task;
+    private Integer countCompleteTask;
 
     /**
      * 用户ID
      */
     @TableField(value = "user_id")
-    private Integer user_id;
+    private Integer userId;
 
     /**
      * 创建时间
      */
     @TableField(value = "created_time")
-    private Date created_time;
+    private Date createdTime;
 
     /**
      * 更新时间
      */
     @TableField(value = "update_time")
-    private Date update_time;
+    private Date updateTime;
 
     /**
      * 删除标记
      */
     @TableField(value = "flag_delete")
-    private Integer flag_delete;
+    private Integer flagDelete;
 
     @TableField(exist = false)
     private static final long serialVersionUID = 1L;
@@ -78,28 +78,28 @@ public class StatisticsDate implements Serializable {
             return false;
         }
         StatisticsDate other = (StatisticsDate) that;
-        return (this.getID() == null ? other.getID() == null : this.getID().equals(other.getID()))
-            && (this.getTask_date() == null ? other.getTask_date() == null : this.getTask_date().equals(other.getTask_date()))
-            && (this.getCount_task() == null ? other.getCount_task() == null : this.getCount_task().equals(other.getCount_task()))
-            && (this.getCount_complete_task() == null ? other.getCount_complete_task() == null : this.getCount_complete_task().equals(other.getCount_complete_task()))
-            && (this.getUser_id() == null ? other.getUser_id() == null : this.getUser_id().equals(other.getUser_id()))
-            && (this.getCreated_time() == null ? other.getCreated_time() == null : this.getCreated_time().equals(other.getCreated_time()))
-            && (this.getUpdate_time() == null ? other.getUpdate_time() == null : this.getUpdate_time().equals(other.getUpdate_time()))
-            && (this.getFlag_delete() == null ? other.getFlag_delete() == null : this.getFlag_delete().equals(other.getFlag_delete()));
+        return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
+            && (this.getTaskDate() == null ? other.getTaskDate() == null : this.getTaskDate().equals(other.getTaskDate()))
+            && (this.getCountTask() == null ? other.getCountTask() == null : this.getCountTask().equals(other.getCountTask()))
+            && (this.getCountCompleteTask() == null ? other.getCountCompleteTask() == null : this.getCountCompleteTask().equals(other.getCountCompleteTask()))
+            && (this.getUserId() == null ? other.getUserId() == null : this.getUserId().equals(other.getUserId()))
+            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
+            && (this.getUpdateTime() == null ? other.getUpdateTime() == null : this.getUpdateTime().equals(other.getUpdateTime()))
+            && (this.getFlagDelete() == null ? other.getFlagDelete() == null : this.getFlagDelete().equals(other.getFlagDelete()));
     }
 
     @Override
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((getID() == null) ? 0 : getID().hashCode());
-        result = prime * result + ((getTask_date() == null) ? 0 : getTask_date().hashCode());
-        result = prime * result + ((getCount_task() == null) ? 0 : getCount_task().hashCode());
-        result = prime * result + ((getCount_complete_task() == null) ? 0 : getCount_complete_task().hashCode());
-        result = prime * result + ((getUser_id() == null) ? 0 : getUser_id().hashCode());
-        result = prime * result + ((getCreated_time() == null) ? 0 : getCreated_time().hashCode());
-        result = prime * result + ((getUpdate_time() == null) ? 0 : getUpdate_time().hashCode());
-        result = prime * result + ((getFlag_delete() == null) ? 0 : getFlag_delete().hashCode());
+        result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
+        result = prime * result + ((getTaskDate() == null) ? 0 : getTaskDate().hashCode());
+        result = prime * result + ((getCountTask() == null) ? 0 : getCountTask().hashCode());
+        result = prime * result + ((getCountCompleteTask() == null) ? 0 : getCountCompleteTask().hashCode());
+        result = prime * result + ((getUserId() == null) ? 0 : getUserId().hashCode());
+        result = prime * result + ((getCreatedTime() == null) ? 0 : getCreatedTime().hashCode());
+        result = prime * result + ((getUpdateTime() == null) ? 0 : getUpdateTime().hashCode());
+        result = prime * result + ((getFlagDelete() == null) ? 0 : getFlagDelete().hashCode());
         return result;
     }
 
@@ -109,14 +109,14 @@ public class StatisticsDate implements Serializable {
         sb.append(getClass().getSimpleName());
         sb.append(" [");
         sb.append("Hash = ").append(hashCode());
-        sb.append(", ID=").append(ID);
-        sb.append(", task_date=").append(task_date);
-        sb.append(", count_task=").append(count_task);
-        sb.append(", count_complete_task=").append(count_complete_task);
-        sb.append(", user_id=").append(user_id);
-        sb.append(", created_time=").append(created_time);
-        sb.append(", update_time=").append(update_time);
-        sb.append(", flag_delete=").append(flag_delete);
+        sb.append(", id=").append(id);
+        sb.append(", taskDate=").append(taskDate);
+        sb.append(", countTask=").append(countTask);
+        sb.append(", countCompleteTask=").append(countCompleteTask);
+        sb.append(", userId=").append(userId);
+        sb.append(", createdTime=").append(createdTime);
+        sb.append(", updateTime=").append(updateTime);
+        sb.append(", flagDelete=").append(flagDelete);
         sb.append(", serialVersionUID=").append(serialVersionUID);
         sb.append("]");
         return sb.toString();

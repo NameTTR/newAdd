@@ -5,10 +5,10 @@
 <mapper namespace="com.family.pl.mapper.LabelMapper">
 
     <resultMap id="BaseResultMap" type="com.family.pl.domain.Label">
-            <id property="ID" column="ID" jdbcType="BIGINT"/>
+            <id property="id" column="ID" jdbcType="BIGINT"/>
             <result property="name" column="name" jdbcType="VARCHAR"/>
-            <result property="user_id" column="user_id" jdbcType="INTEGER"/>
-            <result property="created_time" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
     </resultMap>
 
     <sql id="Base_Column_List">
