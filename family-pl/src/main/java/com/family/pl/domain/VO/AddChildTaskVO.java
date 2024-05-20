@@ -1,12 +1,5 @@
 package com.family.pl.domain.VO;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.family.pl.domain.Label;
-import com.family.pl.domain.Task;
-import com.family.pl.domain.TaskLabel;
-import com.family.pl.domain.TaskRemind;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,7 +14,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddTaskVO {
+public class AddChildTaskVO {
 
     /**
      * 标题
@@ -129,7 +122,6 @@ public class AddTaskVO {
      */
     private String corn;
 
-    private AddChildTaskVO addChildTaskVO;
 
     private static final long serialVersionUID = 1L;
 }

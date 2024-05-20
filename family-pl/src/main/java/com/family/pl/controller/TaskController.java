@@ -9,8 +9,10 @@ import com.family.pl.service.TaskService;
 import com.family.us.controller.FamilyBaseController;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.exception.job.TaskException;
 import org.apache.poi.ss.formula.functions.T;
 import org.aspectj.weaver.loadtime.Aj;
+import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.yaml.snakeyaml.events.Event;
@@ -38,7 +40,7 @@ public class TaskController extends FamilyBaseController {
     }
 
     @PostMapping("addtask")
-    public AjaxResult addTask(@RequestBody AddTaskVO addTaskVO){
+    public AjaxResult addTask(@RequestBody AddTaskVO addTaskVO) throws SchedulerException, TaskException {
         return toAjax(taskService.addTask(addTaskVO));
     }
 
