@@ -27,6 +27,10 @@ import java.util.List;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class CcTestDetailsDTO {
+    /**
+     * 测试ID
+     */
+    private Long testId;
 
     /**
      * 单元名称

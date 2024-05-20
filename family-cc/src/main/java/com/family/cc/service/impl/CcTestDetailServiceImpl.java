@@ -77,6 +77,7 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
 
             //6. 构建返回结果
             CcTestDetailsDTO testDetailsDTO = new CcTestDetailsDTO();
+            testDetailsDTO.setTestId(test.getId());
             testDetailsDTO.setUnit(unit.getUnit());
             testDetailsDTO.setChapter(chapter.getChapter());
             testDetailsDTO.setPassCount(0L);
@@ -181,6 +182,7 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             List<CcTestDetail> details = map.get(t.getId());
             long count = details.stream().filter(c -> c.getResult() == CcCharacterTestState.READY).count();
 
+            testDTO.setTestId(t.getId());
             testDTO.setChapter(chapter.getChapter());
             testDTO.setUnit(unitMap.get(chapter.getUnitId()).getUnit());
             testDTO.setCharacterTest(details);
