@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
 public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> implements ICcUnitService {
 
     /**
-     * 获取单元列表
+     * 获取单元列表 - 并获得用户正在学习的单元名称
      * @return
      */
     @Override
@@ -40,43 +40,60 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
 
         //1. 查询所有单元
         List<CcUnit> units = lambdaQuery().orderByAsc(CcUnit::getSort).list();
+        List<Long> unitIds = units.stream().map(CcUnit::getId).collect(Collectors.toList());
 
-        //2. 查询用户正在学习的单元 -- 只适用于数据量少的情况
+        //2. 查询用户正在学习的单元
         String unitName = ""; //最后找到的正在学习的单元名称
-        for (CcUnit unit : units) {
+
+        //2.1 查询所有单元下的所有章节
+        List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class).in(CcChapter::getUnitId, unitIds).list();
+        List<Long> ids = chapters.stream().map(CcChapter::getId).collect(Collectors.toList());
+
+        //2.2 查询该用户在该单元下的所有章节学习进度
+        List<CcChapterStudy> list = Db.lambdaQuery(CcChapterStudy.class)
+                .eq(CcChapterStudy::getUserId, userId)
+                .in(CcChapterStudy::getChapterId, ids)
+                .eq(CcChapterStudy::getState, CcChapterState.LEARNING)
+                .list();
+        if (list != null && !list.isEmpty()) {
+            //2.3 如果该用户在该章节有学习进度，则找到该单元名称并返回
+            CcChapterStudy chapterStudy = list.get(0);
+            CcChapter chapter = chapters.stream().filter(c -> c.getId().equals(chapterStudy.getChapterId())).findFirst().get();
+            CcUnit unit = units.stream().filter(u -> u.getId().equals(chapter.getUnitId())).findFirst().get();
+            unitName = unit.getUnit();
+        }
+
+
+        /*for (CcUnit unit : units) {
             //2.1 查询该单元下的所有章节
             List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class)
                     .eq(CcChapter::getUnitId, unit.getId())
                     .list();
+            List<Long> ids = chapters.stream().map(CcChapter::getId).collect(Collectors.toList());
             //2.2 查询该用户在该单元下的所有章节学习进度
-            int sign = 0;
-            for (CcChapter chapter : chapters) {
-                List<CcChapterStudy> studies = Db.lambdaQuery(CcChapterStudy.class)
-                        .eq(CcChapterStudy::getChapterId, chapter.getId())
-                        .eq(CcChapterStudy::getUserId, userId)
-                        .eq(CcChapterStudy::getState, CcChapterState.LEARNING)
-                        .list();
-                //2.3 如果该用户在该章节有学习进度，则找到该单元名称并返回
-                if (!studies.isEmpty()){
-                    unitName = unit.getUnit();
-                    sign = 1;
-                    break;
-                }
+            List<CcChapterStudy> list = Db.lambdaQuery(CcChapterStudy.class)
+                    .eq(CcChapterStudy::getUserId, userId)
+                    .in(CcChapterStudy::getChapterId, ids)
+                    .eq(CcChapterStudy::getState, CcChapterState.LEARNING)
+                    .list();
+            //2.3 如果该用户在该章节有学习进度，则找到该单元名称并返回
+            if (!list.isEmpty()) {
+                unitName = unit.getUnit();
+                break;
             }
-            if (sign == 1) break;
-        }
+        }*/
+
 
         //3. 返回结果
         if (unitName.isEmpty()) {
             unitName = units.get(0).getUnit();
-            return AjaxResult.success(CcUnitListDTO.of(unitName, units));
-        }else {
-            return AjaxResult.success(CcUnitListDTO.of(unitName, units));
         }
+        return AjaxResult.success(CcUnitListDTO.of(unitName, units));
     }
 
     /**
      * 获取单元信息
+     *
      * @param id 获取的单元id
      * @return
      */
@@ -125,7 +142,7 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         }
 
         //3. 返回结果
-        return AjaxResult.success(CcUnitDTO.of(unit,unitDate));
+        return AjaxResult.success(CcUnitDTO.of(unit, unitDate));
     }
 
     @Override
@@ -136,7 +153,7 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
 
         //2. 获取章节信息
         List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class).in(CcChapter::getUnitId, unitIds).orderByAsc(CcChapter::getSort).list();
-        Map<Long, List<CcChapter>> listMap= chapters.stream().collect(Collectors.groupingBy(CcChapter::getUnitId));
+        Map<Long, List<CcChapter>> listMap = chapters.stream().collect(Collectors.groupingBy(CcChapter::getUnitId));
 
         //3. 返回结果
         List<CcUnitChapterDTO> unitChapterDTOList = new ArrayList<>(units.size());
