@@ -63,27 +63,6 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
             unitName = unit.getUnit();
         }
 
-
-        /*for (CcUnit unit : units) {
-            //2.1 查询该单元下的所有章节
-            List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class)
-                    .eq(CcChapter::getUnitId, unit.getId())
-                    .list();
-            List<Long> ids = chapters.stream().map(CcChapter::getId).collect(Collectors.toList());
-            //2.2 查询该用户在该单元下的所有章节学习进度
-            List<CcChapterStudy> list = Db.lambdaQuery(CcChapterStudy.class)
-                    .eq(CcChapterStudy::getUserId, userId)
-                    .in(CcChapterStudy::getChapterId, ids)
-                    .eq(CcChapterStudy::getState, CcChapterState.LEARNING)
-                    .list();
-            //2.3 如果该用户在该章节有学习进度，则找到该单元名称并返回
-            if (!list.isEmpty()) {
-                unitName = unit.getUnit();
-                break;
-            }
-        }*/
-
-
         //3. 返回结果
         if (unitName.isEmpty()) {
             unitName = units.get(0).getUnit();
