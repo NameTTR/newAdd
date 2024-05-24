@@ -25,7 +25,7 @@ public class CcUnitController extends BaseController {
     private ICcUnitService ccUnitService;
 
     /**
-     * 获取单元列表 - 并获得用户正在学习的单元名称
+     * 获取单元列表 - 并获得用户正在学习的单元名称及其id - 用于首页显示
      * @return
      */
     @GetMapping

@@ -29,6 +29,11 @@ public class CcUnitListDTO {
     private String unitName;
 
     /**
+     * 该单元的Id
+     */
+    private Long unitId;
+
+    /**
      * 单元列表
      */
     private List<CcUnit> unitList;
