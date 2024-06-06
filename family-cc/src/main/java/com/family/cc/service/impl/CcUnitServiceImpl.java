@@ -91,6 +91,13 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
                 .eq(CcChapter::getUnitId, id)
                 .orderByAsc(CcChapter::getSort)
                 .list();
+        //2.1 查询当前单元下的所有章节的学习进度
+        List<Long> ids = chapters.stream().map(CcChapter::getId).collect(Collectors.toList());
+        List<CcChapterStudy> chapterStudies = Db.lambdaQuery(CcChapterStudy.class)
+                .eq(CcChapterStudy::getUserId, userId)
+                .in(CcChapterStudy::getChapterId, ids)
+                .list();
+        Map<Long, CcChapterStudy> chapterStudyMap = chapterStudies.stream().collect(Collectors.toMap(CcChapterStudy::getChapterId, c -> c));
 
         //3. 查询所有章节的汉字信息
         for (CcChapter chapter : chapters) {
@@ -116,7 +123,7 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
             }
 
             //3.4 放入单元信息
-            unitDate.add(CcChapterDTO.of(chapter, ccCharacterDTOS));
+            unitDate.add(CcChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(),ccCharacterDTOS));
         }
 
         //3. 返回结果

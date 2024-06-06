@@ -1,7 +1,7 @@
 package com.family.cc.domain.dto;
 
 import com.family.cc.domain.po.CcChapter;
-import com.family.cc.domain.po.CcCharacter;
+import com.family.cc.enums.CcChapterState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -26,6 +26,11 @@ public class CcChapterDTO{
      * 章节信息
      */
     private CcChapter chapter;
+
+    /**
+     * 章节学习状态：0：未学；1：学习中；2：已学完
+     */
+    private CcChapterState state;
 
     /**
      * 章节中的汉字列表

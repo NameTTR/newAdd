@@ -60,7 +60,7 @@ public class CcChapterStudyServiceImpl extends ServiceImpl<CcChapterStudyMapper,
 
             //3.遍历章节中汉字的学习记录，判断是否更新该章节的学习记录
             for (CcStudy study : characterStudies) {
-                if (study.getState() != CcCharacterState.LEARNED_FINISH) {
+                if (study.getState() == CcCharacterState.UNLEARNED) {
                     //3.1 如果存在汉字未完成学习，则不更新章节学习记录
                     return AjaxResult.success("章节未学完");
                 }

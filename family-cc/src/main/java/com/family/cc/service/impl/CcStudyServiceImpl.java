@@ -48,7 +48,7 @@ public class CcStudyServiceImpl extends ServiceImpl<CcStudyMapper, CcStudy> impl
 
         //3. 更新汉字学习记录表
         switch (study.getState()){
-            case UnLEARNED:
+            case UNLEARNED:
             case NOT_MASTERED:
                 study.setState(LEARNED_FINISH);
                 break;
