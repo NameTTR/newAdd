@@ -8,7 +8,7 @@
     </parent>
 
     <groupId>com.family</groupId>
-    <artifactId>family-cc</artifactId>
+    <artifactId>family-en</artifactId>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
