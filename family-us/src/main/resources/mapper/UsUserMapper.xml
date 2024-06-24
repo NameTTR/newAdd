@@ -55,6 +55,16 @@
         where ID = #{ID}
     </select>
 
+    <select id="selectUsUserByAccount" parameterType="String" resultMap="UsUserResult">
+        <include refid="selectUsUserVo"/>
+        where account = #{account}
+    </select>
+
+    <select id="selectUsUserByTel" parameterType="String" resultMap="UsUserResult">
+        <include refid="selectUsUserVo"/>
+        where tel = #{tel}
+    </select>
+
     <update id="updateUsUser" parameterType="UsUser">
         update us_user
         <trim prefix="SET" suffixOverrides=",">
@@ -99,6 +109,58 @@
         </trim>
         where ID = #{ID}
     </update>
+
+    <insert id="insertUsUser" parameterType="UsUser" useGeneratedKeys="true" keyProperty="ID">
+        insert into us_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="account != null">account,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="face != null and face != ''">face,</if>
+            <if test="nickname != null and nickname != ''">nickname,</if>
+            <if test="sex != null">sex,</if>
+            <if test="role != null">role,</if>
+            <if test="tel != null">tel,</if>
+            <if test="notice != null">notice,</if>
+            <if test="bells != null">bells,</if>
+            <if test="vibrate != null">vibrate,</if>
+            <if test="privacyRecommend != null">privacy_recommend,</if>
+            <if test="privacyCamera != null">privacy_camera,</if>
+            <if test="privacyAlbum != null">privacy_album,</if>
+            <if test="privacyMike != null">privacy_mike,</if>
+            <if test="teenageMode != null">teenage_mode,</if>
+            <if test="balance != null">balance,</if>
+            <if test="cancellation != null">cancellation,</if>
+            <if test="countTask != null">count_task,</if>
+            <if test="countTool != null">count_tool,</if>
+            <if test="countQuestions != null">count_questions,</if>
+            <if test="countTest != null">count_test,</if>
+            created_user_id,
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="account != null">#{account},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="face != null and face != ''">#{face},</if>
+            <if test="nickname != null and nickname != ''">#{nickname},</if>
+            <if test="sex != null">#{sex},</if>
+            <if test="role != null">#{role},</if>
+            <if test="tel != null">#{tel},</if>
+            <if test="notice != null">#{notice},</if>
+            <if test="bells != null">#{bells},</if>
+            <if test="vibrate != null">#{vibrate},</if>
+            <if test="privacyRecommend != null">#{privacyRecommend},</if>
+            <if test="privacyCamera != null">#{privacyCamera},</if>
+            <if test="privacyAlbum != null">#{privacyAlbum},</if>
+            <if test="privacyMike != null">#{privacyMike},</if>
+            <if test="teenageMode != null">#{teenageMode},</if>
+            <if test="balance != null">#{balance},</if>
+            <if test="cancellation != null">#{cancellation},</if>
+            <if test="countTask != null">#{countTask},</if>
+            <if test="countTool != null">#{countTool},</if>
+            <if test="countQuestions != null">#{countQuestions},</if>
+            <if test="countTest != null">#{countTest},</if>
+            #{ID},
+        </trim>
+    </insert>
 
     <select id="checkTelUnique" parameterType="String" resultMap="UsUserResult">
         select ID, tel from us_user where tel = #{tel} and flag_delete = '0' limit 1

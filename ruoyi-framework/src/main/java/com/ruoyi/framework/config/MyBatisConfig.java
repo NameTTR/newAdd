@@ -132,6 +132,7 @@ public class MyBatisConfig
 //        return sessionFactory.getObject();
 //    }
 
+
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception
     {
@@ -149,4 +150,5 @@ public class MyBatisConfig
         sessionFactory.setConfigLocation(new DefaultResourceLoader().getResource(configLocation));
         return sessionFactory.getObject();
     }
+
 }
