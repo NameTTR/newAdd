@@ -37,7 +37,7 @@ public class PlJob extends BaseEntity
 
     /** 调用目标字符串 */
     @Excel(name = "调用目标字符串")
-    private String invokeTarget = "com.family.pl.task.test";
+    private String invokeTarget = "com.family.pl.task.TestTask.test";
 
     /** cron执行表达式 */
     @Excel(name = "执行表达式 ")

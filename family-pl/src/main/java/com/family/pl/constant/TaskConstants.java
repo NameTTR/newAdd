@@ -18,4 +18,34 @@ public class TaskConstants extends Constants {
      */
     public static final String[] JOB_ERROR_STR = { "java.net.URL", "javax.naming.InitialContext", "org.yaml.snakeyaml",
             "org.springframework", "org.apache", "com.ruoyi.common.utils.file", "com.ruoyi.common.config", "com.ruoyi.generator" };
+
+    public static final Integer TASK_COMMPLETE = 1;
+
+    public static final Integer TASK_NOT_COMMPLETE = 0;
+
+    public static final Integer TASK_DELETE = 1;
+
+    public static final Integer TASK_NOT_DELETE = 0;
+
+    public static final Integer TASK_REAPEAT = 1;
+
+    public static final Integer TASK_NOT_REAPRAT = 0;
+
+    public static final Integer TASK_LABEL = 1;
+
+    public static final Integer TASK_NOT_LABEL = 0;
+
+    public static final Integer TASK_END = 1;
+
+    public static final Integer TASK_NOT_END = 0;
+
+    public static final Integer TASK_HAVE_CHILE = 1;
+
+    public static final Integer TASK_HAVE_NOT_CHILE = 0;
+
+    public static final Integer TASK_TIMEOUT = 1;
+
+    public static final Integer TASK_NOT_TIMEOUT = 0;
+
+    public static final String TASK_SKIP = "taskSkip";
 }

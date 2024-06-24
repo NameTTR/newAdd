@@ -69,7 +69,7 @@ public class PlScheduleUtils
         Class<? extends Job> jobClass = getQuartzJobClass(job);
         // 构建job信息
         Long jobId = job.getJobId();
-        JobDetail jobDetail = JobBuilder.newJob(jobClass).withIdentity(getJobKey(jobId)).build();
+        JobDetail jobDetail = JobBuilder.newJob(jobClass).storeDurably().withIdentity(getJobKey(jobId)).build();
 
         // 表达式调度构建器
         CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExpression());
@@ -80,6 +80,7 @@ public class PlScheduleUtils
                 .withSchedule(cronScheduleBuilder).build();
 
         // 放入参数，运行时的方法可以获取
+        jobDetail.getJobDataMap().put(TaskConstants.TASK_SKIP, false);
         jobDetail.getJobDataMap().put(ScheduleConstants.TASK_PROPERTIES, job);
 
         // 判断是否存在

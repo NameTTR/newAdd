@@ -10,6 +10,7 @@ import com.ruoyi.common.utils.bean.BeanUtils;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+import org.quartz.PersistJobDataAfterExecution;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,7 @@ import java.util.Date;
  *
  * @author ruoyi
  */
+@PersistJobDataAfterExecution
 public abstract class PlAbstractQuartzJob implements Job
 {
     private static final Logger log = LoggerFactory.getLogger(PlAbstractQuartzJob.class);

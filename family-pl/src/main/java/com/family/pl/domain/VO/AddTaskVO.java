@@ -7,11 +7,13 @@ import com.family.pl.domain.Label;
 import com.family.pl.domain.Task;
 import com.family.pl.domain.TaskLabel;
 import com.family.pl.domain.TaskRemind;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 功能：
@@ -36,16 +38,19 @@ public class AddTaskVO {
     /**
      * 日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private Date taskDate;
 
     /**
      * 开始时间，允许为空，空值则表示全天
      */
+    @JsonFormat(pattern = "HH:mm")
     private Date taskTimeBegin;
 
     /**
      * 结束时间，允许为空，若开始时间为空，则结束时间不允许非空
      */
+    @JsonFormat(pattern = "HH:mm")
     private Date taskTimeEnd;
 
     /**
@@ -56,17 +61,13 @@ public class AddTaskVO {
     /**
      * 重复结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date repeatEnd;
 
     /**
      * 优先级：0：无；1；低；2：中；3：高
      */
     private Integer priority;
-
-    /**
-     * 是否完成：0：否；1：是（针对已完成任务）
-     */
-    private Integer isComplete;
 
     /**
      * 是否有标签：0：否；1：是
@@ -87,21 +88,6 @@ public class AddTaskVO {
      * 父任务ID，空值则表示一级任务，非空表示是某个任务的子任务
      */
     private Long fatherTaskId;
-
-    /**
-     * 完成关联任务ID（已完成的任务才需要设置关联任务ID）
-     */
-    private Long relatedTaskId;
-
-    /**
-     * 任务ID
-     */
-    private Long taskId;
-
-    /**
-     * 标签ID
-     */
-    private Long labelId;
 
     /**
      * 标签表冗余字段，标签
@@ -129,7 +115,7 @@ public class AddTaskVO {
      */
     private String corn;
 
-    private AddChildTaskVO addChildTaskVO;
+    private List<AddChildTaskVO> addChildTaskVO;
 
     private static final long serialVersionUID = 1L;
 }

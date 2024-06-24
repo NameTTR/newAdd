@@ -54,7 +54,7 @@ public class Task implements Serializable {
     /**
      * 重复：0：无；1：每天；2：每月；3：每年；4：工作日；5：法定工作日；6：艾宾浩斯记忆法
      */
-    @TableField(value = "repeat")
+    @TableField(value = "`repeat`")
     private Integer repeat;
 
     /**
@@ -121,7 +121,7 @@ public class Task implements Serializable {
      * 用户ID
      */
     @TableField(value = "user_id")
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

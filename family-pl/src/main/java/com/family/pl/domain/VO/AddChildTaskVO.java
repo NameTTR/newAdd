@@ -57,11 +57,6 @@ public class AddChildTaskVO {
     private Integer priority;
 
     /**
-     * 是否完成：0：否；1：是（针对已完成任务）
-     */
-    private Integer isComplete;
-
-    /**
      * 是否有标签：0：否；1：是
      */
     private Integer isLabel;
@@ -80,16 +75,6 @@ public class AddChildTaskVO {
      * 父任务ID，空值则表示一级任务，非空表示是某个任务的子任务
      */
     private Long fatherTaskId;
-
-    /**
-     * 完成关联任务ID（已完成的任务才需要设置关联任务ID）
-     */
-    private Long relatedTaskId;
-
-    /**
-     * 任务ID
-     */
-    private Long taskId;
 
     /**
      * 标签ID
