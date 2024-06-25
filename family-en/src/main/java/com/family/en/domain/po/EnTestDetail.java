@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.family.en.enums.EnWordTestState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -29,17 +31,17 @@ public class EnTestDetail implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
-     * 汉字测试表外键，汉字测试表ID
+     * 单词测试表外键，单词测试表ID
      */
-    private Integer testId;
+    private Long testId;
 
     /**
-     * 汉字表外键，汉字表ID
+     * 单词表外键，单词表ID
      */
-    private Integer characterId;
+    private Long wordId;
 
     /**
      * 单词
@@ -47,14 +49,14 @@ public class EnTestDetail implements Serializable {
     private String word;
 
     /**
-     * 测试结果：0：错；1：对
+     * 测试结果：0：错；1：对；2：未测试
      */
-    private Integer result;
+    private EnWordTestState result;
 
     /**
      * 用户表外键，用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

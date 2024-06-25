@@ -130,6 +130,10 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         return AjaxResult.success(CcUnitDTO.of(unit, unitDate));
     }
 
+    /**
+     * 查询单元和对应的章节信息
+     * @return
+     */
     @Override
     public AjaxResult getUnitChapter() {
         //1. 获取单元信息

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.family.en.enums.EnWordState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -29,22 +31,22 @@ public class EnStudy implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 单词表外键，汉字表ID
      */
-    private Integer wordId;
+    private Long wordId;
 
     /**
      * 学习状态：0：未学；1：已学完；2：未掌握
      */
-    private Integer state;
+    private EnWordState state;
 
     /**
      * 用户表外键，用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

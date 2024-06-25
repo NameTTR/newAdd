@@ -2,6 +2,7 @@ package com.family.en.service;
 
 import com.family.en.domain.po.EnStudy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.core.domain.AjaxResult;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IEnStudyService extends IService<EnStudy> {
 
+    /**
+     * 更新单词学习记录
+     * @param characterId 汉字id
+     * @return
+     */
+    AjaxResult updateStudyRecord(Long characterId);
 }

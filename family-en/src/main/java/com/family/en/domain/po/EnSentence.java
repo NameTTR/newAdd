@@ -29,12 +29,12 @@ public class EnSentence implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 单词表外键，单词表ID
      */
-    private Integer wordId;
+    private Long wordId;
 
     /**
      * 类别：1：普通句子；2：彦语

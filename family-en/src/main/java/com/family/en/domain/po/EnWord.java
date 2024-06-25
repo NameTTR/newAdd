@@ -29,7 +29,7 @@ public class EnWord implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 单词
@@ -54,7 +54,7 @@ public class EnWord implements Serializable {
     /**
      * 单词章节表外键，单词章节表ID
      */
-    private Integer chapterId;
+    private Long chapterId;
 
     /**
      * 创建时间

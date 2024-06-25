@@ -29,7 +29,7 @@ public class EnChapter implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 章节
@@ -44,7 +44,7 @@ public class EnChapter implements Serializable {
     /**
      * 单元表外键
      */
-    private Integer unitId;
+    private Long unitId;
 
     /**
      * 创建时间

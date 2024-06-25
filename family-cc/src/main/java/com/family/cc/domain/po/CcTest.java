@@ -44,7 +44,7 @@ public class CcTest implements Serializable {
     private Long userId;
 
     /**
-     * 测试状态：0：未完成；1：已完成
+     * 测试状态：0：未完成；1：进行中；2：已完成
      */
     private CcTestState state;
 

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.family.en.enums.EnTestState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -29,17 +31,22 @@ public class EnTest implements Serializable {
      * 编号
      */
     @TableId(value = "ID", type = IdType.AUTO)
-    private Integer id;
+    private Long id;
 
     /**
      * 单词章节表外键，单词章节表ID
      */
-    private Integer chapterId;
+    private Long chapterId;
 
     /**
      * 用户表外键，用户ID
      */
-    private Integer userId;
+    private Long userId;
+
+    /**
+     * 测试状态：0：未完成；1：进行中；2：已完成
+     */
+    private EnTestState state;
 
     /**
      * 创建时间
