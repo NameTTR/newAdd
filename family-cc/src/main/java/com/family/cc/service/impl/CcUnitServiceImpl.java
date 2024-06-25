@@ -13,6 +13,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -117,9 +118,32 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
                     .list();
 
             //3.3 封装章节信息
+            //3.3.1 汉字学习学习情况
             List<CcCharacterDTO> ccCharacterDTOS = BeanUtil.copyToList(characters, CcCharacterDTO.class);
+            //3.3.2 汉字的词组信息
+            List<CcCharacterGroup> characterGroups = Db.lambdaQuery(CcCharacterGroup.class)
+                    .in(CcCharacterGroup::getCharacterId, characterIds)
+                    .list();
+            Map<Long, List<CcCharacterGroup>> groupMap = characterGroups.stream().collect(Collectors.groupingBy(CcCharacterGroup::getCharacterId));
+
             for (int i = 0; i < ccCharacterDTOS.size(); i++) {
-                ccCharacterDTOS.get(i).setState(studies.get(i).getState());
+                CcCharacterDTO ccCharacterDTO = ccCharacterDTOS.get(i);
+                ccCharacterDTO.setState(studies.get(i).getState());
+
+                if (groupMap.isEmpty()){
+                    ccCharacterDTO.setCompounds(Collections.emptyList());
+                    ccCharacterDTO.setSynonyms(Collections.emptyList());
+                    ccCharacterDTO.setAntonyms(Collections.emptyList());
+                    continue;
+                }
+                List<CcCharacterGroup> compounds = groupMap.get(ccCharacterDTO.getId()).isEmpty() ? Collections.emptyList() : groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 1).collect(Collectors.toList());
+                List<CcCharacterGroup> synonym = groupMap.get(ccCharacterDTO.getId()).isEmpty() ? Collections.emptyList() : groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 2).collect(Collectors.toList());
+                List<CcCharacterGroup> antonym = groupMap.get(ccCharacterDTO.getId()).isEmpty() ? Collections.emptyList() : groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 3).collect(Collectors.toList());
+
+                ccCharacterDTO.setCompounds(compounds);
+                ccCharacterDTO.setSynonyms(synonym);
+                ccCharacterDTO.setAntonyms(antonym);
+
             }
 
             //3.4 放入单元信息
