@@ -17,10 +17,5 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/family/cc/chapter")
 public class CcChapterController extends BaseController {
-    @GetMapping("/test")
-    public AjaxResult test() {
-        CcChapterDTO ccChapterDTO = new CcChapterDTO();
-
-        return AjaxResult.success("测试成功");
-    }
+    
 }
