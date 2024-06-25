@@ -103,22 +103,22 @@ public class EnUnitServiceImpl extends ServiceImpl<EnUnitMapper, EnUnit> impleme
         //3. 查询所有章节的单词信息
         for (EnChapter chapter : chapters) {
             //3.1 查询当前章节的单词信息
-            List<EnWord> characters = Db.lambdaQuery(EnWord.class)
+            List<EnWord> words = Db.lambdaQuery(EnWord.class)
                     .eq(EnWord::getChapterId, chapter.getId())
                     .list();
-            List<Long> characterIds = new ArrayList<>(characters.size());
-            characters.forEach(c -> characterIds.add(c.getId()));
+            List<Long> wordIds = new ArrayList<>(words.size());
+            words.forEach(c -> wordIds.add(c.getId()));
 
             //3.2 查询单词的学习情况
-            String idsStr = StrUtil.join(",", characterIds);
+            String idsStr = StrUtil.join(",", wordIds);
             List<EnStudy> studies = Db.lambdaQuery(EnStudy.class)
-                    .in(EnStudy::getWordId, characterIds)
+                    .in(EnStudy::getWordId, wordIds)
                     .eq(EnStudy::getUserId, userId)
                     .last("ORDER BY FIELD(id," + idsStr + ")")
                     .list();
 
             //3.3 封装章节信息
-            List<EnWordDTO> EnWordDTOS = BeanUtil.copyToList(characters, EnWordDTO.class);
+            List<EnWordDTO> EnWordDTOS = BeanUtil.copyToList(words, EnWordDTO.class);
             for (int i = 0; i < EnWordDTOS.size(); i++) {
                 EnWordDTOS.get(i).setState(studies.get(i).getState());
             }

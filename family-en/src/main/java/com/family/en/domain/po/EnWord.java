@@ -37,6 +37,11 @@ public class EnWord implements Serializable {
     private String word;
 
     /**
+     * 翻译
+     */
+    private String translation;
+
+    /**
      * 音标
      */
     private String phoneticSymbol;

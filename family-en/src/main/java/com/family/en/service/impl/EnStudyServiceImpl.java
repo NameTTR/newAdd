@@ -27,11 +27,11 @@ public class EnStudyServiceImpl extends ServiceImpl<EnStudyMapper, EnStudy> impl
 
     /**
      * 更新单词学习记录
-     * @param characterId 汉字id
+     * @param wordId 汉字id
      * @return
      */
     @Override
-    public AjaxResult updateStudyRecord(Long characterId) {
+    public AjaxResult updateStudyRecord(Long wordId) {
         //1. 获取当前用户id
 //        Long userId = SecurityUtils.getUserId();
         Long userId = 1L;
@@ -39,7 +39,7 @@ public class EnStudyServiceImpl extends ServiceImpl<EnStudyMapper, EnStudy> impl
         //2. 获取当前单词学习记录
         EnStudy study = lambdaQuery()
                 .eq(EnStudy::getUserId, userId)
-                .eq(EnStudy::getWordId, characterId)
+                .eq(EnStudy::getWordId, wordId)
                 .one();
         if (study == null) {
             //2.1. 如果不存在该单词的id，返回失败信息
@@ -57,7 +57,7 @@ public class EnStudyServiceImpl extends ServiceImpl<EnStudyMapper, EnStudy> impl
                 break;
         }
         boolean isSuccess = lambdaUpdate().eq(EnStudy::getUserId, userId)
-                .eq(EnStudy::getWordId, characterId)
+                .eq(EnStudy::getWordId, wordId)
                 .update(study);
 
         //4. 返回结果
@@ -67,9 +67,9 @@ public class EnStudyServiceImpl extends ServiceImpl<EnStudyMapper, EnStudy> impl
         }
 
         //4.2. 如果更新成功，返回更新后的单词信息
-        EnWord one = Db.lambdaQuery(EnWord.class).eq(EnWord::getId, characterId).one();
-        EnWordDTO updatedCharacter = BeanUtil.copyProperties(one, EnWordDTO.class);
-        updatedCharacter.setState(study.getState());
-        return AjaxResult.success(updatedCharacter);
+        EnWord one = Db.lambdaQuery(EnWord.class).eq(EnWord::getId, wordId).one();
+        EnWordDTO updatedWord = BeanUtil.copyProperties(one, EnWordDTO.class);
+        updatedWord.setState(study.getState());
+        return AjaxResult.success(updatedWord);
     }
 }

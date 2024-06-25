@@ -27,11 +27,11 @@ public class EnStudyController {
 
     /**
      * 更新单词学习记录
-     * @param characterId 汉字id
+     * @param wordId 汉字id
      * @return
      */
-    @PutMapping("{characterId}")
-    public AjaxResult updateStudyRecord(@PathVariable("characterId") Long characterId) {
-        return enStudyService.updateStudyRecord(characterId);
+    @PutMapping("{wordId}")
+    public AjaxResult updateStudyRecord(@PathVariable("wordId") Long wordId) {
+        return enStudyService.updateStudyRecord(wordId);
     }
 }

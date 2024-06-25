@@ -16,8 +16,8 @@ public interface IEnStudyService extends IService<EnStudy> {
 
     /**
      * 更新单词学习记录
-     * @param characterId 汉字id
+     * @param wordId 汉字id
      * @return
      */
-    AjaxResult updateStudyRecord(Long characterId);
+    AjaxResult updateStudyRecord(Long wordId);
 }

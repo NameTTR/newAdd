@@ -47,6 +47,11 @@ public class EnSentence implements Serializable {
     private String sentence;
 
     /**
+     * 翻译
+     */
+    private String translation;
+
+    /**
      * 读音
      */
     private String read;
