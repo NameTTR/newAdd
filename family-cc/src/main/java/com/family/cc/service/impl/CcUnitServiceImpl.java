@@ -130,15 +130,15 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
                 CcCharacterDTO ccCharacterDTO = ccCharacterDTOS.get(i);
                 ccCharacterDTO.setState(studies.get(i).getState());
 
-                if (groupMap.isEmpty()){
+                if (groupMap.get(ccCharacterDTO.getId()) == null){
                     ccCharacterDTO.setCompounds(Collections.emptyList());
                     ccCharacterDTO.setSynonyms(Collections.emptyList());
                     ccCharacterDTO.setAntonyms(Collections.emptyList());
                     continue;
                 }
-                List<CcCharacterGroup> compounds = groupMap.get(ccCharacterDTO.getId()).isEmpty() ? Collections.emptyList() : groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 1).collect(Collectors.toList());
-                List<CcCharacterGroup> synonym = groupMap.get(ccCharacterDTO.getId()).isEmpty() ? Collections.emptyList() : groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 2).collect(Collectors.toList());
-                List<CcCharacterGroup> antonym = groupMap.get(ccCharacterDTO.getId()).isEmpty() ? Collections.emptyList() : groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 3).collect(Collectors.toList());
+                List<CcCharacterGroup> compounds = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 1).collect(Collectors.toList());
+                List<CcCharacterGroup> synonym = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 2).collect(Collectors.toList());
+                List<CcCharacterGroup> antonym = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 3).collect(Collectors.toList());
 
                 ccCharacterDTO.setCompounds(compounds);
                 ccCharacterDTO.setSynonyms(synonym);
