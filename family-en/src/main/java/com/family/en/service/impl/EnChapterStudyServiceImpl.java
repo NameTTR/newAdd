@@ -43,21 +43,21 @@ public class EnChapterStudyServiceImpl extends ServiceImpl<EnChapterStudyMapper,
 
             //2.根据用户id和章节id查询章节中所有单词的学习记录
             //2.1. 获取当前章节所有单词的id
-            List<EnWord> characters = Db.lambdaQuery(EnWord.class)
+            List<EnWord> words = Db.lambdaQuery(EnWord.class)
                     .eq(EnWord::getChapterId, chapterId)
                     .list();
-            List<Long> characterIds = new ArrayList<>(characters.size());
-            characters.forEach(c -> characterIds.add(c.getId()));
+            List<Long> wordIds = new ArrayList<>(words.size());
+            words.forEach(c -> wordIds.add(c.getId()));
 
             //2.2. 根据单词id查询学习记录
-            List<EnStudy> characterStudies = Db.lambdaQuery(EnStudy.class)
+            List<EnStudy> wordStudies = Db.lambdaQuery(EnStudy.class)
                     .eq(EnStudy::getUserId, userId)
-                    .in(EnStudy::getWordId, characterIds)
+                    .in(EnStudy::getWordId, wordIds)
                     .list();
 
 
             //3.遍历章节中单词的学习记录，判断是否更新该章节的学习记录
-            for (EnStudy study : characterStudies) {
+            for (EnStudy study : wordStudies) {
                 if (study.getState() == EnWordState.UNLEARNED) {
                     //3.1 如果存在单词未完成学习，则不更新章节学习记录
                     return AjaxResult.success("章节未学完");
@@ -74,8 +74,8 @@ public class EnChapterStudyServiceImpl extends ServiceImpl<EnChapterStudyMapper,
             if (nextChapterId == -1) return AjaxResult.success("章节学习完成");
             if (sign == 1){
                 //如果是下一单元，更新nextChapterId为下一单元的id
-                EnChapter chapter = Db.lambdaQuery(EnChapter.class).eq(EnChapter::getUnitId, nextChapterId).orderByAsc(EnChapter::getSort).one();
-                nextChapterId = chapter.getId();
+                List<EnChapter> chapter = Db.lambdaQuery(EnChapter.class).eq(EnChapter::getUnitId, nextChapterId).orderByAsc(EnChapter::getSort).list();
+                nextChapterId = chapter.get(0).getId();
 
             }
             if (!updateChapterStudySimple(nextChapterId, userId, EnChapterState.LEARNING)) {
@@ -103,6 +103,7 @@ public class EnChapterStudyServiceImpl extends ServiceImpl<EnChapterStudyMapper,
                 .eq(EnChapterStudy::getUserId, userId)
                 .eq(EnChapterStudy::getChapterId, chapterId)
                 .one();
+        if(cur.getState() == state) return true;
         cur.setState(state);
         return lambdaUpdate()
                 .eq(EnChapterStudy::getUserId, userId)

@@ -27,7 +27,7 @@ public class EnStudyController {
 
     /**
      * 更新单词学习记录
-     * @param wordId 汉字id
+     * @param wordId 单词id
      * @return
      */
     @PutMapping("{wordId}")

@@ -13,6 +13,7 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -118,13 +119,32 @@ public class EnUnitServiceImpl extends ServiceImpl<EnUnitMapper, EnUnit> impleme
                     .list();
 
             //3.3 封装章节信息
-            List<EnWordDTO> EnWordDTOS = BeanUtil.copyToList(words, EnWordDTO.class);
-            for (int i = 0; i < EnWordDTOS.size(); i++) {
-                EnWordDTOS.get(i).setState(studies.get(i).getState());
+            //3.3.1 单词学习学习情况
+            List<EnWordDTO> enWordDTOS = BeanUtil.copyToList(words, EnWordDTO.class);
+            //3.3.2 单词的句子信息
+            List<EnSentence> characterGroups = Db.lambdaQuery(EnSentence.class)
+                    .in(EnSentence::getWordId, wordIds)
+                    .list();
+            Map<Long, List<EnSentence>> groupMap = characterGroups.stream().collect(Collectors.groupingBy(EnSentence::getWordId));
+
+            for (int i = 0; i < enWordDTOS.size(); i++) {
+                EnWordDTO ccCharacterDTO = enWordDTOS.get(i);
+                ccCharacterDTO.setState(studies.get(i).getState());
+
+                if (groupMap.get(ccCharacterDTO.getId()) == null){
+                    ccCharacterDTO.setOrdinary(Collections.emptyList());
+                    ccCharacterDTO.setProverb(Collections.emptyList());
+                    continue;
+                }
+                List<EnSentence> ordinary = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 1).collect(Collectors.toList());
+                List<EnSentence> proverb = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 2).collect(Collectors.toList());
+
+                ccCharacterDTO.setOrdinary(ordinary);
+                ccCharacterDTO.setProverb(proverb);
             }
 
             //3.4 放入单元信息
-            unitDate.add(EnChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(),EnWordDTOS));
+            unitDate.add(EnChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(),enWordDTOS));
         }
 
         //3. 返回结果

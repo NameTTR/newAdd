@@ -10,6 +10,7 @@ import com.family.en.service.IEnStudyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import static com.family.en.enums.EnWordState.LEARNED_FINISH;
 import static com.family.en.enums.EnWordState.NOT_MASTERED;
@@ -31,45 +32,48 @@ public class EnStudyServiceImpl extends ServiceImpl<EnStudyMapper, EnStudy> impl
      * @return
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public AjaxResult updateStudyRecord(Long wordId) {
-        //1. 获取当前用户id
+        try {
+            //1. 获取当前用户id
 //        Long userId = SecurityUtils.getUserId();
-        Long userId = 1L;
+            Long userId = 1L;
 
-        //2. 获取当前单词学习记录
-        EnStudy study = lambdaQuery()
-                .eq(EnStudy::getUserId, userId)
-                .eq(EnStudy::getWordId, wordId)
-                .one();
-        if (study == null) {
-            //2.1. 如果不存在该单词的id，返回失败信息
-            return AjaxResult.error();
+            //2. 获取当前单词学习记录
+            EnStudy study = lambdaQuery()
+                    .eq(EnStudy::getUserId, userId)
+                    .eq(EnStudy::getWordId, wordId)
+                    .one();
+            if (study == null) {
+                //2.1. 如果不存在该单词的id，返回失败信息
+                return AjaxResult.error();
+            }
+
+            //3. 更新单词学习记录表
+            switch (study.getState()){
+                case UNLEARNED:
+                case NOT_MASTERED:
+                    study.setState(LEARNED_FINISH);
+                    break;
+                case LEARNED_FINISH:
+                    study.setState(NOT_MASTERED);
+                    break;
+            }
+            boolean isSuccess = lambdaUpdate().eq(EnStudy::getUserId, userId)
+                    .eq(EnStudy::getWordId, wordId)
+                    .update(study);
+
+            //4. 返回结果
+            //4.1. 如果更新失败，返回失败信息
+            if (!isSuccess){
+                return AjaxResult.error("更新失败");
+            }
+
+            //4.2. 如果更新成功，返回更新后的单词信息
+            return AjaxResult.success(study);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("更新单词学习记录失败");
         }
-
-        //3. 更新单词学习记录表
-        switch (study.getState()){
-            case UNLEARNED:
-            case NOT_MASTERED:
-                study.setState(LEARNED_FINISH);
-                break;
-            case LEARNED_FINISH:
-                study.setState(NOT_MASTERED);
-                break;
-        }
-        boolean isSuccess = lambdaUpdate().eq(EnStudy::getUserId, userId)
-                .eq(EnStudy::getWordId, wordId)
-                .update(study);
-
-        //4. 返回结果
-        //4.1. 如果更新失败，返回失败信息
-        if (!isSuccess){
-            return AjaxResult.error("更新失败");
-        }
-
-        //4.2. 如果更新成功，返回更新后的单词信息
-        EnWord one = Db.lambdaQuery(EnWord.class).eq(EnWord::getId, wordId).one();
-        EnWordDTO updatedWord = BeanUtil.copyProperties(one, EnWordDTO.class);
-        updatedWord.setState(study.getState());
-        return AjaxResult.success(updatedWord);
     }
 }
