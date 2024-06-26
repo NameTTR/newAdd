@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2024-06-26
  */
 @RestController
-@RequestMapping("/pi-unit-study")
+@RequestMapping("/family/pi/unit-study")
 public class PiUnitStudyController {
 
 }

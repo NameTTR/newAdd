@@ -1,6 +1,7 @@
 package com.family.pi.domain.dto;
 
 import com.family.pi.domain.po.PiUnit;
+import com.family.pi.enums.PiUnitState;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,8 +28,23 @@ public class PiUnitDTO {
     private PiUnit unit;
 
     /**
-     * 单元的内容
+     * 学习状态：0：未学；1：学习中；2：已学完
      */
-    private List<PiPinyinDTO> pinyins;
+    private PiUnitState state;
+
+    /**
+     * 声母
+     */
+    private List<PiPinyinDTO> initials;
+
+    /**
+     * 韵母
+     */
+    private List<PiPinyinDTO> finals;
+
+    /**
+     * 组合
+     */
+    private List<PiPinyinDTO> combinations;
 
 }

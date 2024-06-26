@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 /**
- * 单元细节DTO
+ * 测试细节DTO
  *
  * @author 陈文杰
  * @since 2024-05-04
@@ -35,22 +35,22 @@ public class PiTestDetailsDTO {
     private String unit;
 
     /**
-     * 章节名称
-     */
-    private String chapter;
-
-    /**
      * 测试状态：0：未完成；1：进行中；2：已完成
      */
     private PiTestState state;
 
     /**
-     * 汉字结果信息
+     * 拼音结果信息
      */
-    private List<PiTestDetail> characterTest;
+    private List<PiTestDetail> pinyinTest;
 
     /**
-     * 通过的汉字数量
+     * 总的拼音数量
+     */
+    private Long totalCount;
+
+    /**
+     * 通过的拼音数量
      */
     private Long passCount;
 

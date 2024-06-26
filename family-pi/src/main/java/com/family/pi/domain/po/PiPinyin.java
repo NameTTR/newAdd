@@ -92,7 +92,7 @@ public class PiPinyin implements Serializable {
     private String song4Read;
 
     /**
-     * 拼音单元节表外键，拼音单元表ID
+     * 拼音单元表外键，拼音单元表ID
      */
     private Long unitId;
 

@@ -5,6 +5,8 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
+
+import com.family.pi.enums.PiUnitState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
@@ -32,14 +34,14 @@ public class PiUnitStudy implements Serializable {
     private Long id;
 
     /**
-     * 单元章节表外键，单元章节表ID
+     * 单元章外键，单元表ID
      */
     private Long unitId;
 
     /**
      * 学习状态：0：未学；1：学习中；2：已学完
      */
-    private Long state;
+    private PiUnitState state;
 
     /**
      * 用户表外键，用户ID
