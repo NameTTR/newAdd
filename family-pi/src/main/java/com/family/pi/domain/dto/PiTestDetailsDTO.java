@@ -1,16 +1,13 @@
-package com.family.cc.domain.dto;
+package com.family.pi.domain.dto;
 
-import com.alibaba.fastjson2.annotation.JSONField;
-import com.family.cc.domain.po.CcTestDetail;
-import com.family.cc.enums.CcTestState;
+import com.family.pi.domain.po.PiTestDetail;
+import com.family.pi.enums.PiTestState;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,7 +23,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
-public class CcTestDetailsDTO {
+public class PiTestDetailsDTO {
     /**
      * 测试ID
      */
@@ -45,12 +42,12 @@ public class CcTestDetailsDTO {
     /**
      * 测试状态：0：未完成；1：进行中；2：已完成
      */
-    private CcTestState state;
+    private PiTestState state;
 
     /**
      * 汉字结果信息
      */
-    private List<CcTestDetail> characterTest;
+    private List<PiTestDetail> characterTest;
 
     /**
      * 通过的汉字数量
