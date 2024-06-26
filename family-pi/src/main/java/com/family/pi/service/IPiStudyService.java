@@ -2,6 +2,7 @@ package com.family.pi.service;
 
 import com.family.pi.domain.po.PiStudy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.core.domain.AjaxResult;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IPiStudyService extends IService<PiStudy> {
 
+    /**
+     * 更新拼音学习记录
+     * @param pinyinId 拼音id
+     * @return
+     */
+    AjaxResult updateStudyRecord(Long pinyinId);
 }
