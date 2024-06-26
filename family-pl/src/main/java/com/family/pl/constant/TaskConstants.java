@@ -48,4 +48,8 @@ public class TaskConstants extends Constants {
     public static final Integer TASK_NOT_TIMEOUT = 0;
 
     public static final String TASK_SKIP = "taskSkip";
+
+    public static final Integer TASK_REMIND = 1;
+
+    public static final Integer TASK_NOT_REMIND = 1;
 }

@@ -7,6 +7,9 @@ import com.ruoyi.common.annotation.Excel.ColumnType;
 import com.ruoyi.common.constant.ScheduleConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
 import com.ruoyi.common.utils.StringUtils;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -19,6 +22,9 @@ import java.util.Date;
  * 
  * @author ruoyi
  */
+@AllArgsConstructor
+@NoArgsConstructor
+@Data
 public class PlJob extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
@@ -54,6 +60,10 @@ public class PlJob extends BaseEntity
     /** 任务状态（0正常 1暂停） */
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status = ScheduleConstants.Status.NORMAL.getValue();
+
+    private Date taskDate;
+
+    private Date repeatEnd;
 
     public Long getJobId()
     {

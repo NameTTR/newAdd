@@ -68,7 +68,7 @@ public interface TaskService extends IService<Task> {
      * @return
      * @throws SchedulerException
      */
-    int taskDisCompleteById(DateTimeVO dateTimeVO) throws SchedulerException;
+    int taskDisCompleteById(DateTimeVO dateTimeVO) throws SchedulerException, TaskException;
 
     /**
      * 根据日期查询该日期任务
@@ -76,7 +76,13 @@ public interface TaskService extends IService<Task> {
      * @param dateTimeVO
      * @return 该日期任务
      */
-    List<Task> selectTasks(DateTimeVO dateTimeVO);
+    List<Task> selectCompleteTasks(DateTimeVO dateTimeVO);
+
+    List<Task> selectDisCompleteTasks(DateTimeVO dateTimeVO);
+
+    int taskDeleteOneById(DateTimeVO dateTimeVO);
+
+    int taskDeleteAllById(DateTimeVO dateTimeVO) throws SchedulerException;
 
 //    List<Task> listAllCompletedTasks();
 }

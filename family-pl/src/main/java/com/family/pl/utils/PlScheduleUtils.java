@@ -76,8 +76,14 @@ public class PlScheduleUtils
         cronScheduleBuilder = handleCronScheduleMisfirePolicy(job, cronScheduleBuilder);
 
         // 按新的cronExpression表达式构建一个新的trigger
-        CronTrigger trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
-                .withSchedule(cronScheduleBuilder).build();
+        CronTrigger trigger = null;
+        if(StringUtils.isNotNull(job.getRepeatEnd())){
+            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId)).endAt(job.getRepeatEnd())
+                    .withSchedule(cronScheduleBuilder).build();
+        }else {
+            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
+                    .withSchedule(cronScheduleBuilder).build();
+        }
 
         // 放入参数，运行时的方法可以获取
         jobDetail.getJobDataMap().put(TaskConstants.TASK_SKIP, false);

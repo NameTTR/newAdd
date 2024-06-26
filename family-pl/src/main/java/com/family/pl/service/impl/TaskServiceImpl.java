@@ -60,6 +60,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
 
     @Autowired
     private TaskMapper taskMapper;
+
     /**
      * 添加任务
      *
@@ -81,13 +82,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             flag = 0;
         }
         Long taskid = task.getId();
-        System.out.println(taskid);
-
-        PlJob job = new PlJob();
-        job.setJobId(taskid);
-        job.setJobName(addTaskVO.getTitle());
-        job.setCronExpression(addTaskVO.getCorn());
-        insertJob(job);
 
         if(task.getIsLabel() == 1){
             TaskLabel taskLabel = setTaskLabel(addTaskVO, userid, taskid);
@@ -97,6 +91,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         if(task.getIsRemind() == 1){
+            PlJob job = new PlJob();
+            if(StringUtils.isNotNull(addTaskVO.getRepeatEnd()))
+            {
+                job.setRepeatEnd(addTaskVO.getRepeatEnd());
+            }
+            job.setJobId(taskid);
+            job.setJobName(addTaskVO.getTitle());
+            job.setCronExpression(addTaskVO.getCorn());
+            insertJob(job);
             TaskRemind taskRemind = new TaskRemind();
             taskRemind.setTaskId(taskid);
             taskRemind.setType(addTaskVO.getType());
@@ -141,12 +144,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         Long taskid = task.getId();
         System.out.println(taskid);
 
-        PlJob job = new PlJob();
-        job.setJobId(taskid);
-        job.setJobName(addChildTaskVO.getTitle());
-        job.setCronExpression(addChildTaskVO.getCorn());
-        insertJob(job);
-
         if(task.getIsLabel() == 1){
             TaskLabel taskLabel = setTaskLabel(addChildTaskVO, userid, taskid);
             if(!taskLabelService.save(taskLabel)){
@@ -155,6 +152,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         if(task.getIsRemind() == 1){
+            PlJob job = new PlJob();
+            if(StringUtils.isNotNull(addChildTaskVO.getRepeatEnd()))
+            {
+                job.setRepeatEnd(addChildTaskVO.getRepeatEnd());
+            }
+            job.setJobId(taskid);
+            job.setJobName(addChildTaskVO.getTitle());
+            job.setCronExpression(addChildTaskVO.getCorn());
+            insertJob(job);
             TaskRemind taskRemind = new TaskRemind();
             taskRemind.setTaskId(taskid);
             taskRemind.setType(addChildTaskVO.getType());
@@ -165,6 +171,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
                 flag = 0;
             }
         }
+
+        if(task.getIsHaveChild() == 1){
+            for(AddChildTaskVO child : addChildTaskVO.getAddChildTaskVO()){
+                if(addChildTask(child) != 1){
+                    flag = 0;
+                }
+            }
+        }
+
         return flag;
     }
 
@@ -183,6 +198,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
 
         int flag = 1;
         Task task = taskService.getById(id);
+        task.setTaskDate(date.getTime());
         Task newTask = copyTask(task);
         isTimeOut(newTask, date);
 
@@ -248,6 +264,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             List<Task> childList = taskService.list(lambdaQueryWrapper);
 
             for(Task child : childList){
+                child.setTaskDate(date.getTime());
                 child.setIsComplete(TaskConstants.TASK_COMMPLETE);
                 child.setRelatedTaskId(child.getId());
                 isTimeOut(child, date);
@@ -304,35 +321,201 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      * @throws SchedulerException
      */
     @Override
-    public int taskDisCompleteById(DateTimeVO dateTimeVO) throws SchedulerException {
-
-        return 1;
+    @Transactional
+    public int taskDisCompleteById(DateTimeVO dateTimeVO) throws SchedulerException, TaskException {
+        Long id = dateTimeVO.getId();
+        DateTimeVO date = dateTimeVO;
+        int flag = 1;
+        Task task = taskService.getById(id);
+        Long relatedTaskId = task.getRelatedTaskId();
+        Task relatedTask = taskService.getById(relatedTaskId);
+        if( (relatedTask.getIsEnd() == TaskConstants.TASK_END) || !compareTask(task, relatedTask) ){
+            task.setIsEnd(TaskConstants.TASK_NOT_END);
+            task.setIsComplete(TaskConstants.TASK_NOT_COMMPLETE);
+            task.setRelatedTaskId(null);
+            if(!addDisTask(task)){
+                flag = 0;
+            };
+        }else if(compareTask(task, relatedTask)){
+            taskService.taskDeleteOneById(dateTimeVO);
+        }
+        return flag;
     }
 
     /**
-     * 根据日期查询任务
+     * 由完成的任务转为未完成的任务时，若与原来任务不一致或原来任务已全部结束则将此已完成任务新增为独立任务
+     *
+     * @param task
+     * @return
+     * @throws SchedulerException
+     * @throws TaskException
+     */
+    private boolean addDisTask(Task task) throws SchedulerException, TaskException {
+        Long taskid = task.getId();
+        boolean flag = true;
+        if(task.getIsRemind() == 1) {
+            LambdaQueryWrapper<TaskRemind> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(TaskRemind::getTaskId, task.getId());
+            TaskRemind remind = taskRemindService.getOne(lambdaQueryWrapper);
+            PlJob job = new PlJob();
+            if(StringUtils.isNotNull(task.getRepeatEnd())){
+                job.setRepeatEnd(task.getRepeatEnd());
+            }
+            job.setJobId(taskid);
+            job.setJobName(task.getTitle());
+            job.setCronExpression(remind.getCorn());
+            insertJob(job);
+        }
+
+        if(task.getIsHaveChild() == 1){
+            LambdaQueryWrapper<Task> lambdaQueryWrapper = new LambdaQueryWrapper<>();
+            lambdaQueryWrapper.eq(Task::getId, task.getFatherTaskId());
+            List<Task> childList = taskService.list(lambdaQueryWrapper);
+            for(Task child : childList){
+                if(!addDisTask(child)){
+                    return false;
+                }
+            }
+        }
+        return flag;
+    }
+
+
+    /**
+     * 比较两个任务是否一致
+     *
+     * @param task
+     * @param relatedTask
+     * @return
+     */
+    private boolean compareTask(Task task, Task relatedTask){
+        boolean flag = true;
+        if(relatedTask.getTaskTimeEnd() != task.getTaskTimeEnd()){
+            flag = false;
+        }
+        if(relatedTask.getTitle() != task.getTitle()){
+            flag = false;
+        }
+        if(relatedTask.getNotes() != task.getNotes()){
+            flag = false;
+        }
+        if(relatedTask.getTaskTimeBegin() != task.getTaskTimeBegin()){
+            flag = false;
+        }
+        if(relatedTask.getRepeat() != task.getRepeat()){
+            flag = false;
+        }
+        if(relatedTask.getRepeatEnd() != task.getRepeatEnd()){
+            flag = false;
+        }
+        if(relatedTask.getPriority() != task.getPriority()){
+            flag = false;
+        }
+        if(relatedTask.getIsLabel() != task.getIsLabel()){
+            flag = false;
+        }
+        if(relatedTask.getIsRemind() != task.getIsRemind()){
+            flag = false;
+        }
+        if(relatedTask.getIsHaveChild() != task.getIsHaveChild()){
+            flag = false;
+        }
+        if(relatedTask.getFatherTaskId() != task.getFatherTaskId()){
+            flag = false;
+        }
+
+        return flag;
+    }
+
+    /**
+     * 根据日期查询已完成任务
      *
      * @param dateTimeVO
      * @return 该日期的任务
      */
     @Override
-    public List<Task> selectTasks(DateTimeVO dateTimeVO) {
+    public List<Task> selectCompleteTasks(DateTimeVO dateTimeVO) {
         Long userId = FamilySecurityUtils.getUserId();
         Date taskDate = dateTimeVO.getTime();
-
-        return taskMapper.selectByDateAndUser(userId, taskDate);
+        return taskMapper.selectByComDateAndUser(userId, taskDate);
     }
 
-//    @Override
-//    public List<Task> listAllCompletedTasks() {
-//        List<Task> tasks = taskService.list();
-//        for(Task task : tasks){
-//            if(!(task.getIsComplete() == TaskConstants.TASK_COMMPLETE)){
-//
-//            }
-//        }
-//        return null;
-//    }
+    /**
+     * 根据日期查询未完成任务
+     *
+     * @param dateTimeVO
+     * @return
+     */
+    @Override
+    public List<Task> selectDisCompleteTasks(DateTimeVO dateTimeVO) {
+        Long userId = FamilySecurityUtils.getUserId();
+        Date taskDate = dateTimeVO.getTime();
+        return taskMapper.selectByDisDateAndUser(userId, taskDate);
+    }
+
+    /**
+     * 根据id删除此任务
+     *
+     * @param dateTimeVO
+     * @return
+     */
+    @Override
+    public int taskDeleteOneById(DateTimeVO dateTimeVO) {
+        int flag = 1;
+
+        Long taskId = dateTimeVO.getId();
+        Task task = taskService.getById(taskId);
+
+        if(task.getIsComplete() == TaskConstants.TASK_COMMPLETE){
+            if(task.getIsLabel() == TaskConstants.TASK_LABEL){
+                LambdaQueryWrapper<TaskLabel> taskLabelLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                taskLabelLambdaQueryWrapper.eq(TaskLabel::getTaskId, task.getId());
+                TaskLabel taskLabel = taskLabelService.getOne(taskLabelLambdaQueryWrapper);
+                if(!taskLabelService.removeById(taskLabel.getId())){
+                    flag = 0;
+                }
+            }
+
+            if(task.getIsRemind() == TaskConstants.TASK_REMIND){
+                LambdaQueryWrapper<TaskRemind> taskRemindLambdaQueryWrapper = new LambdaQueryWrapper<>();
+                taskRemindLambdaQueryWrapper.eq(TaskRemind::getTaskId, task.getId());
+                TaskRemind taskRemind = taskRemindService.getOne(taskRemindLambdaQueryWrapper);
+                if(!taskRemindService.removeById(taskRemind.getId())){
+                    flag = 0;
+                }
+            }
+
+            if(!taskService.removeById(taskId)){
+                flag = 0;
+            }
+        }else {
+            task.setFlagDelete(TaskConstants.TASK_DELETE);
+            if(!taskService.updateById(task)){
+                flag = 0;
+            }
+        }
+
+
+
+        return flag;
+    }
+
+    @Override
+    public int taskDeleteAllById(DateTimeVO dateTimeVO) throws SchedulerException {
+        int flag = 1;
+
+        Long taskId = dateTimeVO.getId();
+        Task task = taskService.getById(taskId);
+        if (task.getIsRemind() == TaskConstants.TASK_REMIND) {
+            JobKey jobKey = PlScheduleUtils.getJobKey(taskId);
+            scheduler.deleteJob(jobKey);
+        }
+        task.setFlagDelete(TaskConstants.TASK_DELETE);
+        if(!taskService.updateById(task)){
+            flag = 0;
+        }
+        return flag;
+    }
 
     /**
      * 添加定时任务
@@ -556,25 +739,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         return taskLabel;
     }
 
-//    @Override
-//    @Transactional
-//    public int deleteByID(Long id) throws SchedulerException{
-//        Task task = taskService.getById(id);
-//        Long TaskId = task.getId();
-//        if(task.getIsComplete() == TaskConstants.TASK_COMMPLETE){
-//            taskService.removeById(id);
-//
-//        }else{
-//            if(task.getIsRemind())
-//        }
-//    }
-//
-//    private int removeTask(Task task){
-//        Long TaskId = task.getId();
-//        if(task.getIsHaveChild() == TaskConstants.TASK_HAVE_CHILE){
-//
-//        }
-//    }
 
 }
 

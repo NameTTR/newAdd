@@ -29,7 +29,7 @@ import org.springframework.web.filter.CorsFilter;
  * 
  * @author ruoyi
  */
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class FamilySecurityConfig extends WebSecurityConfigurerAdapter
 {
 

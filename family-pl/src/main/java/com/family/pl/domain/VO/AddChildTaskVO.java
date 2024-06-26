@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 功能：
@@ -107,6 +108,7 @@ public class AddChildTaskVO {
      */
     private String corn;
 
+    private List<AddChildTaskVO> addChildTaskVO;
 
     private static final long serialVersionUID = 1L;
 }
