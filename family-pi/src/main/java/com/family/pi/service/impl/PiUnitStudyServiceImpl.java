@@ -97,6 +97,7 @@ public class PiUnitStudyServiceImpl extends ServiceImpl<PiUnitStudyMapper, PiUni
                 .eq(PiUnitStudy::getUserId, userId)
                 .eq(PiUnitStudy::getUnitId, unitId)
                 .one();
+        if (cur.getState() == state) return true;
         cur.setState(state);
         return lambdaUpdate()
                 .eq(PiUnitStudy::getUserId, userId)
