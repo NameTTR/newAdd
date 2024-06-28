@@ -3,9 +3,7 @@ package com.family.pl.service;
 import com.family.pl.domain.PlJob;
 import com.family.pl.domain.Task;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.family.pl.domain.VO.AddChildTaskVO;
-import com.family.pl.domain.VO.AddTaskVO;
-import com.family.pl.domain.VO.DateTimeVO;
+import com.family.pl.domain.VO.*;
 import com.ruoyi.common.exception.job.TaskException;
 import org.quartz.SchedulerException;
 import org.springframework.stereotype.Service;
@@ -84,5 +82,9 @@ public interface TaskService extends IService<Task> {
 
     int taskDeleteAllById(DateTimeVO dateTimeVO) throws SchedulerException;
 
-//    List<Task> listAllCompletedTasks();
+    int taskUpdateTitleById(TaskTitleVO taskTitleVO);
+
+    int taskUpdatePriorityById(TaskPriorityVO taskPriorityVO);
+
+    int taskUpdateNotesById(TaskNotesVO taskNotesVO);
 }

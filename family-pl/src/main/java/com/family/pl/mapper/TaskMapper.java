@@ -46,7 +46,7 @@ public interface TaskMapper extends BaseMapper<Task> {
             "    WEEKDAY(#{queryDate}) = 5)) OR " +
             "  (`repeat` = 6 AND (#{queryDate} BETWEEN task_date AND repeat_end))" +
             ")")
-    List<Task> selectByComDateAndUser(@Param("userId") Long userId, @Param("queryDate") Date queryDate);
+    List<Task> selectByDisDateAndUser(@Param("userId") Long userId, @Param("queryDate") Date queryDate);
 
     /**
      * 查询已完成任务
@@ -78,7 +78,7 @@ public interface TaskMapper extends BaseMapper<Task> {
             "    WEEKDAY(#{queryDate}) = 5)) OR " +
             "  (`repeat` = 6 AND (#{queryDate} BETWEEN task_date AND repeat_end))" +
             ")")
-    List<Task> selectByDisDateAndUser(@Param("userId") Long userId, @Param("queryDate") Date queryDate);
+    List<Task> selectByComDateAndUser(@Param("userId") Long userId, @Param("queryDate") Date queryDate);
 }
 
 

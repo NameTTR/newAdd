@@ -1,25 +1,19 @@
 package com.family.pl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.family.pl.constant.TaskConstants;
 import com.family.pl.domain.*;
-import com.family.pl.domain.VO.AddChildTaskVO;
-import com.family.pl.domain.VO.AddTaskVO;
-import com.family.pl.domain.VO.DateTimeVO;
+import com.family.pl.domain.VO.*;
+import com.family.pl.mapper.TaskMapper;
 import com.family.pl.service.LabelService;
 import com.family.pl.service.TaskLabelService;
 import com.family.pl.service.TaskRemindService;
 import com.family.pl.service.TaskService;
-import com.family.pl.mapper.TaskMapper;
 import com.family.pl.utils.PlScheduleUtils;
 import com.family.us.utils.FamilySecurityUtils;
-import com.ruoyi.common.constant.ScheduleConstants;
 import com.ruoyi.common.exception.job.TaskException;
 import com.ruoyi.common.utils.StringUtils;
-import org.apache.commons.math3.analysis.function.Add;
-import org.apache.poi.ss.formula.functions.T;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
@@ -28,9 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-import javax.annotation.Resources;
 import java.util.Date;
 import java.util.List;
 
@@ -91,21 +82,30 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         if(task.getIsRemind() == 1){
-            PlJob job = new PlJob();
-            if(StringUtils.isNotNull(addTaskVO.getRepeatEnd()))
-            {
-                job.setRepeatEnd(addTaskVO.getRepeatEnd());
-            }
-            job.setJobId(taskid);
-            job.setJobName(addTaskVO.getTitle());
-            job.setCronExpression(addTaskVO.getCorn());
-            insertJob(job);
+
             TaskRemind taskRemind = new TaskRemind();
             taskRemind.setTaskId(taskid);
             taskRemind.setType(addTaskVO.getType());
             taskRemind.setRemindByTime(addTaskVO.getRemindByTime());
             taskRemind.setRemindByDate(addTaskVO.getRemindByDate());
             taskRemind.setCorn(addTaskVO.getCorn());
+            PlJob job = new PlJob();
+            if(StringUtils.isNotNull(addTaskVO.getRepeatEnd()))
+            {
+                job.setRepeatEnd(addTaskVO.getRepeatEnd());
+            }
+            if(StringUtils.isNotNull(addTaskVO.getRemindByTime())){
+                job.setRemindByTime(Integer.parseInt(addTaskVO.getRemindByTime().toString()));
+            }
+            if(StringUtils.isNotNull(addTaskVO.getRemindByDate())){
+                job.setRemindByDate(Integer.parseInt(addTaskVO.getRemindByDate().toString()));
+            }
+            job.setRemindByTime(Integer.parseInt(taskRemind.getRemindByTime().toString()));
+            job.setStartTime(addTaskVO.getTaskDate());
+            job.setJobId(taskid);
+            job.setJobName(addTaskVO.getTitle());
+            job.setCronExpression(addTaskVO.getCorn());
+            insertJob(job);
             if(!taskRemindService.save(taskRemind)){
                 flag = 0;
             }
@@ -152,21 +152,29 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         if(task.getIsRemind() == 1){
-            PlJob job = new PlJob();
-            if(StringUtils.isNotNull(addChildTaskVO.getRepeatEnd()))
-            {
-                job.setRepeatEnd(addChildTaskVO.getRepeatEnd());
-            }
-            job.setJobId(taskid);
-            job.setJobName(addChildTaskVO.getTitle());
-            job.setCronExpression(addChildTaskVO.getCorn());
-            insertJob(job);
             TaskRemind taskRemind = new TaskRemind();
             taskRemind.setTaskId(taskid);
             taskRemind.setType(addChildTaskVO.getType());
             taskRemind.setRemindByTime(addChildTaskVO.getRemindByTime());
             taskRemind.setRemindByDate(addChildTaskVO.getRemindByDate());
             taskRemind.setCorn(addChildTaskVO.getCorn());
+            PlJob job = new PlJob();
+            if(StringUtils.isNotNull(addChildTaskVO.getRepeatEnd()))
+            {
+                job.setRepeatEnd(addChildTaskVO.getRepeatEnd());
+            }
+            if(StringUtils.isNotNull(addChildTaskVO.getRemindByTime())){
+                job.setRemindByTime(Integer.parseInt(addChildTaskVO.getRemindByTime().toString()));
+            }
+            if(StringUtils.isNotNull(addChildTaskVO.getRemindByDate())){
+                job.setRemindByDate(Integer.parseInt(addChildTaskVO.getRemindByDate().toString()));
+            }
+            job.setRemindByTime(Integer.parseInt(taskRemind.getRemindByTime().toString()));
+            job.setStartTime(addChildTaskVO.getTaskDate());
+            job.setJobId(taskid);
+            job.setJobName(addChildTaskVO.getTitle());
+            job.setCronExpression(addChildTaskVO.getCorn());
+            insertJob(job);
             if(!taskRemindService.save(taskRemind)){
                 flag = 0;
             }
@@ -361,6 +369,14 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             if(StringUtils.isNotNull(task.getRepeatEnd())){
                 job.setRepeatEnd(task.getRepeatEnd());
             }
+            if(StringUtils.isNotNull(remind.getRemindByDate())){
+                job.setRemindByDate(Integer.parseInt(remind.getRemindByDate().toString()));
+            }
+            if(StringUtils.isNotNull(remind.getRemindByTime())){
+                job.setRemindByTime(Integer.parseInt(remind.getRemindByTime().toString()));
+            }
+            job.setStartTime(task.getTaskDate());
+            job.setRemindByTime(Integer.parseInt(remind.getRemindByTime().toString()));
             job.setJobId(taskid);
             job.setJobName(task.getTitle());
             job.setCronExpression(remind.getCorn());
@@ -437,7 +453,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
     public List<Task> selectCompleteTasks(DateTimeVO dateTimeVO) {
         Long userId = FamilySecurityUtils.getUserId();
         Date taskDate = dateTimeVO.getTime();
-        return taskMapper.selectByComDateAndUser(userId, taskDate);
+
+        List<Task> tasks = taskMapper.selectByComDateAndUser(userId, taskDate);
+        return tasks;
     }
 
     /**
@@ -450,7 +468,8 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
     public List<Task> selectDisCompleteTasks(DateTimeVO dateTimeVO) {
         Long userId = FamilySecurityUtils.getUserId();
         Date taskDate = dateTimeVO.getTime();
-        return taskMapper.selectByDisDateAndUser(userId, taskDate);
+        List<Task> tasks = taskMapper.selectByDisDateAndUser(userId, taskDate);
+        return tasks;
     }
 
     /**
@@ -517,6 +536,43 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         return flag;
     }
 
+    @Override
+    public int taskUpdateTitleById(TaskTitleVO taskTitleVO) {
+        int flag = 1;
+        Long taskId = taskTitleVO.getId();
+        Task task = taskService.getById(taskId);
+        task.setTitle(taskTitleVO.getTitle());
+        if(!taskService.updateById(task)){
+            flag = 0;
+        }
+        return flag;
+    }
+
+    @Override
+    public int taskUpdatePriorityById(TaskPriorityVO taskPriorityVO) {
+        int flag = 1;
+        Long taskId = taskPriorityVO.getId();
+        Task task = taskService.getById(taskId);
+        task.setPriority(taskPriorityVO.getPriority());
+        if(!taskService.updateById(task)){
+            flag = 0;
+        }
+        return flag;
+    }
+
+    @Override
+    public int taskUpdateNotesById(TaskNotesVO taskNotesVO) {
+        int flag = 1;
+        Long taskId = taskNotesVO.getId();
+        Task task = taskService.getById(taskId);
+        task.setNotes(taskNotesVO.getNotes());
+        if(!taskService.updateById(task)){
+            flag = 0;
+        }
+        return flag;
+    }
+
+
     /**
      * 添加定时任务
      *
@@ -526,8 +582,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      * @throws TaskException
      */
     @Override
-    public int insertJob(PlJob job) throws SchedulerException, TaskException
-    {
+    public int insertJob(PlJob job) throws SchedulerException, TaskException {
         PlScheduleUtils.createScheduleJob(scheduler, job);
         return 1;
     }

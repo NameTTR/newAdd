@@ -65,6 +65,12 @@ public class PlJob extends BaseEntity
 
     private Date repeatEnd;
 
+    private Date StartTime;
+
+    private Integer remindByTime;
+
+    private Integer remindByDate;
+
     public Long getJobId()
     {
         return jobId;

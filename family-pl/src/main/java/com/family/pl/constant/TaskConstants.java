@@ -27,8 +27,6 @@ public class TaskConstants extends Constants {
 
     public static final Integer TASK_NOT_DELETE = 0;
 
-    public static final Integer TASK_REAPEAT = 1;
-
     public static final Integer TASK_NOT_REAPRAT = 0;
 
     public static final Integer TASK_LABEL = 1;
@@ -52,4 +50,8 @@ public class TaskConstants extends Constants {
     public static final Integer TASK_REMIND = 1;
 
     public static final Integer TASK_NOT_REMIND = 1;
+
+    public static final String TASK_REMIND_TIME = "taskRemindTime";
+
+    public static final String TASK_REMIND_DATE = "taskRemindDate";
 }

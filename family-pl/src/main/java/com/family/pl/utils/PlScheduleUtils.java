@@ -78,16 +78,21 @@ public class PlScheduleUtils
         // 按新的cronExpression表达式构建一个新的trigger
         CronTrigger trigger = null;
         if(StringUtils.isNotNull(job.getRepeatEnd())){
-            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId)).endAt(job.getRepeatEnd())
+            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
+                    .endAt(job.getRepeatEnd())
+                    .startAt(job.getStartTime())
                     .withSchedule(cronScheduleBuilder).build();
         }else {
             trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
+                    .startAt(job.getStartTime())
                     .withSchedule(cronScheduleBuilder).build();
         }
 
         // 放入参数，运行时的方法可以获取
         jobDetail.getJobDataMap().put(TaskConstants.TASK_SKIP, false);
         jobDetail.getJobDataMap().put(ScheduleConstants.TASK_PROPERTIES, job);
+        jobDetail.getJobDataMap().put(TaskConstants.TASK_REMIND_TIME, job.getRemindByTime());
+        jobDetail.getJobDataMap().put(TaskConstants.TASK_REMIND_DATE, job.getRemindByDate());
 
         // 判断是否存在
         if (scheduler.checkExists(getJobKey(jobId)))
@@ -150,5 +155,35 @@ public class PlScheduleUtils
         String beanPackageName = obj.getClass().getPackage().getName();
         return StringUtils.containsAnyIgnoreCase(beanPackageName, TaskConstants.JOB_WHITELIST_STR)
                 && !StringUtils.containsAnyIgnoreCase(beanPackageName, TaskConstants.JOB_ERROR_STR);
+    }
+
+    /**
+     * 获取任务的jobId
+     *
+     * @param jobDetail 任务
+     * @return 执行类
+     */
+    public static Long getJobId(JobDetail jobDetail){
+        return Long.valueOf(jobDetail.getKey().getName().replace(ScheduleConstants.TASK_CLASS_NAME, ""));
+    }
+
+    /**
+     * 获取任务的remindByTime
+     *
+     * @param jobDetail 任务
+     * @return 提醒时间
+     */
+    public static Integer getRemindByTime(JobDetail jobDetail) {
+        return jobDetail.getJobDataMap().getInt(TaskConstants.TASK_REMIND_TIME);
+    }
+
+    /**
+     * 获取任务的remindByDate
+     *
+     * @param jobDetail 任务
+     * @return 提醒时间
+     */
+    public static Integer getRemindByDate(JobDetail jobDetail) {
+        return jobDetail.getJobDataMap().getInt(TaskConstants.TASK_REMIND_DATE);
     }
 }
