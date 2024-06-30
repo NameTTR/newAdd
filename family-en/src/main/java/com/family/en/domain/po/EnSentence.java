@@ -1,4 +1,4 @@
-package com.family.cc.domain.po;
+package com.family.en.domain.po;
 
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -6,25 +6,23 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.time.LocalDateTime;
 import java.io.Serializable;
-
-import com.family.cc.enums.CcCharacterTestState;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
 /**
  * <p>
- * 汉字测试明细表
+ * 单词句子表
  * </p>
  *
  * @author 陈文杰
- * @since 2024-04-28
+ * @since 2024-06-24
  */
+@Data
 @EqualsAndHashCode(callSuper = false)
 @Accessors(chain = true)
-@Data
-@TableName("cc_test_detail")
-public class CcTestDetail implements Serializable {
+@TableName("en_sentence")
+public class EnSentence implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
@@ -35,30 +33,30 @@ public class CcTestDetail implements Serializable {
     private Long id;
 
     /**
-     * 汉字测试表外键，汉字测试表ID
+     * 单词表外键，单词表ID
      */
-    private Long testId;
+    private Long wordId;
 
     /**
-     * 汉字表外键，汉字表ID
+     * 类别：1：普通句子；2：彦语
      */
-    private Long characterId;
+    private Integer type;
 
     /**
-     * 汉字
+     * 句子
      */
-    @TableField(value = "`character`")
-    private String character;
+    private String sentence;
 
     /**
-     * 测试结果：0：错；1：对；2：未测试
+     * 翻译
      */
-    private CcCharacterTestState result;
+    private String translation;
 
     /**
-     * 用户表外键，用户ID
+     * 读音
      */
-    private Long userId;
+    @TableField(value = "`read`")
+    private String read;
 
     /**
      * 创建时间
