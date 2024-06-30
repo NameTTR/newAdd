@@ -76,8 +76,8 @@ public class CcChapterStudyServiceImpl extends ServiceImpl<CcChapterStudyMapper,
             if (nextChapterId == -1) return AjaxResult.success("章节学习完成");
             if (sign == 1){
                 //如果是下一单元，更新nextChapterId为下一单元的id
-                CcChapter chapter = Db.lambdaQuery(CcChapter.class).eq(CcChapter::getUnitId, nextChapterId).orderByAsc(CcChapter::getSort).one();
-                nextChapterId = chapter.getId();
+                List<CcChapter> chapter = Db.lambdaQuery(CcChapter.class).eq(CcChapter::getUnitId, nextChapterId).orderByAsc(CcChapter::getSort).list();
+                nextChapterId = chapter.get(0).getId();
 
             }
             if (!updateChapterStudySimple(nextChapterId, userId, CcChapterState.LEARNING)) {
@@ -105,6 +105,7 @@ public class CcChapterStudyServiceImpl extends ServiceImpl<CcChapterStudyMapper,
                 .eq(CcChapterStudy::getUserId, userId)
                 .eq(CcChapterStudy::getChapterId, chapterId)
                 .one();
+        if(cur.getState() == state) return true;
         cur.setState(state);
         return lambdaUpdate()
                 .eq(CcChapterStudy::getUserId, userId)

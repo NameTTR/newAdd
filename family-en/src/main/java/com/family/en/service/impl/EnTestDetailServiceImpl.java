@@ -1,12 +1,12 @@
-package com.family.cc.service.impl;
+package com.family.en.service.impl;
 
 import com.baomidou.mybatisplus.extension.toolkit.Db;
-import com.family.cc.domain.dto.CcTestDetailsDTO;
-import com.family.cc.domain.po.*;
-import com.family.cc.enums.CcCharacterTestState;
-import com.family.cc.enums.CcTestState;
-import com.family.cc.mapper.CcTestDetailMapper;
-import com.family.cc.service.ICcTestDetailService;
+import com.family.en.domain.dto.EnTestDetailsDTO;
+import com.family.en.domain.po.*;
+import com.family.en.enums.EnTestState;
+import com.family.en.enums.EnWordTestState;
+import com.family.en.mapper.EnTestDetailMapper;
+import com.family.en.service.IEnTestDetailService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
@@ -21,14 +21,14 @@ import java.util.stream.Collectors;
 
 /**
  * <p>
- * 汉字测试明细表 服务实现类
+ * 单词测试明细表 服务实现类
  * </p>
  *
  * @author 陈文杰
- * @since 2024-04-28
+ * @since 2024-06-24
  */
 @Service
-public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcTestDetail> implements ICcTestDetailService {
+public class EnTestDetailServiceImpl extends ServiceImpl<EnTestDetailMapper, EnTestDetail> implements IEnTestDetailService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -39,16 +39,16 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             Long userId = 1L;
 
             //2. 获取章节信息
-            CcChapter chapter = Db.getById(chapterId, CcChapter.class);
+            EnChapter chapter = Db.getById(chapterId, EnChapter.class);
 
             //3. 获取单元信息
-            CcUnit unit = Db.getById(chapter.getUnitId(), CcUnit.class);
+            EnUnit unit = Db.getById(chapter.getUnitId(), EnUnit.class);
 
             //4. 新增测试信息
-            CcTest test = new CcTest();
+            EnTest test = new EnTest();
             test.setUserId(userId);
             test.setChapterId(chapterId);
-            test.setState(CcTestState.NOTFINISHED);
+            test.setState(EnTestState.NOTFINISHED);
             test.setCreatedTime(LocalDateTime.now());
             boolean isSuccess1 = Db.save(test);
 
@@ -57,15 +57,15 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             }
 
             //5.1 构建测试明细信息
-            List<CcCharacter> characters = Db.lambdaQuery(CcCharacter.class).eq(CcCharacter::getChapterId, chapterId).list();
-            List<CcTestDetail> testDetails = new ArrayList<>(characters.size());
-            for (CcCharacter character : characters) {
-                CcTestDetail testDetail = new CcTestDetail();
+            List<EnWord> Words = Db.lambdaQuery(EnWord.class).eq(EnWord::getChapterId, chapterId).list();
+            List<EnTestDetail> testDetails = new ArrayList<>(Words.size());
+            for (EnWord Word : Words) {
+                EnTestDetail testDetail = new EnTestDetail();
                 testDetail.setUserId(userId);
                 testDetail.setTestId(test.getId());
-                testDetail.setCharacterId(character.getId());
-                testDetail.setCharacter(character.getCharacter());
-                testDetail.setResult(CcCharacterTestState.NOTFINISHED);
+                testDetail.setWordId(Word.getId());
+                testDetail.setWord(Word.getWord());
+                testDetail.setResult(EnWordTestState.NOTFINISHED);
                 testDetail.setCreatedTime(LocalDateTime.now());
                 testDetails.add(testDetail);
             }
@@ -76,13 +76,13 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             }
 
             //6. 构建返回结果
-            CcTestDetailsDTO testDetailsDTO = new CcTestDetailsDTO();
+            EnTestDetailsDTO testDetailsDTO = new EnTestDetailsDTO();
             testDetailsDTO.setTestId(test.getId());
             testDetailsDTO.setUnit(unit.getUnit());
             testDetailsDTO.setChapter(chapter.getChapter());
             testDetailsDTO.setPassCount(0L);
-            testDetailsDTO.setState(CcTestState.NOTFINISHED);
-            testDetailsDTO.setCharacterTest(testDetails);
+            testDetailsDTO.setState(EnTestState.NOTFINISHED);
+            testDetailsDTO.setWordTest(testDetails);
             testDetailsDTO.setCreatedTime(LocalDateTime.now());
 
             return AjaxResult.success(testDetailsDTO);
@@ -112,13 +112,13 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             Long userId = 1L;
 
             //2. 删除测试明细表
-            boolean isSuccess = lambdaUpdate().eq(CcTestDetail::getTestId, testID).eq(CcTestDetail::getUserId, userId).remove();
+            boolean isSuccess = lambdaUpdate().eq(EnTestDetail::getTestId, testID).eq(EnTestDetail::getUserId, userId).remove();
             if (!isSuccess){
                 return AjaxResult.error("删除测试记录失败，请重试！");
             }
 
             //3. 删除测试表
-            boolean isSuccess2 = Db.lambdaUpdate(CcTest.class).eq(CcTest::getId, testID).eq(CcTest::getUserId, userId).remove();
+            boolean isSuccess2 = Db.lambdaUpdate(EnTest.class).eq(EnTest::getId, testID).eq(EnTest::getUserId, userId).remove();
             if (!isSuccess2){
                 throw new RuntimeException("删除测试记录失败，请重试！");
             }
@@ -135,57 +135,57 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
      * @param sign 0:已完成的数据，1:未完成/进行中的数据
      * @return
      */
-    private List<CcTestDetailsDTO> getTestDetailsDTOList(int sign) {
+    private List<EnTestDetailsDTO> getTestDetailsDTOList(int sign) {
         //1. 获取用户id
 //        Long userId = SecurityUtils.getUserId();
         Long userId = 1L;
 
         //2. 获取测试表
-        List<CcTest> test;
+        List<EnTest> test;
         if (sign == 0) {
-             test = Db.lambdaQuery(CcTest.class)
-                    .eq(CcTest::getUserId, userId)
-                    .eq(CcTest::getState, CcTestState.FINISHED)
-                    .orderByDesc(CcTest::getCreatedTime)
+            test = Db.lambdaQuery(EnTest.class)
+                    .eq(EnTest::getUserId, userId)
+                    .eq(EnTest::getState, EnTestState.FINISHED)
+                    .orderByDesc(EnTest::getCreatedTime)
                     .list();
         }else {
-            test = Db.lambdaQuery(CcTest.class)
-                    .eq(CcTest::getUserId, userId)
-                    .ne(CcTest::getState, CcTestState.FINISHED)
-                    .orderByDesc(CcTest::getCreatedTime)
+            test = Db.lambdaQuery(EnTest.class)
+                    .eq(EnTest::getUserId, userId)
+                    .ne(EnTest::getState, EnTestState.FINISHED)
+                    .orderByDesc(EnTest::getCreatedTime)
                     .list();
             test = test.stream().sorted((t1,t2) -> t2.getState().compareTo(t1.getState())).collect(Collectors.toList());
         }
         if (test == null || test.isEmpty()) return Collections.emptyList();
-        List<Long> testIds = test.stream().map(CcTest::getId).collect(Collectors.toList());
+        List<Long> testIds = test.stream().map(EnTest::getId).collect(Collectors.toList());
 
 
         //3. 获取章节信息和单元信息
-        List<Long> chapterIds = test.stream().map(CcTest::getChapterId).collect(Collectors.toList());
-        List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class).in(CcChapter::getId, chapterIds).list();
-        List<Long> unitIds = chapters.stream().map(CcChapter::getUnitId).collect(Collectors.toList());
-        List<CcUnit> units = Db.lambdaQuery(CcUnit.class).in(CcUnit::getId, unitIds).list();
+        List<Long> chapterIds = test.stream().map(EnTest::getChapterId).collect(Collectors.toList());
+        List<EnChapter> chapters = Db.lambdaQuery(EnChapter.class).in(EnChapter::getId, chapterIds).list();
+        List<Long> unitIds = chapters.stream().map(EnChapter::getUnitId).collect(Collectors.toList());
+        List<EnUnit> units = Db.lambdaQuery(EnUnit.class).in(EnUnit::getId, unitIds).list();
 
-        Map<Long, CcChapter> chapterMap = chapters.stream().collect(Collectors.toMap(CcChapter::getId, c -> c));
-        Map<Long, CcUnit> unitMap = units.stream().collect(Collectors.toMap(CcUnit::getId, u -> u));
+        Map<Long, EnChapter> chapterMap = chapters.stream().collect(Collectors.toMap(EnChapter::getId, c -> c));
+        Map<Long, EnUnit> unitMap = units.stream().collect(Collectors.toMap(EnUnit::getId, u -> u));
 
         //4.获取测试表详情
-        List<CcTestDetail> testDetails = lambdaQuery().in(CcTestDetail::getTestId, testIds).list();
-        Map<Long, List<CcTestDetail>> map = testDetails.stream().collect(Collectors.groupingBy(CcTestDetail::getTestId));
+        List<EnTestDetail> testDetails = lambdaQuery().in(EnTestDetail::getTestId, testIds).list();
+        Map<Long, List<EnTestDetail>> map = testDetails.stream().collect(Collectors.groupingBy(EnTestDetail::getTestId));
 
 
         //5. 构建返回结果
-        List<CcTestDetailsDTO> testDTOS = new ArrayList<>(test.size());
-        for (CcTest t : test) {
-            CcTestDetailsDTO testDTO = new CcTestDetailsDTO();
-            CcChapter chapter = chapterMap.get(t.getChapterId());
-            List<CcTestDetail> details = map.get(t.getId());
-            long count = details.stream().filter(c -> c.getResult() == CcCharacterTestState.READY).count();
+        List<EnTestDetailsDTO> testDTOS = new ArrayList<>(test.size());
+        for (EnTest t : test) {
+            EnTestDetailsDTO testDTO = new EnTestDetailsDTO();
+            EnChapter chapter = chapterMap.get(t.getChapterId());
+            List<EnTestDetail> details = map.get(t.getId());
+            long count = details.stream().filter(c -> c.getResult() == EnWordTestState.READY).count();
 
             testDTO.setTestId(t.getId());
             testDTO.setChapter(chapter.getChapter());
             testDTO.setUnit(unitMap.get(chapter.getUnitId()).getUnit());
-            testDTO.setCharacterTest(details);
+            testDTO.setWordTest(details);
             testDTO.setState(t.getState());
             testDTO.setPassCount(count);
             testDTO.setCreatedTime(t.getCreatedTime());
