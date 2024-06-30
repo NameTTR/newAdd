@@ -70,13 +70,11 @@ public class CcStudyServiceImpl extends ServiceImpl<CcStudyMapper, CcStudy> impl
             }
 
             //4.2. 如果更新成功，返回更新后的汉字信息
-            CcCharacter one = Db.lambdaQuery(CcCharacter.class).eq(CcCharacter::getId, characterId).one();
-            CcCharacterDTO updatedCharacter = BeanUtil.copyProperties(one, CcCharacterDTO.class);
-            updatedCharacter.setState(study.getState());
-            return AjaxResult.success(updatedCharacter);
+            return AjaxResult.success(study);
         } catch (Exception e) {
             e.printStackTrace();
-            return AjaxResult.error("更新失败");
+            throw new RuntimeException("更新学习记录失败");
+
         }
     }
 }

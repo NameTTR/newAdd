@@ -124,7 +124,7 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             }
 
             return AjaxResult.success("删除测试记录成功！");
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("删除测试记录失败，请重试！");
         }
