@@ -74,6 +74,7 @@ public class CcStudyServiceImpl extends ServiceImpl<CcStudyMapper, CcStudy> impl
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("更新学习记录失败");
+
         }
     }
 }
