@@ -205,6 +205,7 @@
         <module>family-us</module>
         <module>family-cc</module>
         <module>family-common</module>
+        <module>family-pi</module>
         <module>family-en</module>
     </modules>
     <packaging>pom</packaging>
