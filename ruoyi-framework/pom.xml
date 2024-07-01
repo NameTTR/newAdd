@@ -94,6 +94,13 @@
             <version>3.8.7</version>
         </dependency>
 
+        <!-- 思维模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-th</artifactId>
+            <version>3.8.7</version>
+        </dependency>
+
     </dependencies>
 
 </project>
