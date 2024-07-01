@@ -45,6 +45,11 @@ public class ThTestDetailsDTO {
     private ThTestState state;
 
     /**
+     * 题目ID列表
+     */
+    private List<Long> questionIds;
+
+    /**
      * 思维个体结果信息
      */
     private List<ThTestDetail> thinkingTest;

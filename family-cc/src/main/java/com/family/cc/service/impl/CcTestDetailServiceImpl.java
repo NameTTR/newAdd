@@ -180,7 +180,7 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
             CcTestDetailsDTO testDTO = new CcTestDetailsDTO();
             CcChapter chapter = chapterMap.get(t.getChapterId());
             List<CcTestDetail> details = map.get(t.getId());
-            long count = details.stream().filter(c -> c.getResult() == CcCharacterTestState.READY).count();
+            long count = details.stream().filter(c -> c.getResult() == CcCharacterTestState.RIGHT).count();
 
             testDTO.setTestId(t.getId());
             testDTO.setChapter(chapter.getChapter());

@@ -2,6 +2,7 @@ package com.family.th.service;
 
 import com.family.th.domain.po.ThStudy;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.core.domain.AjaxResult;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IThStudyService extends IService<ThStudy> {
 
+    /**
+     * 更新汉字学习记录
+     * @param thinkingId 汉字id
+     * @return
+     */
+    AjaxResult updateStudyRecord(Long thinkingId);
 }

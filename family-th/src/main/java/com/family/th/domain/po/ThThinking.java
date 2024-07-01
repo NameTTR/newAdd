@@ -33,6 +33,11 @@ public class ThThinking implements Serializable {
     private Long id;
 
     /**
+     * 学习内容
+     */
+    private String thinking;
+
+    /**
      * 标题
      */
     private String title;

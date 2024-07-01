@@ -61,7 +61,8 @@ public class CcStudyServiceImpl extends ServiceImpl<CcStudyMapper, CcStudy> impl
             }
             boolean isSuccess = lambdaUpdate().eq(CcStudy::getUserId, userId)
                     .eq(CcStudy::getCharacterId, characterId)
-                    .update(study);
+                    .set(CcStudy::getState, study.getState())
+                    .update();
 
             //4. 返回结果
             //4.1. 如果更新失败，返回失败信息

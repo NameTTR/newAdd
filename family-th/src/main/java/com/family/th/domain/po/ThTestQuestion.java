@@ -62,9 +62,9 @@ public class ThTestQuestion implements Serializable {
     private String option4;
 
     /**
-     * 答案
+     * 答案 - 存储的几号选项
      */
-    private String answer;
+    private Integer answer;
 
     /**
      * 创建时间

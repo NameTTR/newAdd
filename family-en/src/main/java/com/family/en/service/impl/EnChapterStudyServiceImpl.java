@@ -104,10 +104,10 @@ public class EnChapterStudyServiceImpl extends ServiceImpl<EnChapterStudyMapper,
                 .eq(EnChapterStudy::getChapterId, chapterId)
                 .one();
         if(cur.getState() == state) return true;
-        cur.setState(state);
         return lambdaUpdate()
                 .eq(EnChapterStudy::getUserId, userId)
                 .eq(EnChapterStudy::getChapterId, chapterId)
+                .set(EnChapterStudy::getState, state)
                 .update(cur);
     }
 }

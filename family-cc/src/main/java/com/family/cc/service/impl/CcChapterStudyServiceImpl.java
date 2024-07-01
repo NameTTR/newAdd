@@ -106,10 +106,10 @@ public class CcChapterStudyServiceImpl extends ServiceImpl<CcChapterStudyMapper,
                 .eq(CcChapterStudy::getChapterId, chapterId)
                 .one();
         if(cur.getState() == state) return true;
-        cur.setState(state);
         return lambdaUpdate()
                 .eq(CcChapterStudy::getUserId, userId)
                 .eq(CcChapterStudy::getChapterId, chapterId)
-                .update(cur);
+                .set(CcChapterStudy::getState, state)
+                .update();
     }
 }

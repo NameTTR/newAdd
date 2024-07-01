@@ -11,7 +11,7 @@ import com.fasterxml.jackson.annotation.JsonValue;
  */
 public enum CcCharacterTestState {
     ERROR(0, "错误"), // 错误
-    READY(1, "正确"),  // 正确
+    RIGHT(1, "正确"),  // 正确
     NOTFINISHED(2, "未测试"), // 未测试
     ;
     @EnumValue

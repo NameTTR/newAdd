@@ -61,7 +61,8 @@ public class PiStudyServiceImpl extends ServiceImpl<PiStudyMapper, PiStudy> impl
             }
             boolean isSuccess = lambdaUpdate().eq(PiStudy::getUserId, userId)
                     .eq(PiStudy::getPinyinId, pinyinId)
-                    .update(study);
+                    .set(PiStudy::getState, study.getState())
+                    .update();
 
             //4. 返回结果
             //4.1. 如果更新失败，返回失败信息

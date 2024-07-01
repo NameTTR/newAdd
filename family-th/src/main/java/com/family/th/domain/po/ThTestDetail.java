@@ -44,6 +44,16 @@ public class ThTestDetail implements Serializable {
     private Long testQuestionId;
 
     /**
+     * 当前记录的答案 - 存储的几号选项
+     */
+    private Integer nowAnswer;
+
+    /**
+     * 正确的答案 - 存储的几号选项
+     */
+    private Integer  correctAnswer;
+
+    /**
      * 测试结果：0：错误；1：正确；2：未测试
      */
     private ThThinkingTestState result;
