@@ -1,5 +1,6 @@
 package com.family.th.service;
 
+import com.family.th.domain.dto.ThTestDetailsDTO;
 import com.family.th.domain.po.ThTestDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -39,4 +40,11 @@ public interface IThTestDetailService extends IService<ThTestDetail> {
      * @return
      */
     AjaxResult deleteTest(Long testID);
+
+    /**
+     * 更新测试记录
+     * @param testDetailsDTO 测试记录
+     * @return
+     */
+    AjaxResult updateTest(ThTestDetailsDTO testDetailsDTO);
 }

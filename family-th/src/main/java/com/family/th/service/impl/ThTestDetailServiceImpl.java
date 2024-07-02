@@ -1,5 +1,7 @@
 package com.family.th.service.impl;
 
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.extension.conditions.update.LambdaUpdateChainWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.family.th.domain.dto.ThTestDetailsDTO;
 import com.family.th.domain.po.*;
@@ -9,9 +11,12 @@ import com.family.th.mapper.ThTestDetailMapper;
 import com.family.th.service.IThTestDetailService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
+import lombok.AllArgsConstructor;
+import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Statement;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +33,11 @@ import java.util.stream.Collectors;
  * @since 2024-07-01
  */
 @Service
+@AllArgsConstructor
 public class ThTestDetailServiceImpl extends ServiceImpl<ThTestDetailMapper, ThTestDetail> implements IThTestDetailService {
+
+    // 使用 MyBatis 的 SqlSessionTemplate
+    private final SqlSessionTemplate sqlSessionTemplate;
 
     /**
      * 新增测试
@@ -145,6 +154,74 @@ public class ThTestDetailServiceImpl extends ServiceImpl<ThTestDetailMapper, ThT
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("删除测试记录失败，请重试！");
+        }
+    }
+
+    /**
+     * 更新测试记录
+     * @param testDetailsDTO 测试记录
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult updateTest(ThTestDetailsDTO testDetailsDTO) {
+        try {
+            //1. 获取用户id
+//        Long userId = SecurityUtils.getUserId();
+            Long userId = 1L;
+
+            //2.获取当前数据库中的测试记录
+            List<ThTestDetail> updateTestDetails = testDetailsDTO.getThinkingTest();
+            List<Long> ids = updateTestDetails.stream().map(ThTestDetail::getId).collect(Collectors.toList());
+            String idsStr = StrUtil.join(",", ids);
+            List<ThTestDetail> nowTestDetail = lambdaQuery()
+                    .in(ThTestDetail::getId, ids)
+                    .eq(ThTestDetail::getUserId, userId)
+                    .last("ORDER BY FIELD(id," + idsStr + ")")
+                    .list();
+
+            //2.1 如果当前数据库中不存在测试记录，则返回错误信息
+            if (nowTestDetail == null || nowTestDetail.isEmpty()) {
+                return AjaxResult.error("测试记录细节不存在，请重试！");
+            }
+
+            //2.2 存在，则进行遍历测试记录，判断是否有更新
+            boolean isUpdate = false;
+            ThTestState state = ThTestState.NOTFINISHED;
+            for (int i = 0; i < nowTestDetail.size(); i++) {
+                if(nowTestDetail.get(i).getResult() != updateTestDetails.get(i).getResult()){
+                    isUpdate = true;
+                    break;
+                }
+            }
+            if (updateTestDetails.get(updateTestDetails.size() - 1).getResult() != ThThinkingTestState.NOTFINISHED)
+                state = ThTestState.FINISHED;
+
+            //2.3 如果没有更新，则直接返回成功信息
+            if (!isUpdate){
+                return AjaxResult.success("测试记录没有更新！");
+            }
+
+            //3. 有更新，则进行更新
+            //3.1 遍历创建更新的sql语句
+            StringBuilder sqlBuilder = new StringBuilder();
+            updateTestDetails.forEach(testDetail -> {
+                sqlBuilder.append("UPDATE th_test_detail SET result = ").append(testDetail.getResult()).append(" WHERE id = ").append(testDetail.getId()).append(";");
+            });
+            sqlBuilder.append("UPDATE th_test SET state = ").append(state).append(" WHERE id = ").append(testDetailsDTO.getTestId()).append(";");
+
+            //3.2 执行更新语句
+            int update = sqlSessionTemplate.update(sqlBuilder.toString());
+            if (update > 1){
+                //说明有更新失败，抛出异常
+                return AjaxResult.error("更新测试记录失败，请重试！");
+            }
+
+            //3.3 返回成功信息
+            return AjaxResult.success("更新测试记录成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("更新测试记录失败，请重试！");
         }
     }
 

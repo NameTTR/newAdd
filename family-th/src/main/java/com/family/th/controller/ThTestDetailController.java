@@ -1,6 +1,7 @@
 package com.family.th.controller;
 
 
+import com.family.th.domain.dto.ThTestDetailsDTO;
 import com.family.th.domain.po.ThTestDetail;
 import com.family.th.service.IThTestDetailService;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -61,14 +62,15 @@ public class ThTestDetailController {
         return thTestDetailService.deleteTest(testID);
     }
 
-//    /**
-//     * 更新测试记录
-//     * @param thTestDetail 测试记录
-//     * @return
-//     */
-//    @PutMapping()
-//    public AjaxResult updateTest(@RequestBody List<ThTestDetail> thTestDetail) {
-//        return thTestDetailService.updateTest(thTestDetail);
-//    }
+
+    /**
+     * 更新测试记录
+     * @param testDetailsDTO 测试记录
+     * @return
+     */
+    @PutMapping()
+    public AjaxResult updateTest(@RequestBody ThTestDetailsDTO testDetailsDTO) {
+        return thTestDetailService.updateTest(testDetailsDTO);
+    }
 
 }
