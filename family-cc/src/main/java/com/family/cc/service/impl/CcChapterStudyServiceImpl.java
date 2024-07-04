@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -90,6 +91,44 @@ public class CcChapterStudyServiceImpl extends ServiceImpl<CcChapterStudyMapper,
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("章节学习记录更新失败");
+        }
+    }
+
+    /**
+     * 新增用户章节学习记录
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult addChapterStudy() {
+        try {
+            //1.获取用户id
+//        Long userId = SecurityUtils.getUserId();
+            Long userId = 1L;
+
+            //2.添加所有章节学习记录
+            List<CcChapter> chapters = Db.lambdaQuery(CcChapter.class).list();
+            List<Long> Ids = chapters.stream().map(CcChapter::getId).collect(Collectors.toList());
+
+            List<CcChapterStudy> chapterStudies = new ArrayList<>(chapters.size());
+            chapterStudies.addAll(Ids.stream().map(id -> {
+                CcChapterStudy chapterStudy = new CcChapterStudy();
+                chapterStudy.setChapterId(id);
+                chapterStudy.setState(CcChapterState.UNLEARNED0);
+                chapterStudy.setUserId(userId);
+                return chapterStudy;
+            }).collect(Collectors.toList()));
+            chapterStudies.get(0).setState(CcChapterState.LEARNING);
+
+            boolean isSaved = saveOrUpdateBatch(chapterStudies);
+            if(!isSaved){
+                return AjaxResult.error("新增用户章节学习记录失败！");
+            }
+
+            return AjaxResult.success("新增用户章节学习记录成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("新增用户章节学习记录失败！");
         }
     }
 

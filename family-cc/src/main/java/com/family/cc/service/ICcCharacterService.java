@@ -3,6 +3,8 @@ package com.family.cc.service;
 import com.family.cc.domain.po.CcCharacter;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.io.File;
+
 /**
  * <p>
  * 汉字章节表 服务类
@@ -13,4 +15,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICcCharacterService extends IService<CcCharacter> {
 
+    /**
+     * 导入数据
+     * @param tempFile 导入的文件
+     */
+    void importData(File tempFile);
 }
