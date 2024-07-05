@@ -100,6 +100,7 @@ public class ThUnitServiceImpl extends ServiceImpl<ThUnitMapper, ThUnit> impleme
                 .list();
         Map<Long, ThChapterStudy> chapterStudyMap = chapterStudies.stream().collect(Collectors.toMap(ThChapterStudy::getChapterId, c -> c));
 
+/*
         //3. 查询所有章节的个体信息
         for (ThChapter chapter : chapters) {
             //3.1 查询当前章节的个体信息
@@ -128,8 +129,36 @@ public class ThUnitServiceImpl extends ServiceImpl<ThUnitMapper, ThUnit> impleme
             //3.4 放入单元信息
             unitDate.add(ThChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(),ThThinkingDTOS));
         }
+*/
+        //3. 查询所有章节的汉字信息
+        //3.1 查询当前单元下的所有章节的汉字信息
+        List<Long> chapterIds = chapters.stream().map(ThChapter::getId).collect(Collectors.toList());
 
-        //3. 返回结果
+        // 需要的汉字信息
+        List<ThThinking> characters = Db.lambdaQuery(ThThinking.class)
+                .in(ThThinking::getChapterId, chapterIds)
+                .list();
+        List<Long> characterIds = characters.stream().map(ThThinking::getId).collect(Collectors.toList());
+
+        // 需要的汉字学习记录
+        List<ThStudy> studies = Db.lambdaQuery(ThStudy.class)
+                .in(ThStudy::getThinkingId, characterIds)
+                .eq(ThStudy::getUserId, userId)
+                .list();
+        Map<Long, ThStudy> studyMap = studies.stream().collect(Collectors.toMap(ThStudy::getThinkingId, c -> c));
+
+        //3.2 封装单元信息
+        //3.2.1 章节信息
+        List<ThThinkingDTO> ccCharacterDTOS = BeanUtil.copyToList(characters, ThThinkingDTO.class);
+        ccCharacterDTOS.forEach(c -> c.setState(studyMap.get(c.getId()).getState()));
+        //3.3 按章节将汉字分组
+        Map<Long, List<ThThinkingDTO>> chapterMapOfCharacterDTOS = ccCharacterDTOS.stream().collect(Collectors.groupingBy(ThThinkingDTO::getChapterId));
+        for (ThChapter chapter : chapters){
+            List<ThThinkingDTO> characterDTOS = chapterMapOfCharacterDTOS.get(chapter.getId());
+            unitDate.add(ThChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(), characterDTOS));
+        }
+
+        //4. 返回结果
         return AjaxResult.success(ThUnitDTO.of(unit, unitDate));
     }
 
