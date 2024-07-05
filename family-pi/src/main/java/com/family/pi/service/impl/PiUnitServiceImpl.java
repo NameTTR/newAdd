@@ -96,36 +96,17 @@ public class PiUnitServiceImpl extends ServiceImpl<PiUnitMapper, PiUnit> impleme
         pinyins.forEach(c -> pinyinIds.add(c.getId()));
 
         //3.2 查询拼音的学习情况
-        String idsStr = StrUtil.join(",", pinyinIds);
-        List<PiStudy> studies = Db.lambdaQuery(PiStudy.class)
+        List<PiStudy> pinyinStudies = Db.lambdaQuery(PiStudy.class)
                 .in(PiStudy::getPinyinId, pinyinIds)
                 .eq(PiStudy::getUserId, userId)
-                .last("ORDER BY FIELD(id," + idsStr + ")")
                 .list();
+        Map<Long, PiStudy> pinyinStudyMap = pinyinStudies.stream().collect(Collectors.toMap(PiStudy::getPinyinId, p -> p));
+
 
         //3.3 封装单元信息
         //3.3.1 拼音学习学习情况
         List<PiPinyinDTO> piPinyinDTOS = BeanUtil.copyToList(pinyins, PiPinyinDTO.class);
-        //3.3.2 拼音的词组信息
-        List<PiPinyinGroup> pinyinGroups = Db.lambdaQuery(PiPinyinGroup.class)
-                .in(PiPinyinGroup::getPinyinId, pinyinIds)
-                .list();
-        Map<Long, List<PiPinyinGroup>> groupMap = pinyinGroups.stream().collect(Collectors.groupingBy(PiPinyinGroup::getPinyinId));
-
-        for (int i = 0; i < piPinyinDTOS.size(); i++) {
-            PiPinyinDTO piPinyinDTO = piPinyinDTOS.get(i);
-            piPinyinDTO.setState(studies.get(i).getState());
-
-            if (groupMap.get(piPinyinDTO.getId()) == null){
-                piPinyinDTO.setCompounds(Collections.emptyList());
-                continue;
-            }
-            List<PiPinyinGroup> compounds = groupMap.get(piPinyinDTO.getId());
-
-
-            piPinyinDTO.setCompounds(compounds);
-
-        }
+        piPinyinDTOS.forEach(p -> p.setState(pinyinStudyMap.get(p.getId()).getState()));
 
         //4. 返回结果
         List<PiPinyinDTO> initials = piPinyinDTOS.stream().filter(p -> p.getType() == 1).collect(Collectors.toList());

@@ -1,7 +1,6 @@
 package com.family.cc.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.family.cc.domain.dto.*;
@@ -101,56 +100,35 @@ public class CcUnitServiceImpl extends ServiceImpl<CcUnitMapper, CcUnit> impleme
         Map<Long, CcChapterStudy> chapterStudyMap = chapterStudies.stream().collect(Collectors.toMap(CcChapterStudy::getChapterId, c -> c));
 
         //3. 查询所有章节的汉字信息
-        for (CcChapter chapter : chapters) {
-            //3.1 查询当前章节的汉字信息
-            List<CcCharacter> characters = Db.lambdaQuery(CcCharacter.class)
-                    .eq(CcCharacter::getChapterId, chapter.getId())
-                    .list();
-            List<Long> characterIds = new ArrayList<>(characters.size());
-            characters.forEach(c -> characterIds.add(c.getId()));
+        //3.1 查询当前单元下的所有章节的汉字信息
+        List<Long> chapterIds = chapters.stream().map(CcChapter::getId).collect(Collectors.toList());
 
-            //3.2 查询汉字的学习情况
-            String idsStr = StrUtil.join(",", characterIds);
-            List<CcStudy> studies = Db.lambdaQuery(CcStudy.class)
-                    .in(CcStudy::getCharacterId, characterIds)
-                    .eq(CcStudy::getUserId, userId)
-                    .last("ORDER BY FIELD(id," + idsStr + ")")
-                    .list();
+        // 需要的汉字信息
+        List<CcCharacter> characters = Db.lambdaQuery(CcCharacter.class)
+                .in(CcCharacter::getChapterId, chapterIds)
+                .list();
+        List<Long> characterIds = characters.stream().map(CcCharacter::getId).collect(Collectors.toList());
 
-            //3.3 封装章节信息
-            //3.3.1 汉字学习学习情况
-            List<CcCharacterDTO> ccCharacterDTOS = BeanUtil.copyToList(characters, CcCharacterDTO.class);
-            //3.3.2 汉字的词组信息
-            List<CcCharacterGroup> characterGroups = Db.lambdaQuery(CcCharacterGroup.class)
-                    .in(CcCharacterGroup::getCharacterId, characterIds)
-                    .list();
-            Map<Long, List<CcCharacterGroup>> groupMap = characterGroups.stream().collect(Collectors.groupingBy(CcCharacterGroup::getCharacterId));
+        // 需要的汉字学习记录
+        List<CcStudy> studies = Db.lambdaQuery(CcStudy.class)
+                .in(CcStudy::getCharacterId, characterIds)
+                .eq(CcStudy::getUserId, userId)
+                .list();
+        Map<Long, CcStudy> studyMap = studies.stream().collect(Collectors.toMap(CcStudy::getCharacterId, c -> c));
 
-            for (int i = 0; i < ccCharacterDTOS.size(); i++) {
-                CcCharacterDTO ccCharacterDTO = ccCharacterDTOS.get(i);
-                ccCharacterDTO.setState(studies.get(i).getState());
+        //3.2 封装单元信息
+        //3.2.1 章节信息
+        List<CcCharacterDTO> ccCharacterDTOS = BeanUtil.copyToList(characters, CcCharacterDTO.class);
+        ccCharacterDTOS.forEach(c -> c.setState(studyMap.get(c.getId()).getState()));
 
-                if (groupMap.get(ccCharacterDTO.getId()) == null){
-                    ccCharacterDTO.setCompounds(Collections.emptyList());
-                    ccCharacterDTO.setSynonyms(Collections.emptyList());
-                    ccCharacterDTO.setAntonyms(Collections.emptyList());
-                    continue;
-                }
-                List<CcCharacterGroup> compounds = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 1).collect(Collectors.toList());
-                List<CcCharacterGroup> synonym = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 2).collect(Collectors.toList());
-                List<CcCharacterGroup> antonym = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 3).collect(Collectors.toList());
-
-                ccCharacterDTO.setCompounds(compounds);
-                ccCharacterDTO.setSynonyms(synonym);
-                ccCharacterDTO.setAntonyms(antonym);
-
-            }
-
-            //3.4 放入单元信息
-            unitDate.add(CcChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(),ccCharacterDTOS));
+        //3.3 按章节将汉字分组
+        Map<Long, List<CcCharacterDTO>> chapterMapOfCharacterDTOS = ccCharacterDTOS.stream().collect(Collectors.groupingBy(CcCharacterDTO::getChapterId));
+        for (CcChapter chapter : chapters){
+            List<CcCharacterDTO> characterDTOS = chapterMapOfCharacterDTOS.get(chapter.getId());
+            unitDate.add(CcChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(), characterDTOS));
         }
 
-        //3. 返回结果
+        //4. 返回结果
         return AjaxResult.success(CcUnitDTO.of(unit, unitDate));
     }
 
