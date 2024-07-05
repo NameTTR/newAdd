@@ -82,9 +82,11 @@ public interface TaskService extends IService<Task> {
 
     int taskDeleteAllById(DateTimeVO dateTimeVO) throws SchedulerException;
 
-    int taskUpdateTitleById(TaskTitleVO taskTitleVO);
+    int taskUpdateTitleById(UpdateTaskTitleVO updataTaskTitleVO);
 
-    int taskUpdatePriorityById(TaskPriorityVO taskPriorityVO);
+    int taskUpdatePriorityById(UpdateTaskPriorityVO taskPriorityVO);
 
-    int taskUpdateNotesById(TaskNotesVO taskNotesVO);
+    int taskUpdateNotesById(UpdateTaskNotesVO taskNotesVO);
+
+    int updateTaskById(UpdateTaskVO updateTaskVO) throws SchedulerException, TaskException;
 }

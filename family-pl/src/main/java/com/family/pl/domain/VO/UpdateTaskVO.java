@@ -1,13 +1,8 @@
 package com.family.pl.domain.VO;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.family.pl.domain.Label;
-import com.family.pl.domain.Task;
 import com.family.pl.domain.TaskLabel;
 import com.family.pl.domain.TaskRemind;
-import com.fasterxml.jackson.annotation.JsonFormat;
+import com.family.pl.domain.Task;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -15,7 +10,6 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,7 +20,12 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AddTaskVO {
+public class UpdateTaskVO {
+
+    /**
+     * 任务ID
+     */
+    private Long id;
 
     /**
      * 标题
@@ -41,19 +40,16 @@ public class AddTaskVO {
     /**
      * 日期
      */
-    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate taskDate;
 
     /**
      * 开始时间，允许为空，空值则表示全天
      */
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime taskTimeBegin;
 
     /**
      * 结束时间，允许为空，若开始时间为空，则结束时间不允许非空
      */
-    @JsonFormat(pattern = "HH:mm")
     private LocalTime taskTimeEnd;
 
     /**
@@ -64,7 +60,6 @@ public class AddTaskVO {
     /**
      * 重复结束时间
      */
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime repeatEnd;
 
     /**
@@ -93,19 +88,24 @@ public class AddTaskVO {
     private Long fatherTaskId;
 
     /**
-     * 标签表冗余字段，标签
+     * 标签ID
      */
-    private List<String> labelName;
+    private Long labelId;
 
     /**
-     * 提醒
+     * 标签表
      */
-    private List<TaskRemindVO> taskRemindVO;
+    private List<TaskLabel> taskLabels;
+
+    /**
+     * 提醒表
+     */
+    private List<TaskRemind> taskReminds;
 
     /**
      * 子任务
      */
-    private List<AddChildTaskVO> addChildTaskVO;
+    private List<UpdateTaskVO> ChildTasks;
 
     private static final long serialVersionUID = 1L;
 }

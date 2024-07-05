@@ -1,10 +1,11 @@
 package com.family.pl.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
+
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import lombok.Data;
 
@@ -37,19 +38,19 @@ public class Task implements Serializable {
      * 日期
      */
     @TableField(value = "task_date")
-    private Date taskDate;
+    private LocalDate taskDate;
 
     /**
      * 开始时间，允许为空，空值则表示全天
      */
     @TableField(value = "task_time_begin")
-    private Date taskTimeBegin;
+    private LocalTime taskTimeBegin;
 
     /**
      * 结束时间，允许为空，若开始时间为空，则结束时间不允许非空
      */
     @TableField(value = "task_time_end")
-    private Date taskTimeEnd;
+    private LocalTime taskTimeEnd;
 
     /**
      * 重复：0：无；1：每天；2：每月；3：每年；4：工作日；5：法定工作日；6：艾宾浩斯记忆法
@@ -61,7 +62,7 @@ public class Task implements Serializable {
      * 重复结束时间
      */
     @TableField(value = "repeat_end")
-    private Date repeatEnd;
+    private LocalDateTime repeatEnd;
 
     /**
      * 优先级：0：无；1；低；2：中；3：高
@@ -127,13 +128,13 @@ public class Task implements Serializable {
      * 创建时间
      */
     @TableField(value = "created_time")
-    private Date createdTime;
+    private LocalDateTime createdTime;
 
     /**
      * 更新时间
      */
-    @TableField(value = "update_time")
-    private Date updateTime;
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private LocalDateTime updateTime;
 
     /**
      * 删除标记

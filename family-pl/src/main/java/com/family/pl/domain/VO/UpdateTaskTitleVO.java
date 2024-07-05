@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class TaskTitleVO extends DateTimeVO{
+public class UpdateTaskTitleVO extends DateTimeVO{
     private String title;
 }

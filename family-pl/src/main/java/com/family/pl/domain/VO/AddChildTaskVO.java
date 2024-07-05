@@ -1,9 +1,13 @@
 package com.family.pl.domain.VO;
 
+import com.family.pl.domain.TaskRemind;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Date;
 import java.util.List;
 
@@ -30,17 +34,17 @@ public class AddChildTaskVO {
     /**
      * 日期
      */
-    private Date taskDate;
+    private LocalDate taskDate;
 
     /**
      * 开始时间，允许为空，空值则表示全天
      */
-    private Date taskTimeBegin;
+    private LocalTime taskTimeBegin;
 
     /**
      * 结束时间，允许为空，若开始时间为空，则结束时间不允许非空
      */
-    private Date taskTimeEnd;
+    private LocalTime taskTimeEnd;
 
     /**
      * 重复：0：无；1：每天；2：每月；3：每年；4：工作日；5：法定工作日；6：艾宾浩斯记忆法
@@ -50,7 +54,7 @@ public class AddChildTaskVO {
     /**
      * 重复结束时间
      */
-    private Date repeatEnd;
+    private LocalDateTime repeatEnd;
 
     /**
      * 优先级：0：无；1；低；2：中；3：高
@@ -85,28 +89,9 @@ public class AddChildTaskVO {
     /**
      * 标签表冗余字段，标签
      */
-    private String labelName;
+    private List<String> labelName;
 
-    /**
-     * 类别：1：按（开始）时间提醒；2：按天提醒
-
-     */
-    private Object type;
-
-    /**
-     * 按时间提前提醒：0：无；1：准时；2：提前5分钟；3：提前30分钟；4：提前1天
-     */
-    private Object remindByTime;
-
-    /**
-     * 按天提前提醒：0：无；1：当天；2：提前1天；3：提前2天；4：提前3天
-     */
-    private Object remindByDate;
-
-    /**
-     * corn字符串
-     */
-    private String corn;
+    private List<TaskRemindVO> taskRemindVO;
 
     private List<AddChildTaskVO> addChildTaskVO;
 

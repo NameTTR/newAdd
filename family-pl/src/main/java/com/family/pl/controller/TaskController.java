@@ -7,12 +7,13 @@ import com.family.pl.service.TaskService;
 import com.family.us.controller.FamilyBaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
 import com.ruoyi.common.exception.job.TaskException;
-import org.aspectj.weaver.loadtime.Aj;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 功能：
@@ -34,14 +35,12 @@ public class TaskController extends FamilyBaseController {
      */
     @GetMapping("selectcomtaskbydate")
     public AjaxResult selectComTaskByDate(@RequestBody DateTimeVO dateTimeVO) {
-        startPage();
         List<Task> tasks = taskService.selectCompleteTasks(dateTimeVO);
         return AjaxResult.success(tasks);
     }
 
     @GetMapping("selectdistaskbydate")
     public AjaxResult selectDisTaskByDate(@RequestBody DateTimeVO dateTimeVO) {
-        startPage();
         List<Task> tasks = taskService.selectDisCompleteTasks(dateTimeVO);
         return AjaxResult.success(tasks);
     }
@@ -121,21 +120,21 @@ public class TaskController extends FamilyBaseController {
     /**
      * 根据id修改任务标题
      *
-     * @param taskTitleVO
+     * @param updataTaskTitleVO
      * @return
      * @throws SchedulerException
      * @throws TaskException
      */
     @PostMapping("taskupdatetitlebyid")
-    public AjaxResult taskUpdateTitleById(@RequestBody TaskTitleVO taskTitleVO) throws SchedulerException, TaskException {
+    public AjaxResult taskUpdateTitleById(@RequestBody UpdateTaskTitleVO updataTaskTitleVO) throws SchedulerException, TaskException {
         int flag = 1;
-        Long taskId = taskTitleVO.getId();
+        Long taskId = updataTaskTitleVO.getId();
         Task task = taskService.getById(taskId);
         if (task.getRepeat() != TaskConstants.TASK_NOT_REAPRAT) {
             return AjaxResult.warn("该任务存在重复设置");
         } else if ((task.getRepeat() == TaskConstants.TASK_NOT_REAPRAT)
                 || task.getIsComplete() == TaskConstants.TASK_COMMPLETE) {
-            flag = taskService.taskUpdateTitleById(taskTitleVO);
+            flag = taskService.taskUpdateTitleById(updataTaskTitleVO);
         }
         return toAjax(flag);
     }
@@ -143,14 +142,14 @@ public class TaskController extends FamilyBaseController {
     /**
      * 确认修改任务标题
      *
-     * @param taskTitleVO
+     * @param updataTaskTitleVO
      * @return
      * @throws SchedulerException
      * @throws TaskException
      */
     @PostMapping("confirmupdatetile")
-    public AjaxResult confirmUpdateTile(@RequestBody TaskTitleVO taskTitleVO) throws SchedulerException, TaskException {
-        return toAjax(taskService.taskUpdateTitleById(taskTitleVO));
+    public AjaxResult confirmUpdateTile(@RequestBody UpdateTaskTitleVO updataTaskTitleVO) throws SchedulerException, TaskException {
+        return toAjax(taskService.taskUpdateTitleById(updataTaskTitleVO));
     }
 
     /**
@@ -162,7 +161,7 @@ public class TaskController extends FamilyBaseController {
      * @throws TaskException
      */
     @PostMapping("taskupdateprioritybyid")
-    public AjaxResult taskUpdatePriorityById(@RequestBody TaskPriorityVO taskPriorityVO) throws SchedulerException, TaskException {
+    public AjaxResult taskUpdatePriorityById(@RequestBody UpdateTaskPriorityVO taskPriorityVO) throws SchedulerException, TaskException {
         int flag = 1;
         Long taskId = taskPriorityVO.getId();
         Task task = taskService.getById(taskId);
@@ -184,7 +183,7 @@ public class TaskController extends FamilyBaseController {
      * @throws TaskException
      */
     @PostMapping("confirmupdatepriority")
-    public AjaxResult confirmUpdatePriority(@RequestBody TaskPriorityVO taskPriorityVO) throws SchedulerException, TaskException {
+    public AjaxResult confirmUpdatePriority(@RequestBody UpdateTaskPriorityVO taskPriorityVO) throws SchedulerException, TaskException {
         return toAjax(taskService.taskUpdatePriorityById(taskPriorityVO));
     }
 
@@ -197,7 +196,7 @@ public class TaskController extends FamilyBaseController {
      * @throws TaskException
      */
     @PostMapping("taskupdatenotesbyid")
-    public AjaxResult taskUpdateNotesById(@RequestBody TaskNotesVO taskNotesVO) throws SchedulerException, TaskException {
+    public AjaxResult taskUpdateNotesById(@RequestBody UpdateTaskNotesVO taskNotesVO) throws SchedulerException, TaskException {
         int flag = 1;
         Long taskId = taskNotesVO.getId();
         Task task = taskService.getById(taskId);
@@ -219,8 +218,20 @@ public class TaskController extends FamilyBaseController {
      * @throws TaskException
      */
     @PostMapping("confirmupdatenotes")
-    public AjaxResult confirmUpdateNotes(@RequestBody TaskNotesVO taskNotesVO) throws SchedulerException, TaskException {
+    public AjaxResult confirmUpdateNotes(@RequestBody UpdateTaskNotesVO taskNotesVO) throws SchedulerException, TaskException {
         return toAjax(taskService.taskUpdateNotesById(taskNotesVO));
     }
+
+    @PostMapping("test")
+    public AjaxResult test(@RequestBody Test test) {
+        LocalDateTime time = test.getT();
+        return AjaxResult.success(time);
+    }
+
+    @PostMapping("updataTaskById")
+    public AjaxResult updataTaskById(@RequestBody UpdateTaskVO updateTaskVO) throws SchedulerException, TaskException {
+        return toAjax(taskService.updateTaskById(updateTaskVO));
+    }
+
 }
 

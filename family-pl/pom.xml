@@ -34,6 +34,11 @@
             <artifactId>ruoyi-common</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-common</artifactId>
+            <version>3.8.7</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
         </dependency>

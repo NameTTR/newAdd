@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class TaskPriorityVO extends DateTimeVO{
+public class UpdateTaskPriorityVO extends DateTimeVO{
     private Integer priority;
 }

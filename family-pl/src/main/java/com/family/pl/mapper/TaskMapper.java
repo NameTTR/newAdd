@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -23,7 +24,13 @@ public interface TaskMapper extends BaseMapper<Task> {
      * @param queryDate
      * @return
      */
-    @Select("SELECT * FROM pl_task " +
+    @Select("WITH RECURSIVE task_cte AS ( " +
+            "SELECT * FROM pl_task WHERE father_task_id IS NULL " +
+            "UNION ALL " +
+            "SELECT t.* FROM pl_task t " +
+            "INNER JOIN task_cte c ON t.father_task_id = c.ID " +
+            ") " +
+            "SELECT * FROM task_cte " +
             "WHERE user_id = #{userId} " +
             "AND is_complete = 0 " +
             "AND flag_delete = 0 " +
@@ -45,8 +52,9 @@ public interface TaskMapper extends BaseMapper<Task> {
             "    #{queryDate} BETWEEN task_date AND repeat_end AND " +
             "    WEEKDAY(#{queryDate}) = 5)) OR " +
             "  (`repeat` = 6 AND (#{queryDate} BETWEEN task_date AND repeat_end))" +
-            ")")
-    List<Task> selectByDisDateAndUser(@Param("userId") Long userId, @Param("queryDate") Date queryDate);
+            ") " +
+            "ORDER BY task_date, task_time_begin")
+    List<Task> selectByDisDateAndUser(@Param("userId") Long userId, @Param("queryDate") LocalDate queryDate);
 
     /**
      * 查询已完成任务
@@ -78,7 +86,7 @@ public interface TaskMapper extends BaseMapper<Task> {
             "    WEEKDAY(#{queryDate}) = 5)) OR " +
             "  (`repeat` = 6 AND (#{queryDate} BETWEEN task_date AND repeat_end))" +
             ")")
-    List<Task> selectByComDateAndUser(@Param("userId") Long userId, @Param("queryDate") Date queryDate);
+    List<Task> selectByComDateAndUser(@Param("userId") Long userId, @Param("queryDate") LocalDate queryDate);
 }
 
 

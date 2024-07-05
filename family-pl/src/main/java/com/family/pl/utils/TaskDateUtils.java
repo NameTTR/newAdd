@@ -1,5 +1,6 @@
 package com.family.pl.utils;
 
+import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -102,4 +103,26 @@ public class TaskDateUtils {
         return calendar.getTime();
     }
 
+    public static Date LocalDateTimeToDate(LocalDateTime localDateTime) {
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        Instant instant = zonedDateTime.toInstant();
+        Date date = Date.from(instant);
+        return date;
+    }
+
+    public static Date LocalDateToDate(LocalDate localDate) {
+        LocalDateTime localDateTime = localDate.atStartOfDay();
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        Instant instant = zonedDateTime.toInstant();
+        Date date = Date.from(instant);
+        return date;
+    }
+
+    public static Date LocalTimeToDate(LocalTime localTime, LocalDate localDate){
+        LocalDateTime localDateTime = LocalDateTime.of(localDate, localTime);
+        ZonedDateTime zonedDateTime = localDateTime.atZone(ZoneId.systemDefault());
+        Instant instant = zonedDateTime.toInstant();
+        Date date = Date.from(instant);
+        return date;
+    }
 }

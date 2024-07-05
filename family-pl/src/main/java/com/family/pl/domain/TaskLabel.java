@@ -16,7 +16,7 @@ import lombok.Data;
 @Data
 public class TaskLabel implements Serializable {
     /**
-     * 
+     * ID
      */
     @TableId(value = "ID")
     private Long id;
