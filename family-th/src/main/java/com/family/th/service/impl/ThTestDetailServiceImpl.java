@@ -170,54 +170,49 @@ public class ThTestDetailServiceImpl extends ServiceImpl<ThTestDetailMapper, ThT
 //        Long userId = SecurityUtils.getUserId();
             Long userId = 1L;
 
-            //2.获取当前数据库中的测试记录
+            //2. 获取用户的测试答案
             List<ThTestDetail> updateTestDetails = testDetailsDTO.getThinkingTest();
-            List<Long> ids = updateTestDetails.stream().map(ThTestDetail::getId).collect(Collectors.toList());
-            String idsStr = StrUtil.join(",", ids);
-            List<ThTestDetail> nowTestDetail = lambdaQuery()
-                    .in(ThTestDetail::getId, ids)
-                    .eq(ThTestDetail::getUserId, userId)
-                    .last("ORDER BY FIELD(id," + idsStr + ")")
-                    .list();
 
-            //2.1 如果当前数据库中不存在测试记录，则返回错误信息
-            if (nowTestDetail == null || nowTestDetail.isEmpty()) {
+            //3.获取当前数据库中的测试记录
+            ThTest test = Db.lambdaQuery(ThTest.class).eq(ThTest::getId, testDetailsDTO.getTestId()).eq(ThTest::getUserId, userId).one();
+
+            //3.1 如果当前数据库中不存在测试记录，则返回错误信息
+            if (test == null) {
                 return AjaxResult.error("测试记录细节不存在，请重试！");
             }
 
-            //2.2 存在，则进行遍历测试记录，判断是否有更新
-            boolean isUpdate = false;
+            //3.2 存在，则进行遍历测试记录，判断是否有更新
             ThTestState state = ThTestState.NOTFINISHED;
-            for (int i = 0; i < nowTestDetail.size(); i++) {
-                if(nowTestDetail.get(i).getResult() != updateTestDetails.get(i).getResult()){
-                    isUpdate = true;
-                    break;
+            List<ThTestDetail> needUpdateDetails = new ArrayList<>();
+            for (ThTestDetail updateTestDetail : updateTestDetails) {
+                if (updateTestDetail.getResult() == ThThinkingTestState.FINISHING) {
+                    needUpdateDetails.add(updateTestDetail);
                 }
             }
             if (updateTestDetails.get(updateTestDetails.size() - 1).getResult() != ThThinkingTestState.NOTFINISHED)
                 state = ThTestState.FINISHED;
 
-            //2.3 如果没有更新，则直接返回成功信息
-            if (!isUpdate){
+            //3.3 如果没有更新，则直接返回成功信息
+            if (needUpdateDetails.isEmpty()){
                 return AjaxResult.success("测试记录没有更新！");
             }
 
-            //3. 有更新，则进行更新
-            //3.1 遍历创建更新的sql语句
+            //4. 有更新，则进行更新
+            //4.1 遍历创建更新的sql语句
             StringBuilder sqlBuilder = new StringBuilder();
-            updateTestDetails.forEach(testDetail -> {
+            needUpdateDetails.forEach(testDetail -> {
                 sqlBuilder.append("UPDATE th_test_detail SET result = ").append(testDetail.getResult()).append(" WHERE id = ").append(testDetail.getId()).append(";");
             });
-            sqlBuilder.append("UPDATE th_test SET state = ").append(state).append(" WHERE id = ").append(testDetailsDTO.getTestId()).append(";");
+            if(state == ThTestState.FINISHED) sqlBuilder.append("UPDATE th_test SET state = ").append(state).append(" WHERE id = ").append(testDetailsDTO.getTestId()).append(";");
 
-            //3.2 执行更新语句
+            //4.2 执行更新语句
             int update = sqlSessionTemplate.update(sqlBuilder.toString());
             if (update > 1){
                 //说明有更新失败，抛出异常
                 return AjaxResult.error("更新测试记录失败，请重试！");
             }
 
-            //3.3 返回成功信息
+            //4.3 返回成功信息
             return AjaxResult.success("更新测试记录成功！");
         } catch (Exception e) {
             e.printStackTrace();

@@ -54,7 +54,7 @@ public class ThTestDetail implements Serializable {
     private Integer  correctAnswer;
 
     /**
-     * 测试结果：0：错误；1：正确；2：未测试
+     * 测试结果：0：错误；1：正确；2：未测试；3：测试中
      */
     private ThThinkingTestState result;
 

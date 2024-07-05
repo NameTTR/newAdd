@@ -13,6 +13,7 @@ public enum ThThinkingTestState {
     ERROR(0, "错误"), // 错误
     READY(1, "正确"),  // 正确
     NOTFINISHED(2, "未测试"), // 未测试
+    FINISHING(3, "测试中"), // 测试中
     ;
     @EnumValue
     @JsonValue
