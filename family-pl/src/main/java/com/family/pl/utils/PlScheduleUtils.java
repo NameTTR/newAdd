@@ -9,22 +9,21 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import org.quartz.*;
 
+import java.time.LocalDateTime;
+
 /**
  * 定时任务工具类
- * 
- * @author ruoyi
  *
+ * @author ruoyi
  */
-public class PlScheduleUtils
-{
+public class PlScheduleUtils {
     /**
      * 得到quartz任务类
      *
      * @param plJob 执行计划
      * @return 具体执行任务类
      */
-    private static Class<? extends Job> getQuartzJobClass(PlJob plJob)
-    {
+    private static Class<? extends Job> getQuartzJobClass(PlJob plJob) {
         boolean isConcurrent = "0".equals(plJob.getConcurrent());
         return isConcurrent ? PlQuartzJobExecution.class : PlQuartzDisallowConcurrentExecution.class;
     }
@@ -32,85 +31,85 @@ public class PlScheduleUtils
     /**
      * 构建任务触发对象
      */
-    public static TriggerKey getTriggerKey(Long jobId, String jobGroup)
-    {
+    public static TriggerKey getTriggerKey(Long jobId, String jobGroup) {
         return TriggerKey.triggerKey(ScheduleConstants.TASK_CLASS_NAME + jobId, jobGroup);
     }
 
     /**
      * 构建任务触发对象
      */
-    public static TriggerKey getTriggerKey(Long jobId)
-    {
+    public static TriggerKey getTriggerKey(Long jobId) {
         return TriggerKey.triggerKey(ScheduleConstants.TASK_CLASS_NAME + jobId);
     }
 
     /**
      * 构建任务键对象
      */
-    public static JobKey getJobKey(Long jobId, String jobGroup)
-    {
+    public static JobKey getJobKey(Long jobId, String jobGroup) {
         return JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + jobId, jobGroup);
     }
 
     /**
      * 构建任务键对象
      */
-    public static JobKey getJobKey(Long jobId)
-    {
+    public static JobKey getJobKey(Long jobId) {
         return JobKey.jobKey(ScheduleConstants.TASK_CLASS_NAME + jobId);
     }
 
     /**
      * 创建定时任务
      */
-    public static void createScheduleJob(Scheduler scheduler, PlJob job) throws SchedulerException, TaskException
-    {
+    public static void createScheduleJob(Scheduler scheduler, PlJob job) throws SchedulerException, TaskException {
         Class<? extends Job> jobClass = getQuartzJobClass(job);
         // 构建job信息
         Long jobId = job.getJobId();
         JobDetail jobDetail = JobBuilder.newJob(jobClass).storeDurably().withIdentity(getJobKey(jobId)).build();
-
-        // 表达式调度构建器
-        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExpression());
-        cronScheduleBuilder = handleCronScheduleMisfirePolicy(job, cronScheduleBuilder);
-
-        // 按新的cronExpression表达式构建一个新的trigger
-        CronTrigger trigger = null;
-        if(StringUtils.isNotNull(job.getRepeatEnd())){
-            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
-                    .endAt(job.getRepeatEnd())
-                    .startAt(job.getStartTime())
-                    .withSchedule(cronScheduleBuilder).build();
-        }else {
-            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
-                    .startAt(job.getStartTime())
-                    .withSchedule(cronScheduleBuilder).build();
-        }
 
         // 放入参数，运行时的方法可以获取
         jobDetail.getJobDataMap().put(TaskConstants.TASK_SKIP, false);
         jobDetail.getJobDataMap().put(ScheduleConstants.TASK_PROPERTIES, job);
         jobDetail.getJobDataMap().put(TaskConstants.TASK_REMIND_TIME, job.getRemindByTime());
         jobDetail.getJobDataMap().put(TaskConstants.TASK_REMIND_DATE, job.getRemindByDate());
+        jobDetail.getJobDataMap().put(TaskConstants.Task_ID, job.getTaskId());
+
+        // 表达式调度构建器
+        CronScheduleBuilder cronScheduleBuilder = CronScheduleBuilder.cronSchedule(job.getCronExpression());
+        cronScheduleBuilder = handleCronScheduleMisfirePolicy(job, cronScheduleBuilder);
+
+        SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule();
 
         // 判断是否存在
-        if (scheduler.checkExists(getJobKey(jobId)))
-        {
+        if (scheduler.checkExists(getJobKey(jobId))) {
             // 防止创建时存在数据问题 先移除，然后在执行创建操作
             scheduler.deleteJob(getJobKey(jobId));
         }
+        // 按新的cronExpression表达式构建一个新的trigger
+        CronTrigger trigger = null;
+        if (StringUtils.isNotNull(job.getRepeatEnd())) {
+            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
+                    .endAt(job.getRepeatEnd())
+                    .startAt(job.getStartTime())
+                    .withSchedule(cronScheduleBuilder).build();
+        }else if(job.getRepeat() == 0){
+            SimpleTrigger oneTrigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
+                    .startAt(job.getStartTime())
+                    .withSchedule(simpleScheduleBuilder).build();
+            scheduler.scheduleJob(jobDetail, oneTrigger);
+            return;
+        }else {
+            trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
+                    .startAt(job.getStartTime())
+                    .withSchedule(cronScheduleBuilder).build();
+        }
 
         // 判断任务是否过期
-        if (StringUtils.isNotNull(PlCronUtils.getNextExecution(job.getCronExpression())))
-        {
+        if (StringUtils.isNotNull(PlCronUtils.getNextExecution(job.getCronExpression()))) {
             // 执行调度任务
             scheduler.scheduleJob(jobDetail, trigger);
         }
 
         // 暂停任务
-        if (job.getStatus().equals(ScheduleConstants.Status.PAUSE.getValue()))
-        {
+        if (job.getStatus().equals(ScheduleConstants.Status.PAUSE.getValue())) {
             scheduler.pauseJob(PlScheduleUtils.getJobKey(jobId));
         }
     }
@@ -119,10 +118,8 @@ public class PlScheduleUtils
      * 设置定时任务策略
      */
     public static CronScheduleBuilder handleCronScheduleMisfirePolicy(PlJob job, CronScheduleBuilder cb)
-            throws TaskException
-    {
-        switch (job.getMisfirePolicy())
-        {
+            throws TaskException {
+        switch (job.getMisfirePolicy()) {
             case ScheduleConstants.MISFIRE_DEFAULT:
                 return cb;
             case ScheduleConstants.MISFIRE_IGNORE_MISFIRES:
@@ -139,16 +136,14 @@ public class PlScheduleUtils
 
     /**
      * 检查包名是否为白名单配置
-     * 
+     *
      * @param invokeTarget 目标字符串
      * @return 结果
      */
-    public static boolean whiteList(String invokeTarget)
-    {
+    public static boolean whiteList(String invokeTarget) {
         String packageName = StringUtils.substringBefore(invokeTarget, "(");
         int count = StringUtils.countMatches(packageName, ".");
-        if (count > 1)
-        {
+        if (count > 1) {
             return StringUtils.containsAnyIgnoreCase(invokeTarget, TaskConstants.JOB_WHITELIST_STR);
         }
         Object obj = SpringUtils.getBean(StringUtils.split(invokeTarget, ".")[0]);
@@ -163,7 +158,7 @@ public class PlScheduleUtils
      * @param jobDetail 任务
      * @return 执行类
      */
-    public static Long getJobId(JobDetail jobDetail){
+    public static Long getJobId(JobDetail jobDetail) {
         return Long.valueOf(jobDetail.getKey().getName().replace(ScheduleConstants.TASK_CLASS_NAME, ""));
     }
 

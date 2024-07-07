@@ -7,11 +7,11 @@ import com.family.pl.domain.Task;
 import com.family.pl.service.TaskService;
 import com.ruoyi.common.utils.StringUtils;
 import org.quartz.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.Resource;
-import javax.annotation.Resources;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -33,50 +33,35 @@ public class PlQuartzDisallowConcurrentExecution extends PlAbstractQuartzJob {
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         if (jobDataMap.getBoolean(TaskConstants.TASK_SKIP)) {
             jobDataMap.put(TaskConstants.TASK_SKIP, false);
-            context.getScheduler().addJob(context.getJobDetail(), true, true);
             return;
         }
 
-        // 获取任务
-        JobDetail jobDetail = context.getJobDetail();
-        Long jobId = PlScheduleUtils.getJobId(jobDetail);
-        Integer remindTime = PlScheduleUtils.getRemindByTime(jobDetail);
-        Task task = taskService.getById(jobId);
+        //获取taskRemind参数
+        Integer remindByTime = (Integer) jobDataMap.get(TaskConstants.TASK_REMIND_TIME);
+        Integer remindByDate = (Integer) jobDataMap.get(TaskConstants.TASK_REMIND_DATE);
 
-        // 获取上次任务执行时间
-        Date previousFireTime = context.getTrigger().getPreviousFireTime();
-        Date startTime = null;
-        // 上次任务执行时间加上remainderTime和remainderDate
-        if (previousFireTime != null) {
-            startTime = TaskDateUtils.PlusTimeReminder(previousFireTime, remindTime);
-            startTime = TaskDateUtils.PlusDateReminder(startTime, remindTime);
-        }
-        // 将startTime格式化为yyyy-MM-dd
-        SimpleDateFormat sdfDate = new SimpleDateFormat("yyyy-MM-dd");
-        String date = sdfDate.format(startTime);
+        //获取taskId
+        Long taskId = (Long) jobDataMap.get(TaskConstants.Task_ID);
 
-        // 格式化为 HH:mm:ss
-        SimpleDateFormat sdfTime = new SimpleDateFormat("HH:mm:ss");
-        String time = sdfTime.format(startTime);
+        //获取上次任务执行时间
+        Date fireTime = context.getFireTime();
+        //由Date转换为LocalDateTime
+        LocalDateTime fireDateTime = TaskDateUtils.DateToLocalDateTime(fireTime);
 
-        // 查询数据库中是否有该任务
+        //计算该任务按时执行的时间
+        LocalDateTime nowTaskDateTime = TaskDateUtils.calculateNowTaskDateTime(fireDateTime, remindByTime, remindByDate);
+
+        //由LocalDateTime转换为LocalDate
+        LocalDate nowTaskDate = nowTaskDateTime.toLocalDate();
+
+        //检查数据库中relatedTaskId和taskDate
         LambdaQueryWrapper<Task> queryWrapper = new LambdaQueryWrapper<>();
-        if (StringUtils.isNotNull(task.getTaskTimeBegin())) {
-            List<Map> list = new ArrayList<>();
-            queryWrapper.eq(Task::getTaskDate, date).eq(Task::getTaskTimeBegin, time)
-                    .eq(Task::getIsComplete, TaskConstants.TASK_COMMPLETE)
-                    .eq(Task::getId, jobId);
-            Task one = taskService.getOne(queryWrapper);
-            if (StringUtils.isNotNull(one)) {
-                return;
-            }
-        } else {
-            queryWrapper.eq(Task::getTaskDate, date).eq(Task::getIsComplete, TaskConstants.TASK_COMMPLETE)
-                    .eq(Task::getId, jobId);
-            Task one = taskService.getOne(queryWrapper);
-            if (StringUtils.isNotNull(one)) {
-                return;
-            }
+        queryWrapper.eq(Task::getRelatedTaskId, taskId)
+                .eq(Task::getIsComplete, TaskConstants.TASK_COMMPLETE)
+                .eq(Task::getTaskDate, nowTaskDate);
+        Task comTask = taskService.getOne(queryWrapper);
+        if (StringUtils.isNotNull(comTask)) {
+            return;
         }
 
         PlJobInvokeUtil.invokeMethod(plJob);

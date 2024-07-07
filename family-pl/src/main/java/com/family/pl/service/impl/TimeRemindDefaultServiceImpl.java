@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 /**
 * @author 名字
 * @description 针对表【pl_time_remind_default(提醒默认表)】的数据库操作Service实现
-* @createDate 2024-05-19 21:01:45
+* @createDate 2024-07-05 17:05:16
 */
 @Service
 public class TimeRemindDefaultServiceImpl extends ServiceImpl<TimeRemindDefaultMapper, TimeRemindDefault>

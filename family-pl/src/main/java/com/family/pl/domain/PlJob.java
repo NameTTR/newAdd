@@ -15,14 +15,13 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
- * 定时任务调度表 sys_job
- * 
- * @author ruoyi
+ * 名称：任务类
+ * 功能：用于表示定时任务的详细信息，包括任务的ID、名称、组名、调用目标、cron表达式、计划策略、并发执行设置、任务状态等。
+ * 作者：Name
+ * 日期：2024/7/5
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -31,9 +30,12 @@ public class PlJob extends BaseEntity
 {
     private static final long serialVersionUID = 1L;
 
-    /** 任务ID */
+    /** 提醒ID */
     @Excel(name = "任务序号", cellType = ColumnType.NUMERIC)
     private Long jobId;
+
+    /** 任务ID */
+    private Long taskId;
 
     /** 任务名称 */
     @Excel(name = "任务名称")
@@ -53,17 +55,19 @@ public class PlJob extends BaseEntity
 
     /** cron计划策略 */
     @Excel(name = "计划策略 ", readConverterExp = "0=默认,1=立即触发执行,2=触发一次执行,3=不触发立即执行")
-    private String misfirePolicy = ScheduleConstants.MISFIRE_DO_NOTHING;
+    private String misfirePolicy = ScheduleConstants.MISFIRE_IGNORE_MISFIRES;
 
     /** 是否并发执行（0允许 1禁止） */
     @Excel(name = "并发执行", readConverterExp = "0=允许,1=禁止")
-    private String concurrent = "1";
+    private String concurrent = "0";
 
     /** 任务状态（0正常 1暂停） */
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
     private String status = ScheduleConstants.Status.NORMAL.getValue();
 
     private Date taskDate;
+
+    private Integer repeat;
 
     private Date repeatEnd;
 

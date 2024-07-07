@@ -6,11 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
- * 功能：
+ * 名称：DateTimeVO类
+ * 功能：用于表示带有日期和时间信息的值对象
  * 作者：Name
  * 日期：2024/6/2 14:21
  */
@@ -19,8 +18,14 @@ import java.util.Date;
 @AllArgsConstructor
 public class DateTimeVO {
 
-    private Long id;
+    /**
+     * 任务ID
+     */
+    private Long TaskId;
 
+    /**
+     * 日期
+     */
     @JsonFormat(pattern = "yyyy-MM-dd")
-    private LocalDate time;
+    private LocalDate date;
 }

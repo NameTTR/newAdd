@@ -40,7 +40,8 @@ public class SysJob extends BaseEntity
 
     /** cron执行表达式 */
     @Excel(name = "执行表达式 ")
-    private String cronExpression;
+    //每天凌晨一点执行一次
+    private String cronExpression = "0 0 1 * * ?";
 
     /** cron计划策略 */
     @Excel(name = "计划策略 ", readConverterExp = "0=默认,1=立即触发执行,2=触发一次执行,3=不触发立即执行")

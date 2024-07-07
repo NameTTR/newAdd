@@ -1,92 +1,40 @@
 package com.family.pl.service;
 
-import com.family.pl.domain.PlJob;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.family.pl.domain.Task;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.family.pl.domain.VO.*;
+import com.family.pl.domain.VO.AddTaskVO;
+import com.family.pl.domain.VO.DateTimeVO;
+import com.family.pl.domain.VO.SelectTaskVO;
+import com.family.pl.domain.VO.UpdateTaskVO;
 import com.ruoyi.common.exception.job.TaskException;
 import org.quartz.SchedulerException;
-import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Map;
 
 /**
 * @author 名字
 * @description 针对表【pl_task(任务表)】的数据库操作Service
-* @createDate 2024-05-19 21:01:45
+* @createDate 2024-07-05 17:05:16
 */
-@Service
 public interface TaskService extends IService<Task> {
 
-    /**
-     * 添加任务
-     *
-     * @param addTaskVO
-     * @return
-     * @throws SchedulerException
-     * @throws TaskException
-     */
+    IPage<SelectTaskVO> selectCompleteTasks(Integer pageNum, DateTimeVO dateTimeVO);
+
+    IPage<SelectTaskVO> selectUncompleteTasks(Integer pageNum, DateTimeVO dateTimeVO);
+
+    SelectTaskVO selectTaskById(Long taskId);
+
     int addTask(AddTaskVO addTaskVO) throws SchedulerException, TaskException;
 
-    /**
-     * 添加子任务
-     *
-     * @param addChildTaskVO
-     * @return
-     * @throws SchedulerException
-     * @throws TaskException
-     */
-    int addChildTask(AddChildTaskVO addChildTaskVO) throws SchedulerException, TaskException;
+    int comTask(DateTimeVO dateTimeVO);
 
-    /**
-     * 添加定时任务
-     *
-     * @param plJob
-     * @return
-     * @throws SchedulerException
-     * @throws TaskException
-     */
-    int insertJob(PlJob plJob) throws SchedulerException, TaskException;
+    Double taskCompletion(LocalDate startDate, LocalDate endDate, Long userId);
 
-//    int deleteByID(Long id) throws SchedulerException;
+    int delTask(Long taskId);
 
-    /**
-     * 完成任务
-     *
-     * @param dateTimeVO
-     * @return
-     * @throws SchedulerException
-     */
-    int taskCompleteById(DateTimeVO dateTimeVO) throws SchedulerException;
+    int unComTask(Long taskId) throws SchedulerException, TaskException;
 
-    /**
-     * 由完成的任务转为未完成的任务
-     *
-     * @param dateTimeVO
-     * @return
-     * @throws SchedulerException
-     */
-    int taskDisCompleteById(DateTimeVO dateTimeVO) throws SchedulerException, TaskException;
-
-    /**
-     * 根据日期查询该日期任务
-     *
-     * @param dateTimeVO
-     * @return 该日期任务
-     */
-    List<Task> selectCompleteTasks(DateTimeVO dateTimeVO);
-
-    List<Task> selectDisCompleteTasks(DateTimeVO dateTimeVO);
-
-    int taskDeleteOneById(DateTimeVO dateTimeVO);
-
-    int taskDeleteAllById(DateTimeVO dateTimeVO) throws SchedulerException;
-
-    int taskUpdateTitleById(UpdateTaskTitleVO updataTaskTitleVO);
-
-    int taskUpdatePriorityById(UpdateTaskPriorityVO taskPriorityVO);
-
-    int taskUpdateNotesById(UpdateTaskNotesVO taskNotesVO);
-
-    int updateTaskById(UpdateTaskVO updateTaskVO) throws SchedulerException, TaskException;
+    int updateTask(UpdateTaskVO updateTaskVO) throws SchedulerException, TaskException;
 }
