@@ -1,6 +1,7 @@
 package com.family.pl.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -27,7 +28,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * @author 名字
@@ -56,6 +59,9 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
     @Autowired
     private Scheduler scheduler;
 
+    @Autowired
+    private TaskMapper taskMapper;
+
     /**
      * 查询已完成的任务
      *
@@ -65,10 +71,62 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      */
     @Override
     public IPage<SelectTaskVO> selectCompleteTasks(Integer pageNum, DateTimeVO dateTimeVO) {
-        Long userId = 1L;
-        Page<Task> page = new Page<>(pageNum, TaskConstants.PAGE_SIZE);
-        IPage<Task> taskPage = baseMapper.selectByComDateAndUser(page, userId, dateTimeVO.getDate());
-        return convertToSelectTaskVOPage(taskPage);
+        LocalDate queryDate = dateTimeVO.getDate();
+        int pageSize = 10; // 固定页面大小为10
+
+        // Step 1: 获取所有符合条件的任务，包括主任务和子任务
+        QueryWrapper<Task> baseWrapper = new QueryWrapper<>();
+        baseWrapper.eq("is_complete", 0)
+                .eq("flag_delete", 0)
+                .and(wrapper ->
+                        wrapper.eq("`repeat`", 0).eq("task_date", queryDate)
+                                .or().eq("`repeat`", 1).ge("repeat_end", queryDate).le("task_date", queryDate)
+                                .or().eq("`repeat`", 2).apply("DATE_FORMAT(task_date, '%d') = DATE_FORMAT({0}, '%d')", queryDate).le("repeat_end", queryDate)
+                                .or().eq("`repeat`", 3).apply("DATE_FORMAT(task_date, '%m-%d') = DATE_FORMAT({0}, '%m-%d')", queryDate).le("repeat_end", queryDate)
+                                .or().eq("`repeat`", 4).le("task_date", queryDate).ge("repeat_end", queryDate).apply("WEEKDAY(task_date) < 5").apply("WEEKDAY({0}) < 5", queryDate)
+                                .or().eq("`repeat`", 5).le("task_date", queryDate).ge("repeat_end", queryDate).apply("WEEKDAY(task_date) = 5").apply("WEEKDAY({0}) = 5", queryDate)
+                                .or().eq("`repeat`", 6).le("task_date", queryDate).ge("repeat_end", queryDate)
+                );
+
+        // 获取符合条件的所有任务
+        List<Task> allTasks = taskMapper.selectList(baseWrapper);
+
+        if (allTasks.isEmpty()) {
+            return new Page<>(pageNum, pageSize);
+        }
+
+        // 将所有任务按ID存储在一个映射中
+        Map<Long, Task> taskMap = allTasks.stream().collect(Collectors.toMap(Task::getId, task -> task));
+
+        // Step 2: 获取所有任务的标签和提醒
+        List<Long> taskIds = allTasks.stream().map(Task::getId).collect(Collectors.toList());
+
+        QueryWrapper<TaskRemind> remindWrapper = new QueryWrapper<>();
+        remindWrapper.in("task_id", taskIds);
+        List<TaskRemind> taskReminds = taskRemindMapper.selectList(remindWrapper);
+
+        QueryWrapper<TaskLabel> labelWrapper = new QueryWrapper<>();
+        labelWrapper.in("task_id", taskIds);
+        List<TaskLabel> taskLabels = taskLabelMapper.selectList(labelWrapper);
+
+        // Step 3: 转换为SelectTaskVO对象
+        List<SelectTaskVO> selectTaskVOS = mapTasksToSelectTaskVOs(allTasks, taskReminds, taskLabels, taskMap, queryDate);
+
+        // Step 4: 排序
+        selectTaskVOS.sort(Comparator.comparing((SelectTaskVO vo) ->
+                        Optional.ofNullable(vo.getTask().getTaskTimeBegin()).orElse(LocalTime.MAX))
+                .thenComparing(vo -> vo.getTask().getCreatedTime()));
+
+        // Step 5: 分页处理
+        int start = (pageNum - 1) * pageSize;
+        int end = Math.min(start + pageSize, selectTaskVOS.size());
+        List<SelectTaskVO> paginatedList = selectTaskVOS.subList(start, end);
+
+        // Step 6: 将转换后的任务对象设定到分页对象中
+        Page<SelectTaskVO> resultPage = new Page<>(pageNum, pageSize, selectTaskVOS.size());
+        resultPage.setRecords(paginatedList);
+
+        return resultPage;
     }
 
     /**
@@ -79,11 +137,148 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      * @return
      */
     @Override
-    public IPage<SelectTaskVO> selectUncompleteTasks(Integer pageNum, DateTimeVO dateTimeVO) {
-        Long userId = 1L;
-        Page<Task> page = new Page<>(pageNum, TaskConstants.PAGE_SIZE);
-        IPage<Task> taskPage = baseMapper.selectByUncomDateAndUser(page, userId, dateTimeVO.getDate());
-        return convertToSelectTaskVOPage(taskPage);
+    public IPage<SelectTaskVO> selectUnCompleteTasks(Integer pageNum, DateTimeVO dateTimeVO) {
+        LocalDate queryDate = dateTimeVO.getDate();
+        int pageSize = 10; // 固定页面大小为10
+
+        // Step 1: 获取所有符合条件的任务，包括主任务和子任务
+        QueryWrapper<Task> baseWrapper = new QueryWrapper<>();
+        baseWrapper.eq("is_complete", 1)
+                .eq("flag_delete", 0)
+                .and(wrapper ->
+                        wrapper.eq("`repeat`", 0).eq("task_date", queryDate)
+                                .or().eq("`repeat`", 1).ge("repeat_end", queryDate).le("task_date", queryDate)
+                                .or().eq("`repeat`", 2).apply("DATE_FORMAT(task_date, '%d') = DATE_FORMAT({0}, '%d')", queryDate).le("repeat_end", queryDate)
+                                .or().eq("`repeat`", 3).apply("DATE_FORMAT(task_date, '%m-%d') = DATE_FORMAT({0}, '%m-%d')", queryDate).le("repeat_end", queryDate)
+                                .or().eq("`repeat`", 4).le("task_date", queryDate).ge("repeat_end", queryDate).apply("WEEKDAY(task_date) < 5").apply("WEEKDAY({0}) < 5", queryDate)
+                                .or().eq("`repeat`", 5).le("task_date", queryDate).ge("repeat_end", queryDate).apply("WEEKDAY(task_date) = 5").apply("WEEKDAY({0}) = 5", queryDate)
+                                .or().eq("`repeat`", 6).le("task_date", queryDate).ge("repeat_end", queryDate)
+                );
+
+        // 获取符合条件的所有任务
+        List<Task> allTasks = taskMapper.selectList(baseWrapper);
+
+        if (allTasks.isEmpty()) {
+            return new Page<>(pageNum, pageSize);
+        }
+
+        // 将所有任务按ID存储在一个映射中
+        Map<Long, Task> taskMap = allTasks.stream().collect(Collectors.toMap(Task::getId, task -> task));
+
+        // Step 2: 获取所有任务的标签和提醒
+        List<Long> taskIds = allTasks.stream().map(Task::getId).collect(Collectors.toList());
+
+        QueryWrapper<TaskRemind> remindWrapper = new QueryWrapper<>();
+        remindWrapper.in("task_id", taskIds);
+        List<TaskRemind> taskReminds = taskRemindMapper.selectList(remindWrapper);
+
+        QueryWrapper<TaskLabel> labelWrapper = new QueryWrapper<>();
+        labelWrapper.in("task_id", taskIds);
+        List<TaskLabel> taskLabels = taskLabelMapper.selectList(labelWrapper);
+
+        // Step 3: 转换为SelectTaskVO对象
+        List<SelectTaskVO> selectTaskVOS = mapTasksToSelectTaskVOs(allTasks, taskReminds, taskLabels, taskMap, queryDate);
+
+        // Step 4: 排序
+        selectTaskVOS.sort(Comparator.comparing((SelectTaskVO vo) ->
+                        Optional.ofNullable(vo.getTask().getTaskTimeBegin()).orElse(LocalTime.MAX))
+                .thenComparing(vo -> vo.getTask().getCreatedTime()));
+
+        // Step 5: 分页处理
+        int start = (pageNum - 1) * pageSize;
+        int end = Math.min(start + pageSize, selectTaskVOS.size());
+        List<SelectTaskVO> paginatedList = selectTaskVOS.subList(start, end);
+
+        // Step 6: 将转换后的任务对象设定到分页对象中
+        Page<SelectTaskVO> resultPage = new Page<>(pageNum, pageSize, selectTaskVOS.size());
+        resultPage.setRecords(paginatedList);
+
+        return resultPage;
+    }
+
+    /**
+     * 将任务列表转换为SelectTaskVO对象列表
+     * @param tasks
+     * @param taskReminds
+     * @param taskLabels
+     * @param taskMap
+     * @param queryDate
+     * @return
+     */
+    private List<SelectTaskVO> mapTasksToSelectTaskVOs(List<Task> tasks, List<TaskRemind> taskReminds, List<TaskLabel> taskLabels, Map<Long, Task> taskMap, LocalDate queryDate) {
+        Map<Long, List<TaskRemind>> remindMap = taskReminds.stream().collect(Collectors.groupingBy(TaskRemind::getTaskId));
+        Map<Long, List<TaskLabel>> labelMap = taskLabels.stream().collect(Collectors.groupingBy(TaskLabel::getTaskId));
+
+        // 建立父任务和子任务映射
+        Map<Long, List<SelectChildTaskVO>> childTaskMap = new HashMap<>();
+        for (Task task : tasks) {
+            if (task.getFatherTaskId() != null) {
+                childTaskMap.computeIfAbsent(task.getFatherTaskId(), k -> new ArrayList<>()).add(new SelectChildTaskVO(task.getId(), new ArrayList<>()));
+            }
+        }
+
+        Set<Long> mainTaskIds = tasks.stream()
+                .filter(task -> task.getFatherTaskId() == null || isTaskInDate(taskMap.get(task.getFatherTaskId()), queryDate))
+                .map(Task::getId)
+                .collect(Collectors.toSet());
+
+        // 处理主任务和父任务不在查询日期中的子任务
+        return tasks.stream().filter(task ->
+                task.getFatherTaskId() == null || !mainTaskIds.contains(task.getFatherTaskId())
+        ).map(task -> {
+            Long taskId = task.getId();
+            List<TaskRemind> reminds = remindMap.getOrDefault(taskId, Collections.emptyList());
+            List<TaskLabel> labels = labelMap.getOrDefault(taskId, Collections.emptyList());
+
+            // 获取并递归处理子任务
+            List<SelectChildTaskVO> childTaskVOS = getChildTasks(taskId, childTaskMap, taskMap);
+
+            return new SelectTaskVO(task, reminds, labels, childTaskVOS);
+        }).collect(Collectors.toList());
+    }
+
+    /**
+     * 判断任务是否在指定日期内
+     * @param task
+     * @param queryDate
+     * @return
+     */
+    private boolean isTaskInDate(Task task, LocalDate queryDate) {
+        if (task == null) return false;
+
+        LocalDate repeatEndDate = task.getRepeatEnd() != null ? task.getRepeatEnd().toLocalDate() : null;
+
+        return task.getTaskDate().equals(queryDate) ||
+                (task.getRepeat() == 1 && queryDate.isAfter(task.getTaskDate()) && (repeatEndDate == null || queryDate.isBefore(repeatEndDate))) ||
+                (task.getRepeat() == 2 && queryDate.getDayOfMonth() == task.getTaskDate().getDayOfMonth() && (repeatEndDate == null || queryDate.isBefore(repeatEndDate))) ||
+                (task.getRepeat() == 3 && queryDate.getDayOfYear() == task.getTaskDate().getDayOfYear() && (repeatEndDate == null || queryDate.isBefore(repeatEndDate))) ||
+                (task.getRepeat() == 4 && queryDate.isAfter(task.getTaskDate()) && (repeatEndDate == null || queryDate.isBefore(repeatEndDate)) && queryDate.getDayOfWeek().getValue() < 6) ||
+                (task.getRepeat() == 5 && queryDate.isAfter(task.getTaskDate()) && (repeatEndDate == null || queryDate.isBefore(repeatEndDate)) && queryDate.getDayOfWeek().getValue() == 6) ||
+                (task.getRepeat() == 6 && queryDate.isAfter(task.getTaskDate()) && (repeatEndDate == null || queryDate.isBefore(repeatEndDate)));
+    }
+
+    /**
+     * 获取子任务
+     * @param parentId
+     * @param childTaskMap
+     * @param taskMap
+     * @return
+     */
+    private List<SelectChildTaskVO> getChildTasks(Long parentId, Map<Long, List<SelectChildTaskVO>> childTaskMap, Map<Long, Task> taskMap) {
+        List<SelectChildTaskVO> childTasks = childTaskMap.getOrDefault(parentId, new ArrayList<>());
+
+        for (SelectChildTaskVO childTaskVO : childTasks) {
+            Long childTaskId = childTaskVO.getChildTaskId();
+            childTaskVO.setChildTaskVOS(getChildTasks(childTaskId, childTaskMap, taskMap));
+        }
+
+        // 排序子任务
+        childTasks.sort(Comparator.comparing((SelectChildTaskVO vo) ->
+                        Optional.ofNullable(taskMap.get(vo.getChildTaskId()).getTaskDate()).orElse(LocalDate.MAX))
+                .thenComparing(vo -> Optional.ofNullable(taskMap.get(vo.getChildTaskId()).getTaskTimeBegin()).orElse(LocalTime.MAX))
+                .thenComparing(vo -> Optional.ofNullable(taskMap.get(vo.getChildTaskId()).getCreatedTime()).orElse(LocalDateTime.MAX)));
+
+        return childTasks;
     }
 
     /**
@@ -94,8 +289,43 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      */
     @Override
     public SelectTaskVO selectTaskById(Long taskId) {
-        Task task = baseMapper.selectById(taskId);
-        return convertToSelectTaskVO(task);
+        // 获取主任务
+        Task task = taskMapper.selectOne(new QueryWrapper<Task>().eq("id", taskId).eq("flag_delete", 0));
+        if (task == null) {
+            return null; // 如果任务不存在，返回null或抛出异常
+        }
+
+        // 获取任务的提醒和标签
+        List<TaskRemind> taskReminds = taskRemindMapper.selectList(new QueryWrapper<TaskRemind>().eq("task_id", taskId));
+        List<TaskLabel> taskLabels = taskLabelMapper.selectList(new QueryWrapper<TaskLabel>().eq("task_id", taskId));
+
+        // 获取所有子任务
+        List<Task> allTasks = getAllTasksByParentId(taskId);
+        Map<Long, Task> taskMap = allTasks.stream().collect(Collectors.toMap(Task::getId, t -> t));
+
+        // 建立子任务映射
+        Map<Long, List<SelectChildTaskVO>> childTaskMap = new HashMap<>();
+        for (Task t : allTasks) {
+            if (t.getFatherTaskId() != null) {
+                childTaskMap.computeIfAbsent(t.getFatherTaskId(), k -> new ArrayList<>()).add(new SelectChildTaskVO(t.getId(), new ArrayList<>()));
+            }
+        }
+
+        // 获取并递归处理子任务
+        List<SelectChildTaskVO> childTaskVOS = getChildTasks(taskId, childTaskMap, taskMap);
+
+        return new SelectTaskVO(task, taskReminds, taskLabels, childTaskVOS);
+    }
+
+    /**
+     * 获取所有子任务
+     * @param parentId
+     * @return
+     */
+    private List<Task> getAllTasksByParentId(Long parentId) {
+        QueryWrapper<Task> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("father_task_id", parentId).or().eq("id", parentId);
+        return taskMapper.selectList(queryWrapper);
     }
 
     /**
@@ -143,7 +373,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         }
 
         //递归添加子任务
-        if (task.getIsHaveChild() != TaskConstants.TASK_HAVE_CHILE || addTaskVO.getAddTaskVOS() != null) {
+        if (task.getIsHaveChild() == TaskConstants.TASK_HAVE_CHILE || addTaskVO.getAddTaskVOS() != null) {
             List<AddTaskVO> childTaskVOS = addTaskVO.getAddTaskVOS();
             for (AddTaskVO childTaskVO : childTaskVOS) {
                 childTaskVO.getTask().setFatherTaskId(taskId);
@@ -325,16 +555,22 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      */
     @Transactional
     @Override
-    public int delTask(Long taskId) {
+    public int delTask(Long taskId) throws SchedulerException {
         Task task = baseMapper.selectById(taskId);
-        if (task == null) {
-            throw new RuntimeException("Task not found");
-        }
 
         if (task.getIsComplete() == 0) {
             // 对于未完成任务，设置删除标记为1
             task.setFlagDelete(1);
             baseMapper.updateById(task);
+            // 删除定时任务
+            if (task.getIsRemind() == TaskConstants.TASK_REMIND) {
+                List<TaskRemind> taskReminds = taskRemindMapper.selectList(new LambdaQueryWrapper<TaskRemind>()
+                        .eq(TaskRemind::getTaskId, taskId));
+                for (TaskRemind taskRemind : taskReminds) {
+                    JobKey jobKey = PlScheduleUtils.getJobKey(taskRemind.getId());
+                    scheduler.deleteJob(jobKey);
+                }
+            }
         } else {
             // 对于已完成任务，直接删除任务、提醒、标签及所有子任务
             deleteCompletedTaskAndChildren(taskId);
@@ -771,10 +1007,15 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      */
     public PlJob setJob(Task task, TaskRemind taskRemind) {
         PlJob job = new PlJob();
-        Date startDate = TaskDateUtils.LocalDateToDate(task.getTaskDate());
+        if (task.getTaskTimeBegin() != null) {
+            job.setStartTime(TaskDateUtils.LocalDateTimeToDate(LocalDateTime.of(task.getTaskDate(), task.getTaskTimeBegin())));
+        } else {
+            job.setStartTime(TaskDateUtils.LocalDateTimeToDate(task.getTaskDate().atStartOfDay()));
+        }
+        job.setRepeat(task.getRepeat());
         if (StringUtils.isNotNull(task.getRepeatEnd())) {
             LocalDateTime time = TaskDateUtils.calculateExecuteTaskDateTime(task.getRepeatEnd()
-                    , (Integer) taskRemind.getRemindByTime(), (Integer) taskRemind.getRemindByDate());
+                    , Integer.parseInt(String.valueOf(taskRemind.getRemindByTime())), Integer.parseInt(String.valueOf(taskRemind.getRemindByDate())));
             time.plusSeconds(1);
             Date date = TaskDateUtils.LocalDateTimeToDate(time);
             job.setRepeatEnd(date);
@@ -786,7 +1027,6 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
             job.setRemindByDate(Integer.parseInt(taskRemind.getRemindByDate().toString()));
         }
         job.setRemindByTime(Integer.parseInt(taskRemind.getRemindByTime().toString()));
-        job.setStartTime(startDate);
         job.setJobId(taskRemind.getId());
         job.setTaskId(task.getId());
         job.setJobName(task.getTitle());

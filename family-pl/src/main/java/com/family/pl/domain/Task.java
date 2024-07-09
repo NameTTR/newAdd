@@ -8,6 +8,9 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
@@ -36,26 +39,32 @@ public class Task implements Serializable {
     /**
      * 日期
      */
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate taskDate;
 
     /**
      * 开始时间，允许为空，空值则表示全天
      */
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime taskTimeBegin;
 
     /**
      * 结束时间，允许为空，若开始时间为空，则结束时间不允许非空
      */
+    @JsonFormat(pattern = "HH:mm:ss")
     private LocalTime taskTimeEnd;
 
     /**
      * 重复：0：无；1：每天；2：每月；3：每年；4：工作日；5：法定工作日；6：艾宾浩斯记忆法
      */
+    @JsonProperty("`repeat`")
+    @TableField(value = "`repeat`")
     private Integer repeat;
 
     /**
      * 重复结束时间
      */
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime repeatEnd;
 
     /**

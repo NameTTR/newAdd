@@ -7,7 +7,6 @@ import com.family.pl.domain.Task;
 import com.family.pl.domain.TaskRemind;
 import com.family.pl.service.TaskService;
 import com.ruoyi.common.utils.StringUtils;
-import jdk.internal.org.jline.utils.ShutdownHooks;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.PersistJobDataAfterExecution;
@@ -33,6 +32,7 @@ public class PlQuartzJobExecution extends PlAbstractQuartzJob {
     @Override
     protected void doExecute(JobExecutionContext context, PlJob plJob) throws Exception {
 
+        long stime = System.currentTimeMillis();
         JobDataMap jobDataMap = context.getJobDetail().getJobDataMap();
         if (jobDataMap.getBoolean(TaskConstants.TASK_SKIP)) {
             jobDataMap.put(TaskConstants.TASK_SKIP, false);
@@ -66,6 +66,12 @@ public class PlQuartzJobExecution extends PlAbstractQuartzJob {
         if (StringUtils.isNotNull(comTask)) {
             return;
         }
+        long etime = System.currentTimeMillis();
+
+        System.out.println("\n----------------------------------------------------------\n" + "执行任务Id：" + taskId + "\n任务名称：" + plJob.getJobName()
+                + "\n执行时间：" + LocalDateTime.now()
+                + "\n耗时：" + (etime - stime) + "ms"
+                + "\n----------------------------------------------------------\n");
 
         PlJobInvokeUtil.invokeMethod(plJob);
     }

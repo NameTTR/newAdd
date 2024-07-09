@@ -64,6 +64,10 @@ public class PlQuartzDisallowConcurrentExecution extends PlAbstractQuartzJob {
             return;
         }
 
+        System.out.println("\n----------------------------------------------------------\n" + "执行任务Id：" + taskId + "\n任务名称：" + plJob.getJobName()
+                + "\n执行时间：" + LocalDateTime.now()
+                + "\n----------------------------------------------------------\n");
+
         PlJobInvokeUtil.invokeMethod(plJob);
     }
 

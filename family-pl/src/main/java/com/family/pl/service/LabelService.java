@@ -2,6 +2,7 @@ package com.family.pl.service;
 
 import com.family.pl.domain.Label;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.family.pl.domain.VO.AddLabelVO;
 
 /**
 * @author 名字
@@ -10,4 +11,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
 */
 public interface LabelService extends IService<Label> {
 
+    int addLabel(AddLabelVO addLabelVO);
 }

@@ -20,9 +20,10 @@ import java.util.Map;
 */
 public interface TaskService extends IService<Task> {
 
+
     IPage<SelectTaskVO> selectCompleteTasks(Integer pageNum, DateTimeVO dateTimeVO);
 
-    IPage<SelectTaskVO> selectUncompleteTasks(Integer pageNum, DateTimeVO dateTimeVO);
+    IPage<SelectTaskVO> selectUnCompleteTasks(Integer pageNum, DateTimeVO dateTimeVO);
 
     SelectTaskVO selectTaskById(Long taskId);
 
@@ -32,7 +33,7 @@ public interface TaskService extends IService<Task> {
 
     Double taskCompletion(LocalDate startDate, LocalDate endDate, Long userId);
 
-    int delTask(Long taskId);
+    int delTask(Long taskId) throws SchedulerException;
 
     int unComTask(Long taskId) throws SchedulerException, TaskException;
 

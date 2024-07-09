@@ -60,6 +60,7 @@ public class PlScheduleUtils {
      * 创建定时任务
      */
     public static void createScheduleJob(Scheduler scheduler, PlJob job) throws SchedulerException, TaskException {
+        Long startTime = System.currentTimeMillis();
         Class<? extends Job> jobClass = getQuartzJobClass(job);
         // 构建job信息
         Long jobId = job.getJobId();
@@ -112,6 +113,13 @@ public class PlScheduleUtils {
         if (job.getStatus().equals(ScheduleConstants.Status.PAUSE.getValue())) {
             scheduler.pauseJob(PlScheduleUtils.getJobKey(jobId));
         }
+        Long endTime = System.currentTimeMillis();
+        System.out.println(
+                "\n**************************************\n"
+                + "\n任务创建耗时："
+                + (endTime - startTime)
+                + "ms\n"
+                + "**************************************\n");
     }
 
     /**

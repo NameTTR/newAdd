@@ -114,7 +114,7 @@ spring:
             class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
             isClustered: true # 是集群模式
             clusterCheckinInterval: 15000 # 集群检查频率，单位：毫秒。默认为 15000，即 15 秒
-            misfireThreshold: 60000 # misfire 阀值，单位：毫秒。
+            misfireThreshold: 1000 # misfire 阀值，单位：毫秒。
           # 线程池相关配置
           threadPool:
             threadCount: 25 # 线程池大小。默认为 10 。

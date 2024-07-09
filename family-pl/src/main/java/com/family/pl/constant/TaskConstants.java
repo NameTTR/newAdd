@@ -58,4 +58,6 @@ public class TaskConstants extends Constants {
     public static final Integer PAGE_SIZE = 10;
 
     public static final String Task_ID = "taskId";
+
+    public static final String LABEL_EXIST = "labelExist";
 }
