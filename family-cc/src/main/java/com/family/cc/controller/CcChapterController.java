@@ -1,6 +1,9 @@
 package com.family.cc.controller;
 
+import com.family.common.domain.result.ChatTTSResult;
+import com.family.common.sevice.OkHttpService;
 import com.ruoyi.common.core.controller.BaseController;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -13,6 +16,13 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/family/cc/chapter")
+@AllArgsConstructor
 public class CcChapterController extends BaseController {
-    
+
+    private final OkHttpService okHttpService;
+    @GetMapping("/test")
+    public ChatTTSResult test(@RequestBody String text) {
+        ChatTTSResult chatTTSResult = okHttpService.getAudioOfChatTTS(text);
+        return chatTTSResult;
+    }
 }
