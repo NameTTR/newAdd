@@ -23,8 +23,8 @@ public class RePrizeReachController {
     private final IRePrizeReachService rePrizeReachService;
 
     /**
-     * 获取奖品池兑现池和奖品池
-     * @return 奖品池兑现池和奖品池
+     * 获取奖品池兑现池和奖品池列表
+     * @return 奖品池兑现池和奖品池列表
      */
     @GetMapping("/prizeReachList")
     public AjaxResult getList() {
@@ -33,7 +33,7 @@ public class RePrizeReachController {
 
     /**
      * 抽奖后的数据更新
-     * @param prizeId 奖品id
+     * @param prizeId 抽中的奖品id
      * @param reachPoolId 兑现池id
      * @return 更新结果
      */

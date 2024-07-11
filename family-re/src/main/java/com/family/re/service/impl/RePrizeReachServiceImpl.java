@@ -35,8 +35,8 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
     }
 
     /**
-     * 获取奖品池兑现池和奖品池
-     * @return 奖品池兑现池和奖品池
+     * 获取奖品池兑现池和奖品池列表
+     * @return 奖品池兑现池和奖品池列表
      */
     @Override
     public AjaxResult getList() {
@@ -69,17 +69,20 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
 
     /**
      * 抽奖后的数据更新
-     * @param prizeId 奖品id
+     * @param prizeId 抽中的奖品id
      * @param reachPoolId 兑现池id
      * @return 更新结果
      */
     @Override
     public AjaxResult lotteryUpdate(Long prizeId, Long reachPoolId) {
 
+        //通过抽中的奖品id，获取奖品池兑现明细表中，抽中的奖品的数据，并且对抽中和未抽中的奖品进行标记
         RePrizeReachDetail data = rePrizeReachDetailService.lotteryUpdate(prizeId, reachPoolId);
 
         if(data==null)
             return AjaxResult.error("奖品池兑现明细表中没有奖品池id为"+reachPoolId+"的数据");
+
+        //更新奖品兑现表，将已经抽中的奖品的数据更新到奖品兑现表中
         lambdaUpdate().eq(RePrizeReach::getId,reachPoolId)
                 .set(RePrizeReach::getIsLottery,1)
                 .set(RePrizeReach::getPoolDetailId,prizeId)
@@ -91,8 +94,8 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
     }
 
     /**
-     * 添加兑现池
-     * @param rePools 兑现池
+     * 从满足条件的奖品池中添加到兑现池
+     * @param rePools 满足条件的奖品池
      */
     @Override
     public void addReachPool(List<RePool> rePools) {

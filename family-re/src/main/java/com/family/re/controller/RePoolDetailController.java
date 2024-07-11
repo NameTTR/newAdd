@@ -35,7 +35,7 @@ public class RePoolDetailController {
      * 删除指定奖品池的奖品
      * @param prizePoolId 奖品池id
      * @param prizeId 奖品id
-     * @return 删除奖品池结果
+     * @return 删除奖品池奖品结果
      */
     @DeleteMapping("/deletePrize/{prizePoolId}/{prizeId}")
     public AjaxResult changeDetail(@PathVariable Long prizePoolId,@PathVariable Long prizeId) {

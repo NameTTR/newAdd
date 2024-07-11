@@ -23,9 +23,9 @@ public interface IRePrizeReachDetailService extends IService<RePrizeReachDetail>
 
     /**
      * 更新奖品池兑现明细表
-     * @param prizeId 奖品id
+     * @param prizeId 抽中的奖品id
      * @param reachPoolId 兑现池id
-     * @return 奖品池兑现明细表
+     * @return 抽中的奖品数据
      */
     RePrizeReachDetail lotteryUpdate(Long prizeId, Long reachPoolId);
 }

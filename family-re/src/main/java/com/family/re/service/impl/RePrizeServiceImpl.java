@@ -27,20 +27,20 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
 
 
     /**
-     * 获取奖品列表
-     * @return 奖品列表
+     * 获取总奖品列表
+     * @param name 上一层奖品池中选中的奖品
+     * @return 总奖品列表
      */
     @Override
     public AjaxResult getPrizeList(List<String> name) {
 
         RePrizeDTO rePrizes = new RePrizeDTO();
 
-        //公共奖品
+        //获取公共奖品
         List<RePrize> list = lambdaQuery().isNull(RePrize::getCreatedUserId).list();
-
         rePrizes.setPublicPrizes(make(list,name));
 
-        //私人奖品
+        //获取私人奖品
         List<RePrize> list1 = lambdaQuery().eq(RePrize::getCreatedUserId, 1).list();
         rePrizes.setPrivatePrizes(make(list1,name));
 
@@ -49,6 +49,7 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
 
     List<ReSelectedPrizesDTO> make(List<RePrize> list,List<String> name) {
         List<ReSelectedPrizesDTO> reSelectedPrizesDTOS = new ArrayList<>(list.size());
+        //判断是否在上一层奖品池中选中
         boolean selected = false;
         for (RePrize rePrize : list) {
             for (String s : name) {
@@ -66,8 +67,8 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
 
 
     /**
-     * 删除奖品
-     * @param prizeId 奖品id
+     * 删除总池中的奖品
+     * @param prizeId 总池中的奖品id
      * @return 删除结果
      */
     @Override
@@ -79,32 +80,36 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
 
     /**
      * 添加奖品
-     * @param prizeIco 奖品图标
-     * @param prizeName 奖品名称
-     * @return 添加结果
+     * @param prizeIco 要添加的奖品图标
+     * @param prizeName 要添加的奖品名称
+     * @return 往奖品总池中添加奖品的结果
      */
     @Override
     public AjaxResult addPrize(String prizeIco, String prizeName) {
 
+        //判断奖品是否存在
         RePrize one = lambdaQuery().eq(RePrize::getCreatedUserId,1).eq(RePrize::getPrizeName,prizeName).one();
         if(one!=null)
             return AjaxResult.error("奖品已存在");
 
         RePrize rePrize = new RePrize();
 
+        //添加奖品信息
         rePrize.setPrizeIco(prizeIco);
         rePrize.setPrizeName(prizeName);
         rePrize.setCreatedUserId(1L);
         rePrize.setFlagDelete(0);
+
+        //向数据库里添加奖品
         if(!save(rePrize))
             return AjaxResult.error("添加失败");
         return AjaxResult.success("添加成功");
     }
 
     /**
-     * 修改奖品
-     * @param rePrize 奖品
-     * @return 修改结果
+     * 修改总池中的奖品
+     * @param rePrize 总池的奖品类型
+     * @return 修改总池中的奖品的结果
      */
     @Override
     public AjaxResult changePrize(RePrize rePrize) {
@@ -126,8 +131,13 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
     @Override
     public AjaxResult lottery(int count) {
         Random random = new Random();
+
+        //生成随机数(0到count-1的随机数)
         int randomInt = random.nextInt(count-1);
+
+        //如果随机数为4，则加1(给前端页面空出一个位置)
         if(randomInt==4) randomInt+=1;
+
         return AjaxResult.success(randomInt);
     }
 }

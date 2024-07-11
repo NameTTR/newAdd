@@ -27,8 +27,9 @@ public class RePrizeController {
 
 
     /**
-     * 获取奖品列表
-     * @return 奖品列表
+     * 获取总奖品列表
+     * @param name 上一层奖品池中选中的奖品
+     * @return 总奖品列表
      */
     @GetMapping("/getPrizeList")
     public AjaxResult getPrizeList(@RequestBody List<String> name) {
@@ -36,8 +37,8 @@ public class RePrizeController {
     }
 
     /**
-     * 删除奖品
-     * @param prizeId 奖品id
+     * 删除总池中的奖品
+     * @param prizeId 总池中的奖品id
      * @return 删除结果
      */
     @DeleteMapping("/deletePrize/{prizeId}")
@@ -47,9 +48,9 @@ public class RePrizeController {
 
     /**
      * 添加奖品
-     * @param prizeIco 奖品图标
-     * @param prizeName 奖品名称
-     * @return 添加结果
+     * @param prizeIco 要添加的奖品图标
+     * @param prizeName 要添加的奖品名称
+     * @return 往奖品总池中添加奖品的结果
      */
     @PostMapping()
     public AjaxResult addPrize(String prizeIco,String prizeName) {
@@ -57,9 +58,9 @@ public class RePrizeController {
     }
 
     /**
-     * 修改奖品
-     * @param rePrize 奖品
-     * @return 修改结果
+     * 修改总池中的奖品
+     * @param rePrize 总池的奖品类型
+     * @return 修改总池中的奖品的结果
      */
     @PutMapping("/changePrize")
     public AjaxResult changePrize(@RequestBody RePrize rePrize) {
@@ -73,7 +74,7 @@ public class RePrizeController {
      */
     @GetMapping("/lottery/{count}")
     public AjaxResult lottery( @PathVariable int count) {
-        return rePrizeService.lottery( count);
+        return rePrizeService.lottery(count);
     }
 
 }

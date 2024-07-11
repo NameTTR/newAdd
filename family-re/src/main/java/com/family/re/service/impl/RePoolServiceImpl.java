@@ -195,11 +195,12 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
         job.setStatus("0");
         sysJobServiceImpl.insertJob(job);
     }
-    
 
+    //定时执行的模块(未开启)
     @Override
     public void addReachPool() {
         LambdaQueryWrapper<RePool> queryWrapper = new LambdaQueryWrapper<>();
+        //查询条件：奖品池中，计划的实际完成情况大于等于奖励条件
         queryWrapper.apply("reality_conditions >= reward_conditions");
         List<RePool> rePools = list(queryWrapper);
         rePrizeReachService.addReachPool(rePools);
