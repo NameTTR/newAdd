@@ -3,6 +3,14 @@ package com.family.common.domain.po;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
+/**
+ * <p>
+ * chatTTS实体类
+ * </p>
+ *
+ * @author 陈文杰
+ * @since 2024-07-10
+ */
 @Data
 public class ChatTTSPo {
     private String text;
