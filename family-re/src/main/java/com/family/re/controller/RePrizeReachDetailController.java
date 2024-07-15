@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/family/re")
+@RequestMapping("/family/re/reach")
 public class RePrizeReachDetailController {
 
     private final IRePrizeReachDetailService rePrizeReachDetailService;
@@ -27,8 +27,8 @@ public class RePrizeReachDetailController {
      * @param prizeReachId 奖品池兑现id
      * @return 奖品池兑现明细表
      */
-    @GetMapping("/prizeReachDetailList/{prizeReachId}")
-    public AjaxResult getRePrizeReachDetail(@PathVariable Long prizeReachId) {
+    @GetMapping("/detail/{prize_reach_id}")
+    public AjaxResult getPrizeReachDetail(@PathVariable("prize_reach_id") Long prizeReachId) {
         return rePrizeReachDetailService.getList(prizeReachId);
     }
 

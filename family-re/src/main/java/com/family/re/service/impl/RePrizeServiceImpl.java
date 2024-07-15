@@ -34,17 +34,22 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
     @Override
     public AjaxResult getPrizeList(List<String> name) {
 
-        RePrizeDTO rePrizes = new RePrizeDTO();
+        try {
+            RePrizeDTO rePrizes = new RePrizeDTO();
 
-        //获取公共奖品
-        List<RePrize> list = lambdaQuery().isNull(RePrize::getCreatedUserId).list();
-        rePrizes.setPublicPrizes(make(list,name));
+            //获取公共奖品
+            List<RePrize> list = lambdaQuery().isNull(RePrize::getCreatedUserId).list();
+            rePrizes.setPublicPrizes(make(list,name));
 
-        //获取私人奖品
-        List<RePrize> list1 = lambdaQuery().eq(RePrize::getCreatedUserId, 1).list();
-        rePrizes.setPrivatePrizes(make(list1,name));
+            //获取私人奖品
+            List<RePrize> list1 = lambdaQuery().eq(RePrize::getCreatedUserId, 1).list();
+            rePrizes.setPrivatePrizes(make(list1,name));
 
-        return AjaxResult.success(rePrizes);
+            return AjaxResult.success(rePrizes);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("获取奖品列表失败");
+        }
     }
 
     List<ReSelectedPrizesDTO> make(List<RePrize> list,List<String> name) {
@@ -87,23 +92,28 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
     @Override
     public AjaxResult addPrize(String prizeIco, String prizeName) {
 
-        //判断奖品是否存在
-        RePrize one = lambdaQuery().eq(RePrize::getCreatedUserId,1).eq(RePrize::getPrizeName,prizeName).one();
-        if(one!=null)
-            return AjaxResult.error("奖品已存在");
+        try {
+            //判断奖品是否存在
+            RePrize one = lambdaQuery().eq(RePrize::getCreatedUserId,1).eq(RePrize::getPrizeName,prizeName).one();
+            if(one!=null)
+                return AjaxResult.error("奖品已存在");
 
-        RePrize rePrize = new RePrize();
+            RePrize rePrize = new RePrize();
 
-        //添加奖品信息
-        rePrize.setPrizeIco(prizeIco);
-        rePrize.setPrizeName(prizeName);
-        rePrize.setCreatedUserId(1L);
-        rePrize.setFlagDelete(0);
+            //添加奖品信息
+            rePrize.setPrizeIco(prizeIco);
+            rePrize.setPrizeName(prizeName);
+            rePrize.setCreatedUserId(1L);
+            rePrize.setFlagDelete(0);
 
-        //向数据库里添加奖品
-        if(!save(rePrize))
-            return AjaxResult.error("添加失败");
-        return AjaxResult.success("添加成功");
+            //向数据库里添加奖品
+            if(!save(rePrize))
+                return AjaxResult.error("添加失败");
+            return AjaxResult.success("添加成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("添加奖品失败");
+        }
     }
 
     /**
@@ -112,15 +122,20 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
      * @return 修改总池中的奖品的结果
      */
     @Override
-    public AjaxResult changePrize(RePrize rePrize) {
-        if(!lambdaUpdate()
-                .eq(RePrize::getId,rePrize.getId())
-                .set(RePrize::getPrizeIco,rePrize.getPrizeIco())
-                .set(RePrize::getPrizeName,rePrize.getPrizeName())
-                .set(RePrize::getUpdateTime, LocalDateTime.now())
-                .update())
-            return AjaxResult.error("修改失败");
-        return AjaxResult.success("修改成功");
+    public AjaxResult revisionPrize(RePrize rePrize) {
+        try {
+            if(!lambdaUpdate()
+                    .eq(RePrize::getId,rePrize.getId())
+                    .set(RePrize::getPrizeIco,rePrize.getPrizeIco())
+                    .set(RePrize::getPrizeName,rePrize.getPrizeName())
+                    .set(RePrize::getUpdateTime, LocalDateTime.now())
+                    .update())
+                return AjaxResult.error("修改失败");
+            return AjaxResult.success("修改成功");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("修改奖品失败");
+        }
     }
 
     /**
@@ -130,14 +145,19 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
      */
     @Override
     public AjaxResult lottery(int count) {
-        Random random = new Random();
+        try {
+            Random random = new Random();
 
-        //生成随机数(0到count-1的随机数)
-        int randomInt = random.nextInt(count-1);
+            //生成随机数(0到count-1的随机数)
+            int randomInt = random.nextInt(count-1);
 
-        //如果随机数为4，则加1(给前端页面空出一个位置)
-        if(randomInt==4) randomInt+=1;
+            //如果随机数为4，则加1(给前端页面空出一个位置)
+            if(randomInt==4) randomInt+=1;
 
-        return AjaxResult.success(randomInt);
+            return AjaxResult.success(randomInt);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("抽奖失败");
+        }
     }
 }

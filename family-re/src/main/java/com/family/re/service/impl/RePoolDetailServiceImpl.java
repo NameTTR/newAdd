@@ -37,7 +37,7 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
      * @return 奖品池明细列表
      */
     @Override
-    public AjaxResult getDetailList(Long prizePoolId) {
+    public AjaxResult getPoolDetailList(Long prizePoolId) {
         List<RePoolDetail> list = lambdaQuery()
                 .eq(RePoolDetail::getPoolId,prizePoolId).list();
         return AjaxResult.success(list);
@@ -51,7 +51,7 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult deletePrize(Long prizePoolId, Long prizeId) {
+    public AjaxResult deletePoolDetailPrize(Long prizePoolId, Long prizeId) {
 
         try {
             if (!lambdaUpdate().eq(RePoolDetail::getPoolId,prizePoolId)
@@ -72,7 +72,7 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
      */
     @Override
     @Transactional (rollbackFor = Exception.class)
-    public AjaxResult addPrize(Long prizePoolId, Long prizeId) {
+    public AjaxResult addPoolPrize(Long prizePoolId, Long prizeId) {
         try {
             RePrize data = rePrizeService.getById(prizeId);
             RePoolDetail rePoolDetail = new RePoolDetail();

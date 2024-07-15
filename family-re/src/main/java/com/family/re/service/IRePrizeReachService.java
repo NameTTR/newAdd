@@ -21,7 +21,7 @@ public interface IRePrizeReachService extends IService<RePrizeReach> {
      * 获取奖品池兑现池和奖品池列表
      * @return 奖品池兑现池和奖品池列表
      */
-    AjaxResult getList();
+    AjaxResult getPrizeReach();
 
     /**
      * 抽奖后的数据更新
@@ -36,4 +36,10 @@ public interface IRePrizeReachService extends IService<RePrizeReach> {
      * @param rePools 满足条件的奖品池
      */
     void addReachPool(List<RePool> rePools);
+
+    /**
+     * 获取所有的奖品池兑现明细表
+     * @return 所有的奖品池兑现明细表
+     */
+    AjaxResult getAllPrizeReachList();
 }

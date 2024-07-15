@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/family/re/poolDetail")
+@RequestMapping("/family/re/pool")
 public class RePoolDetailController {
 
     private final IRePoolDetailService rePoolDetailService;
@@ -26,9 +26,9 @@ public class RePoolDetailController {
      * @param prizePoolId 奖品池id
      * @return 奖品池明细列表
      */
-    @GetMapping("/getDetailList/{prizePoolId}")
-    public AjaxResult getDetailList(@PathVariable Long prizePoolId) {
-        return rePoolDetailService.getDetailList(prizePoolId);
+    @GetMapping("/detail/{prize_pool_id}")
+    public AjaxResult getPoolDetailList(@PathVariable("prize_pool_id") Long prizePoolId) {
+        return rePoolDetailService.getPoolDetailList(prizePoolId);
     }
 
     /**
@@ -37,9 +37,9 @@ public class RePoolDetailController {
      * @param prizeId 奖品id
      * @return 删除奖品池奖品结果
      */
-    @DeleteMapping("/deletePrize/{prizePoolId}/{prizeId}")
-    public AjaxResult changeDetail(@PathVariable Long prizePoolId,@PathVariable Long prizeId) {
-        return rePoolDetailService.deletePrize(prizePoolId,prizeId);
+    @DeleteMapping("/prize/{prize_pool_id}/{prize_id}")
+    public AjaxResult deletePoolDetailPrize(@PathVariable("prize_pool_id") Long prizePoolId,@PathVariable("prize_id") Long prizeId) {
+        return rePoolDetailService.deletePoolDetailPrize(prizePoolId, prizeId);
     }
 
     /**
@@ -48,8 +48,8 @@ public class RePoolDetailController {
      * @param prizeId 奖品id
      * @return 往奖品池添加奖品结果
      */
-    @PostMapping()
-    public AjaxResult addPrize(Long prizePoolId ,Long prizeId) {
-        return rePoolDetailService.addPrize(prizePoolId,prizeId);
+    @PostMapping("/prize")
+    public AjaxResult addPoolPrize(Long prizePoolId ,Long prizeId) {
+        return rePoolDetailService.addPoolPrize(prizePoolId, prizeId);
     }
 }

@@ -1,6 +1,7 @@
 package com.family.re.controller;
 
 
+import com.family.re.constant.RewardConstants;
 import com.family.re.domain.po.RePool;
 import com.family.re.service.IRePoolService;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -8,6 +9,8 @@ import com.ruoyi.common.exception.job.TaskException;
 import lombok.AllArgsConstructor;
 import org.quartz.SchedulerException;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Objects;
 
 
 /**
@@ -20,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/family/re")
+@RequestMapping("/family/re/pool")
 public class RePoolController {
 
     private final IRePoolService rePoolService;
@@ -30,19 +33,27 @@ public class RePoolController {
      * @param prizePoolId 奖品池id
      * @return 删除信息
      */
-    @DeleteMapping("/prizeReachList/{prizePoolId}")
-        public AjaxResult deletePrize(@PathVariable("prizePoolId") Long prizePoolId){
-            return rePoolService.deletePrize(prizePoolId);
+    @DeleteMapping("/{prize_pool_id}")
+        public AjaxResult deletePrize(@PathVariable("prize_pool_id") Long prizePoolId) {
+        Integer type = rePoolService.deletePrize(prizePoolId);
+        if (Objects.equals(type, RewardConstants.REWARD_POOL_PRIZE_ERROR)) {
+            return AjaxResult.error("删除奖品池的奖品失败");
+        } else if (Objects.equals(type, RewardConstants.REWARD_POOL_ERROR)) {
+            return AjaxResult.error("删除奖品池失败");
+        } else {
+            return AjaxResult.success("删除奖品池的奖品成功");
         }
+    }
+    
 
     /**
      * 添加奖品池
      * @param pool 奖品池类，传递用户需要填写的数据
      * @return 添加信息
      */
-    @PostMapping("/addPrizePool")
-    public AjaxResult add(@RequestBody RePool pool){
-        return rePoolService.add(pool);
+    @PostMapping()
+    public AjaxResult addPool(@RequestBody RePool pool){
+        return rePoolService.addPrizePool(pool);
     }
 
     /**
@@ -51,16 +62,16 @@ public class RePoolController {
      * @return 修改信息
      */
     @PutMapping()
-    public AjaxResult upDate(@RequestBody RePool pool){
-        return rePoolService.upDate(pool);
+    public AjaxResult revPool(@RequestBody RePool pool){
+        return rePoolService.revisionPool(pool);
     }
 
-    /**
-     * 定时执行的模块(未开启)
-     */
-    @PostMapping
-    public void reJob() throws SchedulerException, TaskException {
-        rePoolService.reJob();
-    }
+//    /**
+//     * 定时执行的模块(未开启)
+//     */
+//    @PostMapping
+//    public void reJob() throws SchedulerException, TaskException {
+//        rePoolService.reJob();
+//    }
 
 }

@@ -12,7 +12,7 @@ public class ReRunJob {
         this.rePoolService = rePoolService;
     }
 
-
+    // 每天凌晨1点执行(未启动)
     public void runJob() {
         rePoolService.addReachPool();
     }

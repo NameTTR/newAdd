@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/family/re")
+@RequestMapping("/family/re/prize_reach")
 public class RePrizeReachController {
 
     private final IRePrizeReachService rePrizeReachService;
@@ -26,9 +26,9 @@ public class RePrizeReachController {
      * 获取奖品池兑现池和奖品池列表
      * @return 奖品池兑现池和奖品池列表
      */
-    @GetMapping("/prizeReachList")
-    public AjaxResult getList() {
-        return rePrizeReachService.getList();
+    @GetMapping()
+    public AjaxResult getPrizeReach() {
+        return rePrizeReachService.getPrizeReach();
     }
 
     /**
@@ -37,9 +37,19 @@ public class RePrizeReachController {
      * @param reachPoolId 兑现池id
      * @return 更新结果
      */
-    @PutMapping("/lotteryUpdate")
+    @PutMapping("/lottery")
     public AjaxResult lotteryUpdate(Long prizeId, Long reachPoolId) {
         return rePrizeReachService.lotteryUpdate(prizeId, reachPoolId);
+    }
+
+
+    /**
+     * 获取所有的奖品池兑现明细表
+     * @return 所有的奖品池兑现明细表
+     */
+    @GetMapping("/all")
+    public AjaxResult getAllPrizeReachList() {
+        return rePrizeReachService.getAllPrizeReachList();
     }
 
 }

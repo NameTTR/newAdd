@@ -20,7 +20,7 @@ import java.util.List;
  */
 @RestController
 @AllArgsConstructor
-@RequestMapping("/family/rePrize")
+@RequestMapping("/family/re/prize")
 public class RePrizeController {
 
     private final IRePrizeService rePrizeService;
@@ -31,7 +31,7 @@ public class RePrizeController {
      * @param name 上一层奖品池中选中的奖品
      * @return 总奖品列表
      */
-    @GetMapping("/getPrizeList")
+    @GetMapping()
     public AjaxResult getPrizeList(@RequestBody List<String> name) {
         return rePrizeService.getPrizeList(name);
     }
@@ -39,10 +39,10 @@ public class RePrizeController {
     /**
      * 删除总池中的奖品
      * @param prizeId 总池中的奖品id
-     * @return 删除结果
+     * @return 删除奖品总池中奖品的结果
      */
-    @DeleteMapping("/deletePrize/{prizeId}")
-    public AjaxResult deletePrize(@PathVariable Long prizeId) {
+    @DeleteMapping("/{prize_id}")
+    public AjaxResult deletePrize(@PathVariable("prize_id") Long prizeId) {
         return rePrizeService.deletePrize(prizeId);
     }
 
@@ -53,8 +53,8 @@ public class RePrizeController {
      * @return 往奖品总池中添加奖品的结果
      */
     @PostMapping()
-    public AjaxResult addPrize(String prizeIco,String prizeName) {
-        return rePrizeService.addPrize(prizeIco,prizeName);
+    public AjaxResult addPrize(String prizeIco, String prizeName) {
+        return rePrizeService.addPrize(prizeIco, prizeName);
     }
 
     /**
@@ -62,9 +62,9 @@ public class RePrizeController {
      * @param rePrize 总池的奖品类型
      * @return 修改总池中的奖品的结果
      */
-    @PutMapping("/changePrize")
-    public AjaxResult changePrize(@RequestBody RePrize rePrize) {
-        return rePrizeService.changePrize(rePrize);
+    @PutMapping()
+    public AjaxResult revisionPrize(@RequestBody RePrize rePrize) {
+        return rePrizeService.revisionPrize(rePrize);
     }
 
     /**

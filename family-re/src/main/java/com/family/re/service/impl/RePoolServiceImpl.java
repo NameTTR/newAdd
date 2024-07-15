@@ -3,6 +3,7 @@ package com.family.re.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.family.re.constant.RewardConstants;
 import com.family.re.domain.po.RePool;
 import com.family.re.domain.po.RePoolDetail;
 import com.family.re.mapper.RePoolMapper;
@@ -47,41 +48,64 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
 
 
 //    private void upDataRealityConditions() {
+//        //获取当前时间
 //        LocalDate date = LocalDate.now();
-//        List<RePool> rePools = lambdaQuery().eq(RePool::getUserId, 1).ge(RePool::getStarTime,date).le(RePool::getEndTime,date).list();
+//
+//        //查询当天在开始和结束时间之间的奖品池
+//        List<RePool> rePools = lambdaQuery()
+//                .eq(RePool::getUserId, 1)
+//                .ge(RePool::getStarTime,date)
+//                .le(RePool::getEndTime,date).list();
+//
+//        //遍历获取的奖品池
 //        for (RePool rePool : rePools) {
 //            int cycle = rePool.getRewardCycle();
 //            LocalDate start = null;
 //            LocalDate end = null;
 //            switch (cycle) {
 //                case 1: {
+//                    //如果是日截的话，开始时间和结束时间都是当天
 //                    start = end = LocalDate.now();
+//                    break;
 //                }
 //                case 2:{
+//                    //如果是周截的话，开始时间是周一，结束时间是周日
 //                    LocalDate monday = date.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 //                    LocalDate sunday = monday.plusWeeks(1).minusDays(1);
+//
+//                    //如果开始时间小于奖品池的开始时间，就取奖品池的开始时间，否则取开始时间
 //                    start = monday.isBefore(rePool.getStarTime())?rePool.getStarTime():monday;
+//                    //如果结束时间大于奖品池的结束时间，就取奖品池的结束时间，否则取结束时间
 //                    end = sunday.isAfter(rePool.getEndTime())?rePool.getEndTime():sunday;
 //                    break;
 //                }
 //                case 3:{
+//                    //如果是月截的话，开始时间是当月的第一天，结束时间是当月的最后一天
 //                    LocalDate firstDay = date.with(TemporalAdjusters.firstDayOfMonth());
 //                    LocalDate lastDay = date.with(TemporalAdjusters.lastDayOfMonth());
+//
+//                    //如果开始时间小于奖品池的开始时间，就取奖品池的开始时间，否则取开始时间
 //                    start = firstDay.isBefore(rePool.getStarTime())?rePool.getStarTime():firstDay;
+//                    //如果结束时间大于奖品池的结束时间，就取奖品池的结束时间，否则取结束时间
 //                    end = lastDay.isAfter(rePool.getEndTime())?rePool.getEndTime():lastDay;
 //                    break;
 //                }
 //                case 4:{
+//                    //如果是年截的话，开始时间是当年的第一天，结束时间是当年的最后一天
 //                    LocalDate firstDay = date.with(TemporalAdjusters.firstDayOfYear());
 //                    LocalDate lastDay = date.with(TemporalAdjusters.lastDayOfYear());
+//
+//                    //如果开始时间小于奖品池的开始时间，就取奖品池的开始时间，否则取开始时间
 //                    start = firstDay.isBefore(rePool.getStarTime())?rePool.getStarTime():firstDay;
+//                    //如果结束时间大于奖品池的结束时间，就取奖品池的结束时间，否则取结束时间
 //                    end = lastDay.isAfter(rePool.getEndTime())?rePool.getEndTime():lastDay;
 //                    break;
 //                }
 //            }
+//            //调用方法获取实际完成情况
 //            rePool.setRealityConditions(task.getRealityConditions(start,end,rePool.getCreatedUserId()));
-//            updateById(rePool);
 //        }
+//            updateBatchById(rePools);
 //    }
 
 
@@ -92,18 +116,18 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult deletePrize(Long prizePoolId) {
+    public Integer deletePrize(Long prizePoolId) {
 
         try {
             //删除奖品池里面的奖品
             if(!Db.lambdaUpdate(RePoolDetail.class).eq(RePoolDetail::getPoolId, prizePoolId).remove())
-                return AjaxResult.error("删除奖品池的奖品失败");
+                return RewardConstants.REWARD_POOL_PRIZE_ERROR;
 
             //删除奖品池
             if(!lambdaUpdate().eq(RePool::getId,prizePoolId).remove())
-                return AjaxResult.error("删除奖品池失败");
+                return RewardConstants.REWARD_POOL_ERROR;
 
-            return AjaxResult.success("删除奖品池成功");
+            return RewardConstants.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("删除奖品池失败");
@@ -118,9 +142,22 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult add(RePool pool) {
+    public AjaxResult addPrizePool(RePool pool) {
 
         try {
+
+            //判断用户输入的数据是否为空
+            if(pool.getTitle()==null)
+                return AjaxResult.error("请输入奖品池标题!!!");
+            if (pool.getRewardCycle()==null)
+                return AjaxResult.error("请输入奖品池周期!!!");
+            if (pool.getRewardConditions()==null)
+                return AjaxResult.error("请输入奖品池奖励条件!!!");
+            if (pool.getStarTime()==null)
+                return AjaxResult.error("请输入奖品池开始时间!!!");
+            if (pool.getEndTime()==null)
+                return AjaxResult.error("请输入奖品池结束时间!!!");
+
             //小孩id
             Long userId=1L;
             //家长id
@@ -132,7 +169,7 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
             //将奖品池添加到数据库
             save(rePool);
 
-            return AjaxResult.success("添加奖品池成功");
+            return AjaxResult.success(rePool.getId());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("添加奖品池失败");
@@ -147,6 +184,7 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
         rePool.setTitle(pool.getTitle());
         rePool.setRewardCycle(pool.getRewardCycle());
         rePool.setRewardConditions(pool.getRewardConditions());
+        rePool.setState(pool.getState());
         rePool.setStarTime(pool.getStarTime());
         rePool.setEndTime(pool.getEndTime());
         rePool.setUserId(userId);
@@ -161,15 +199,15 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult upDate(RePool rePool) {
+    public AjaxResult revisionPool(RePool rePool) {
         try {
-            if(!lambdaUpdate().eq(RePool::getId,rePool.getId())
-                    .set(RePool::getTitle,rePool.getTitle())
-                    .set(RePool::getRewardCycle,rePool.getRewardCycle())
-                    .set(RePool::getRewardConditions,rePool.getRewardConditions())
-                    .set(RePool::getStarTime,rePool.getStarTime())
-                    .set(RePool::getEndTime,rePool.getEndTime())
-                    .set(RePool::getState,rePool.getState())
+            if(!lambdaUpdate().eq(RePool::getId, rePool.getId())
+                    .set(RePool::getTitle, rePool.getTitle())
+                    .set(RePool::getRewardCycle, rePool.getRewardCycle())
+                    .set(RePool::getRewardConditions, rePool.getRewardConditions())
+                    .set(RePool::getStarTime, rePool.getStarTime())
+                    .set(RePool::getEndTime, rePool.getEndTime())
+                    .set(RePool::getState, rePool.getState())
                     .update())
                 return AjaxResult.error("修改奖品池失败");
             return AjaxResult.success("修改奖品池成功");

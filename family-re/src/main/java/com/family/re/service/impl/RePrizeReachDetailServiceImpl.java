@@ -30,25 +30,30 @@ public class RePrizeReachDetailServiceImpl extends ServiceImpl<RePrizeReachDetai
     @Override
     public AjaxResult getList(Long prizeReachId) {
 
-        //按照奖品池兑现id查询奖品池兑现明细表
-        List<RePrizeReachDetail> dataList = lambdaQuery()
-                .eq(RePrizeReachDetail::getPrizeReachId,prizeReachId).list();
+        try {
+            //按照奖品池兑现id查询奖品池兑现明细表
+            List<RePrizeReachDetail> dataList = lambdaQuery()
+                    .eq(RePrizeReachDetail::getPrizeReachId,prizeReachId).list();
 
-        //将查询到的数据按照顺序放入list中，如果没有数据则放入null(为了前端展示方便，将第四个位置的数据置为null)
-        //一定要放满9个位置，否则前端展示会出现问题
-        List<RePrizeReachDetail> list = new ArrayList<>(9);
-        for(int i=0 ; i<9 ; i++) {
-            list.add(null);
-        }
-        int index = 0;
-        for (RePrizeReachDetail entity : dataList) {
-            if (index == 4) {
-                index++; // 跳过第四个位置
+            //将查询到的数据按照顺序放入list中，如果没有数据则放入null(为了前端展示方便，将第四个位置的数据置为null)
+            //一定要放满9个位置，否则前端展示会出现问题
+            List<RePrizeReachDetail> list = new ArrayList<>(9);
+            for(int i=0 ; i<9 ; i++) {
+                list.add(null);
             }
-            list.set(index, entity);
-            index++;
+            int index = 0;
+            for (RePrizeReachDetail entity : dataList) {
+                if (index == 4) {
+                    index++; // 跳过第四个位置
+                }
+                list.set(index, entity);
+                index++;
+            }
+            return AjaxResult.success(list);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("查询奖品池兑现明细表失败");
         }
-        return AjaxResult.success(list);
     }
 
     /**

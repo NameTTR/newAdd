@@ -19,7 +19,7 @@ public interface IRePoolDetailService extends IService<RePoolDetail> {
      * @param prizePoolId 奖品池id
      * @return 奖品池明细列表
      */
-    AjaxResult getDetailList(Long prizePoolId);
+    AjaxResult getPoolDetailList(Long prizePoolId);
 
 
     /**
@@ -28,7 +28,7 @@ public interface IRePoolDetailService extends IService<RePoolDetail> {
      * @param prizeId 奖品id
      * @return 删除奖品池奖品结果
      */
-    AjaxResult deletePrize(Long prizePoolId, Long prizeId);
+    AjaxResult deletePoolDetailPrize(Long prizePoolId, Long prizeId);
 
     /**
      * 往奖品池添加奖品
@@ -36,6 +36,6 @@ public interface IRePoolDetailService extends IService<RePoolDetail> {
      * @param prizeId 奖品id
      * @return 往奖品池添加奖品结果
      */
-    AjaxResult addPrize(Long prizePoolId, Long prizeId);
+    AjaxResult addPoolPrize(Long prizePoolId, Long prizeId);
     
 }

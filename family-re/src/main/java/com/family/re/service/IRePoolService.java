@@ -25,21 +25,21 @@ public interface IRePoolService extends IService<RePool> {
      * @param prizePoolId 奖品池id
      * @return 删除信息
      */
-    AjaxResult deletePrize(Long prizePoolId);
+    Integer deletePrize(Long prizePoolId);
 
     /**
      * 添加奖品池
      * @param pool 奖品池类，传递用户需要填写的数据
      * @return 添加信息
      */
-    AjaxResult add(RePool pool);
+    AjaxResult addPrizePool(RePool pool);
 
     /**
      * 修改奖品池
      * @param rePool 奖品池类，传递用户需要修改的数据
      * @return 修改信息
      */
-    AjaxResult upDate(RePool rePool);
+    AjaxResult revisionPool(RePool rePool);
 
     //定时执行的模块(未开启)
     void reJob() throws SchedulerException, TaskException;

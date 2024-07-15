@@ -12,6 +12,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -39,7 +40,7 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
      * @return 奖品池兑现池和奖品池列表
      */
     @Override
-    public AjaxResult getList() {
+    public AjaxResult getPrizeReach() {
 
         RePrizeReachDTO list = new RePrizeReachDTO();
 
@@ -48,9 +49,6 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
                 .eq(RePool::getState,1)
                 .eq(RePool::getUserId, 1)
                 .list());
-
-        if(list.getPrizeList()==null)
-            return AjaxResult.error("奖品池表中没有数据");
 
         //未兑现的奖品兑现表
         list.setUnPrizeList(lambdaQuery()
@@ -62,7 +60,7 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
         list.setPrizeList(lambdaQuery()
                 .eq(RePrizeReach::getUserId, 1)
                 .eq(RePrizeReach::getIsLottery, 1)
-                .first("LIMIT 3")
+                //.first("LIMIT 3")
                 .list());
         return AjaxResult.success(list);
     }
@@ -74,23 +72,29 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
      * @return 更新结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public AjaxResult lotteryUpdate(Long prizeId, Long reachPoolId) {
 
-        //通过抽中的奖品id，获取奖品池兑现明细表中，抽中的奖品的数据，并且对抽中和未抽中的奖品进行标记
-        RePrizeReachDetail data = rePrizeReachDetailService.lotteryUpdate(prizeId, reachPoolId);
+        try {
+            //通过抽中的奖品id，获取奖品池兑现明细表中，抽中的奖品的数据，并且对抽中和未抽中的奖品进行标记
+            RePrizeReachDetail data = rePrizeReachDetailService.lotteryUpdate(prizeId, reachPoolId);
 
-        if(data==null)
-            return AjaxResult.error("奖品池兑现明细表中没有奖品池id为"+reachPoolId+"的数据");
+            if(data==null)
+                return AjaxResult.error("奖品池兑现明细表中没有奖品池id为"+reachPoolId+"的数据");
 
-        //更新奖品兑现表，将已经抽中的奖品的数据更新到奖品兑现表中
-        lambdaUpdate().eq(RePrizeReach::getId,reachPoolId)
-                .set(RePrizeReach::getIsLottery,1)
-                .set(RePrizeReach::getPoolDetailId,prizeId)
-                .set(RePrizeReach::getPrizeIco,data.getPrizeIco())
-                .set(RePrizeReach::getPrizeName,data.getPrizeName())
-                .set(RePrizeReach::getTimeLottery, LocalDateTime.now())
-                .update();
-        return AjaxResult.success();
+            //更新奖品兑现表，将已经抽中的奖品的数据更新到奖品兑现表中
+            lambdaUpdate().eq(RePrizeReach::getId,reachPoolId)
+                    .set(RePrizeReach::getIsLottery,1)
+                    .set(RePrizeReach::getPoolDetailId,prizeId)
+                    .set(RePrizeReach::getPrizeIco,data.getPrizeIco())
+                    .set(RePrizeReach::getPrizeName,data.getPrizeName())
+                    .set(RePrizeReach::getTimeLottery, LocalDateTime.now())
+                    .update();
+            return AjaxResult.success();
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("数据更新失败");
+        }
     }
 
     /**
@@ -107,5 +111,18 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
             rePrizeReach.setFlagDelete(0);
             save(rePrizeReach);
         }
+    }
+
+    /**
+     * 获取所有的奖品池兑现明细表
+     * @return 所有的奖品池兑现明细表
+     */
+    @Override
+    public AjaxResult getAllPrizeReachList() {
+        Long userId = 1L;
+        return AjaxResult.success(lambdaQuery()
+                .eq(RePrizeReach::getUserId, userId)
+                .eq(RePrizeReach::getIsLottery, 1)
+                .list());
     }
 }

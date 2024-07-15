@@ -43,7 +43,7 @@ public interface IRePrizeService extends IService<RePrize> {
      * @param rePrize 总池的奖品类型
      * @return 修改总池中的奖品的结果
      */
-    AjaxResult changePrize(RePrize rePrize);
+    AjaxResult revisionPrize(RePrize rePrize);
 
     /**
      * 抽奖
