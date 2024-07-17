@@ -32,7 +32,7 @@ public class RePrizeController {
      * @return 总奖品列表
      */
     @GetMapping()
-    public AjaxResult getPrizeList(@RequestBody List<String> name) {
+    public AjaxResult getPrizeList(@RequestParam List<String> name) {
         return rePrizeService.getPrizeList(name);
     }
 

@@ -37,8 +37,8 @@ public class RePrizeReachController {
      * @param reachPoolId 兑现池id
      * @return 更新结果
      */
-    @PutMapping("/lottery")
-    public AjaxResult lotteryUpdate(Long prizeId, Long reachPoolId) {
+    @PutMapping("/lottery/{prize_id}/{reach_pool_id}")
+    public AjaxResult lotteryUpdate(@PathVariable("prize_id") Long prizeId, @PathVariable("reach_pool_id") Long reachPoolId) {
         return rePrizeReachService.lotteryUpdate(prizeId, reachPoolId);
     }
 

@@ -28,7 +28,7 @@ public interface IRePoolDetailService extends IService<RePoolDetail> {
      * @param prizeId 奖品id
      * @return 删除奖品池奖品结果
      */
-    AjaxResult deletePoolDetailPrize(Long prizePoolId, Long prizeId);
+    AjaxResult deletePoolDetailPrize(Long prizePoolId, String prizeName);
 
     /**
      * 往奖品池添加奖品

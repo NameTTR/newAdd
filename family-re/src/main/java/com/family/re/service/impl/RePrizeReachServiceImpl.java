@@ -76,20 +76,25 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
     public AjaxResult lotteryUpdate(Long prizeId, Long reachPoolId) {
 
         try {
+            RePrizeReach one =lambdaQuery().eq(RePrizeReach::getId,reachPoolId).one();
+            if(one.getIsLottery()==1) {
+                return AjaxResult.error("该奖品已经被抽过了");
+            }
             //通过抽中的奖品id，获取奖品池兑现明细表中，抽中的奖品的数据，并且对抽中和未抽中的奖品进行标记
             RePrizeReachDetail data = rePrizeReachDetailService.lotteryUpdate(prizeId, reachPoolId);
 
-            if(data==null)
+            if(data==null){
                 return AjaxResult.error("奖品池兑现明细表中没有奖品池id为"+reachPoolId+"的数据");
-
+            }
             //更新奖品兑现表，将已经抽中的奖品的数据更新到奖品兑现表中
-            lambdaUpdate().eq(RePrizeReach::getId,reachPoolId)
-                    .set(RePrizeReach::getIsLottery,1)
-                    .set(RePrizeReach::getPoolDetailId,prizeId)
-                    .set(RePrizeReach::getPrizeIco,data.getPrizeIco())
-                    .set(RePrizeReach::getPrizeName,data.getPrizeName())
-                    .set(RePrizeReach::getTimeLottery, LocalDateTime.now())
-                    .update();
+            one.setIsLottery(1)
+            .setPoolDetailId(prizeId)
+            .setPrizeIco(data.getPrizeIco())
+            .setPrizeName(data.getPrizeName())
+            .setTimeLottery(LocalDateTime.now());
+            if(!updateById(one)) {
+                return AjaxResult.error("奖品更新失败");
+            }
             return AjaxResult.success();
         } catch (Exception e) {
             e.printStackTrace();

@@ -34,20 +34,16 @@ public class RePrizeReachDetailServiceImpl extends ServiceImpl<RePrizeReachDetai
             //按照奖品池兑现id查询奖品池兑现明细表
             List<RePrizeReachDetail> dataList = lambdaQuery()
                     .eq(RePrizeReachDetail::getPrizeReachId,prizeReachId).list();
-
-            //将查询到的数据按照顺序放入list中，如果没有数据则放入null(为了前端展示方便，将第四个位置的数据置为null)
-            //一定要放满9个位置，否则前端展示会出现问题
+            //将查询到的数据按照顺序放入list中(为了前端展示方便，将第四个位置的数据置为null)
+            //可以重复，但是一定要放满9个位置，否则前端展示会出现问题
             List<RePrizeReachDetail> list = new ArrayList<>(9);
-            for(int i=0 ; i<9 ; i++) {
-                list.add(null);
-            }
-            int index = 0;
-            for (RePrizeReachDetail entity : dataList) {
-                if (index == 4) {
-                    index++; // 跳过第四个位置
+            int count = dataList.size();
+            //因为只有9个位置，而且i==4时会放入2次数据，所以只循环8次
+            for (int i = 0; i < 8; i++) {
+                if (i == 4) {
+                    list.add(null);// 跳过第四个位置
                 }
-                list.set(index, entity);
-                index++;
+                list.add(dataList.get(i % count));
             }
             return AjaxResult.success(list);
         } catch (Exception e) {

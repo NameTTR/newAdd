@@ -1,5 +1,7 @@
 package com.family.re.service.impl;
 
+import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.family.re.domain.po.RePool;
 import com.family.re.domain.po.RePoolDetail;
 import com.family.re.domain.po.RePrize;
 import com.family.re.mapper.RePoolDetailMapper;
@@ -46,17 +48,33 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
     /**
      * 删除奖品池明细
      * @param prizePoolId 奖品池id
-     * @param prizeId 奖品id
+     * @param prizeName 奖品名称
      * @return 删除结果
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult deletePoolDetailPrize(Long prizePoolId, Long prizeId) {
+    public AjaxResult deletePoolDetailPrize(Long prizePoolId, String prizeName) {
 
         try {
             if (!lambdaUpdate().eq(RePoolDetail::getPoolId,prizePoolId)
-                    .eq(RePoolDetail::getId,prizeId).remove())
+                    .eq(RePoolDetail::getPrizeName,prizeName).remove())
                 return AjaxResult.error("删除奖品池明细失败");
+            // 减少 getCountPrize 的值
+            RePool rePool = Db.lambdaQuery(RePool.class)
+                    .eq(RePool::getId, prizePoolId)
+                    .one();
+            if (rePool == null) {
+                return AjaxResult.error("奖品池不存在");
+            }
+            if (rePool.getCountPrize() == 0) {
+                return AjaxResult.error("奖品池已空");
+            }
+            int newCount = rePool.getCountPrize() - 1;
+            // 更新 getCountPrize 字段
+            Db.lambdaUpdate(RePool.class)
+                    .eq(RePool::getId, prizePoolId)
+                    .set(RePool::getCountPrize, newCount)
+                    .update();
             return AjaxResult.success("删除奖品池明细成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -74,13 +92,42 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
     @Transactional (rollbackFor = Exception.class)
     public AjaxResult addPoolPrize(Long prizePoolId, Long prizeId) {
         try {
+            //判断奖品是否存在奖品的总池中
             RePrize data = rePrizeService.getById(prizeId);
+            if(data==null)
+                return AjaxResult.error("奖品不存在");
+            RePool rePool = Db.lambdaQuery(RePool.class)
+                    .eq(RePool::getId, prizePoolId)
+                    .one();
+            if (rePool == null) {
+                return AjaxResult.error("奖品池不存在");
+            }
+            if(rePool.getCountPrize()==8)
+                return AjaxResult.error("奖品池已满");
+            //判断奖品是否已存在于奖品池
+            if(lambdaQuery()
+                    .eq(RePoolDetail::getPoolId,prizePoolId)
+                    .eq(RePoolDetail::getPrizeName,data.getPrizeName())
+                    .count()>0) {
+                return AjaxResult.error("奖品已存在");
+            }
+            //添加奖品
             RePoolDetail rePoolDetail = new RePoolDetail();
             rePoolDetail.setPoolId(prizePoolId);
             rePoolDetail.setPrizeIco(data.getPrizeIco());
             rePoolDetail.setPrizeName(data.getPrizeName());
+            //保存奖品
             if(!save(rePoolDetail))
                 return AjaxResult.error("添加奖品失败");
+
+            // 增加 getCountPrize 的值
+            int newCount = rePool.getCountPrize() + 1;
+            // 更新 getCountPrize 字段
+            Db.lambdaUpdate(RePool.class)
+                    .eq(RePool::getId, prizePoolId)
+                    .set(RePool::getCountPrize, newCount)
+                    .update();
+
             return AjaxResult.success("添加奖品成功");
         } catch (Exception e) {
             e.printStackTrace();

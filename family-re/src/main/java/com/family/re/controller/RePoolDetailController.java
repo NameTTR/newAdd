@@ -37,9 +37,9 @@ public class RePoolDetailController {
      * @param prizeId 奖品id
      * @return 删除奖品池奖品结果
      */
-    @DeleteMapping("/prize/{prize_pool_id}/{prize_id}")
-    public AjaxResult deletePoolDetailPrize(@PathVariable("prize_pool_id") Long prizePoolId,@PathVariable("prize_id") Long prizeId) {
-        return rePoolDetailService.deletePoolDetailPrize(prizePoolId, prizeId);
+    @DeleteMapping("/prize/{prize_pool_id}/{prize_name}")
+    public AjaxResult deletePoolDetailPrize(@PathVariable("prize_pool_id") Long prizePoolId,@PathVariable("prize_name") String prizeName) {
+        return rePoolDetailService.deletePoolDetailPrize(prizePoolId,prizeName);
     }
 
     /**
@@ -48,8 +48,8 @@ public class RePoolDetailController {
      * @param prizeId 奖品id
      * @return 往奖品池添加奖品结果
      */
-    @PostMapping("/prize")
-    public AjaxResult addPoolPrize(Long prizePoolId ,Long prizeId) {
+    @PostMapping("/prize/{prize_pool_id}/{prize_id}")
+    public AjaxResult addPoolPrize(@PathVariable("prize_pool_id") Long prizePoolId , @PathVariable("prize_id") Long prizeId) {
         return rePoolDetailService.addPoolPrize(prizePoolId, prizeId);
     }
 }
