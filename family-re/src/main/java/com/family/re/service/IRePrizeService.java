@@ -47,8 +47,7 @@ public interface IRePrizeService extends IService<RePrize> {
 
     /**
      * 抽奖
-     * @param count 奖品数量
      * @return 随机数结果
      */
-    AjaxResult lottery( int count);
+    AjaxResult lottery();
 }

@@ -25,14 +25,6 @@ import java.util.List;
 @Service
 public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, RePoolDetail> implements IRePoolDetailService {
 
-
-    private final IRePrizeService rePrizeService;
-
-    public RePoolDetailServiceImpl(IRePrizeService rePrizeService) {
-        this.rePrizeService = rePrizeService;
-    }
-
-
     /**
      * 获取奖品池明细列表
      * @param prizePoolId 奖品池id
@@ -92,8 +84,11 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
     @Transactional (rollbackFor = Exception.class)
     public AjaxResult addPoolPrize(Long prizePoolId, Long prizeId) {
         try {
+            //从总奖池中获取奖品
+            RePrize data = Db.lambdaQuery(RePrize.class)
+                    .eq(RePrize::getId, prizeId)
+                    .one();
             //判断奖品是否存在奖品的总池中
-            RePrize data = rePrizeService.getById(prizeId);
             if(data==null)
                 return AjaxResult.error("奖品不存在");
             RePool rePool = Db.lambdaQuery(RePool.class)
@@ -111,7 +106,7 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
                     .count()>0) {
                 return AjaxResult.error("奖品已存在");
             }
-            //添加奖品
+            //添加奖品，将总奖池的数据添加到奖品池明细中
             RePoolDetail rePoolDetail = new RePoolDetail();
             rePoolDetail.setPoolId(prizePoolId);
             rePoolDetail.setPrizeIco(data.getPrizeIco());

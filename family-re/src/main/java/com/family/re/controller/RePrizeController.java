@@ -69,12 +69,11 @@ public class RePrizeController {
 
     /**
      * 抽奖
-     * @param count 奖品数量
      * @return 随机数结果
      */
-    @GetMapping("/lottery/{count}")
-    public AjaxResult lottery( @PathVariable int count) {
-        return rePrizeService.lottery(count);
+    @GetMapping("/lottery")
+    public AjaxResult lottery() {
+        return rePrizeService.lottery();
     }
 
 }

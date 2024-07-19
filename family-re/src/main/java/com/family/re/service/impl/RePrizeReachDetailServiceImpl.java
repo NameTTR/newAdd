@@ -1,6 +1,8 @@
 package com.family.re.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
+import com.baomidou.mybatisplus.extension.toolkit.Db;
+import com.family.re.domain.po.RePoolDetail;
 import com.family.re.domain.po.RePrizeReachDetail;
 import com.family.re.mapper.RePrizeReachDetailMapper;
 import com.family.re.service.IRePrizeReachDetailService;
@@ -8,8 +10,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * <p>
@@ -35,16 +36,21 @@ public class RePrizeReachDetailServiceImpl extends ServiceImpl<RePrizeReachDetai
             List<RePrizeReachDetail> dataList = lambdaQuery()
                     .eq(RePrizeReachDetail::getPrizeReachId,prizeReachId).list();
             //将查询到的数据按照顺序放入list中(为了前端展示方便，将第四个位置的数据置为null)
-            //可以重复，但是一定要放满9个位置，否则前端展示会出现问题
+            //一定要放满9个位置，否则前端展示会出现问题
             List<RePrizeReachDetail> list = new ArrayList<>(9);
-            int count = dataList.size();
+
+            if (dataList.size() !=8 ) {
+                return AjaxResult.error("奖品数量不足");
+            }
+
             //因为只有9个位置，而且i==4时会放入2次数据，所以只循环8次
             for (int i = 0; i < 8; i++) {
                 if (i == 4) {
-                    list.add(null);// 跳过第四个位置
+                    list.add(null);
                 }
-                list.add(dataList.get(i % count));
+                list.add(dataList.get(i));
             }
+            //返回排好的数据
             return AjaxResult.success(list);
         } catch (Exception e) {
             e.printStackTrace();
@@ -78,5 +84,40 @@ public class RePrizeReachDetailServiceImpl extends ServiceImpl<RePrizeReachDetai
         //将上述的更新操作批量执行更新
         updateBatchById(list);
         return data;
+    }
+
+    @Override
+    public void addPrize(Long rePrizeReachId, Long rePoolId) {
+        //查询奖品池明细表
+        List<RePoolDetail> list = Db.lambdaQuery(RePoolDetail.class)
+                .eq(RePoolDetail::getPoolId, rePoolId).list();
+
+        List<RePrizeReachDetail> rePrizeReachDetails = new ArrayList<>();
+        //将查询到的数据添加到奖品池兑现明细表中
+        for(RePoolDetail entity : list) {
+            RePrizeReachDetail rePrizeReachDetail = new RePrizeReachDetail();
+            rePrizeReachDetail.setPrizeReachId(rePrizeReachId);
+            rePrizeReachDetail.setPrizeName(entity.getPrizeName());
+            rePrizeReachDetail.setPrizeIco(entity.getPrizeIco());
+            rePrizeReachDetail.setIsCheck(0);
+            rePrizeReachDetails.add(rePrizeReachDetail);
+        }
+        //如果奖品数量不足8个，将"谢谢参与"奖品添加到奖品池兑现明细表中
+        int count = list.size();
+        if(count < 8) {
+            for(int i = 0; i < 8 - count; i++) {
+                RePrizeReachDetail rePrizeReachDetail = new RePrizeReachDetail();
+                rePrizeReachDetail.setPrizeReachId(rePrizeReachId);
+                rePrizeReachDetail.setPrizeName("谢谢参与");
+                rePrizeReachDetail.setPrizeIco("/");
+                rePrizeReachDetail.setIsCheck(0);
+                rePrizeReachDetails.add(rePrizeReachDetail);
+            }
+        }
+        // 打乱列表
+        Collections.shuffle(rePrizeReachDetails);
+
+        // 批量插入数据库
+        saveBatch(rePrizeReachDetails);
     }
 }

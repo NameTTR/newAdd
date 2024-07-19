@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
-
 /**
  * <p>
  * 奖品池表 前端控制器
@@ -36,9 +35,9 @@ public class RePoolController {
     @DeleteMapping("/{prize_pool_id}")
         public AjaxResult deletePrize(@PathVariable("prize_pool_id") Long prizePoolId) {
         Integer type = rePoolService.deletePrize(prizePoolId);
-        if (Objects.equals(type, RewardConstants.REWARD_POOL_PRIZE_ERROR)) {
+        if (type.equals(RewardConstants.REWARD_POOL_PRIZE_ERROR)) {
             return AjaxResult.error("删除奖品池的奖品失败");
-        } else if (Objects.equals(type, RewardConstants.REWARD_POOL_ERROR)) {
+        } else if (type.equals(RewardConstants.REWARD_POOL_ERROR)) {
             return AjaxResult.error("删除奖品池失败");
         } else {
             return AjaxResult.success("删除奖品池的奖品成功");

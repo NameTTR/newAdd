@@ -41,26 +41,21 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
      */
     @Override
     public AjaxResult getPrizeReach() {
-
         RePrizeReachDTO list = new RePrizeReachDTO();
-
         //奖品池表
         list.setPlanList(Db.lambdaQuery(RePool.class)
-                .eq(RePool::getState,1)
                 .eq(RePool::getUserId, 1)
                 .list());
-
         //未兑现的奖品兑现表
         list.setUnPrizeList(lambdaQuery()
                 .eq(RePrizeReach::getUserId, 1)
                 .eq(RePrizeReach::getIsLottery, 0)
                 .list());
-
-        //已兑现的奖品兑现表
+        //已兑现的奖品兑现表，但是只有三条数据
         list.setPrizeList(lambdaQuery()
                 .eq(RePrizeReach::getUserId, 1)
                 .eq(RePrizeReach::getIsLottery, 1)
-                //.first("LIMIT 3")
+                .last("LIMIT 3")
                 .list());
         return AjaxResult.success(list);
     }
@@ -113,14 +108,15 @@ public class RePrizeReachServiceImpl extends ServiceImpl<RePrizeReachMapper, ReP
             rePrizeReach.setUserId(1L);
             rePrizeReach.setPoolId(rePool.getId());
             rePrizeReach.setIsLottery(0);
-            rePrizeReach.setFlagDelete(0);
-            save(rePrizeReach);
+            if(save(rePrizeReach)) {
+                rePrizeReachDetailService.addPrize(rePrizeReach.getId(), rePool.getId());
+            }
         }
     }
 
     /**
-     * 获取所有的奖品池兑现明细表
-     * @return 所有的奖品池兑现明细表
+     * 获取所有的已经抽奖的奖品池兑现明细表
+     * @return 所有的已经抽奖的奖品池兑现明细表
      */
     @Override
     public AjaxResult getAllPrizeReachList() {

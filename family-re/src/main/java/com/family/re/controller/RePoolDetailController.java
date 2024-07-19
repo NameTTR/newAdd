@@ -34,7 +34,7 @@ public class RePoolDetailController {
     /**
      * 删除指定奖品池的奖品
      * @param prizePoolId 奖品池id
-     * @param prizeId 奖品id
+     * @param prizeName 奖品名称
      * @return 删除奖品池奖品结果
      */
     @DeleteMapping("/prize/{prize_pool_id}/{prize_name}")

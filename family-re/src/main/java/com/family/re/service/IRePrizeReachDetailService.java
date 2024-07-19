@@ -28,4 +28,6 @@ public interface IRePrizeReachDetailService extends IService<RePrizeReachDetail>
      * @return 抽中的奖品数据
      */
     RePrizeReachDetail lotteryUpdate(Long prizeId, Long reachPoolId);
+
+    void addPrize(Long rePrizeReachId, Long rePoolId);
 }

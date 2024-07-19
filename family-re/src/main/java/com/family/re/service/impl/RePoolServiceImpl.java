@@ -120,13 +120,14 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
 
         try {
             //删除奖品池里面的奖品
-            if(!Db.lambdaUpdate(RePoolDetail.class).eq(RePoolDetail::getPoolId, prizePoolId).remove())
+            if(!Db.lambdaUpdate(RePoolDetail.class)
+                    .eq(RePoolDetail::getPoolId, prizePoolId).remove()
+                    &&Db.lambdaQuery(RePoolDetail.class)
+                    .eq(RePoolDetail::getPoolId, prizePoolId).count()>0)
                 return RewardConstants.REWARD_POOL_PRIZE_ERROR;
-
             //删除奖品池
             if(!lambdaUpdate().eq(RePool::getId,prizePoolId).remove())
                 return RewardConstants.REWARD_POOL_ERROR;
-
             return RewardConstants.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
@@ -169,7 +170,7 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
             //将奖品池添加到数据库
             save(rePool);
 
-            return AjaxResult.success(rePool.getId());
+            return AjaxResult.success("添加奖品池成功",rePool.getId());
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("添加奖品池失败");

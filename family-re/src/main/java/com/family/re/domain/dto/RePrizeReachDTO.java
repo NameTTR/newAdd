@@ -9,17 +9,14 @@ import java.util.List;
 
 @Data
 public class RePrizeReachDTO {
-
     /**
      * 奖励池的表
      */
     private List<RePool> PlanList;
-
     /**
      * 未抽奖的奖励池的表
      */
     private List<RePrizeReach> UnPrizeList;
-
     /**
      * 已经抽奖的奖励池的表
      */

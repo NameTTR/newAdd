@@ -140,16 +140,15 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
 
     /**
      * 抽奖
-     * @param count 奖品数量
      * @return 随机数结果
      */
     @Override
-    public AjaxResult lottery(int count) {
+    public AjaxResult lottery() {
         try {
             Random random = new Random();
 
-            //生成随机数(0到count-1的随机数)
-            int randomInt = random.nextInt(count-1);
+            //生成随机数(0到7的随机数)
+            int randomInt = random.nextInt(8);
 
             //如果随机数为4，则加1(给前端页面空出一个位置)
             if(randomInt==4) randomInt+=1;
