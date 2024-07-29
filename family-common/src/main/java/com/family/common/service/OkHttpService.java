@@ -1,4 +1,4 @@
-package com.family.common.sevice;
+package com.family.common.service;
 
 import com.family.common.domain.po.ChatTTSPo;
 import com.family.common.domain.result.ChatTTSResult;
@@ -7,9 +7,10 @@ import com.google.gson.Gson;
 import lombok.AllArgsConstructor;
 import okhttp3.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * <p>
@@ -30,8 +31,8 @@ public class OkHttpService {
     // chatTTS接口地址
     private final String chatTTSUrl = "http://127.0.0.1:9966/tts";
 
-    // whisper接口地址
-    private final String whisperUrl = "http://192.168.66.100:8000/whisper";
+    // whisper接口地址8.134.55.161
+    private final String whisperUrl = "http://192.168.66.100:8000/whisper/";
 
     /**
      * 文本转语音接口
@@ -76,19 +77,22 @@ public class OkHttpService {
 
     /**
      * 语音转文本接口
-     * @param file 语音文件
+     *
+     * @param files 语音文件
      * @return
      */
-    public WhisperResult getTextOfWhisper(File file){
+    public WhisperResult getTextOfWhisper(MultipartFile[] files){
         try {
-            // 设置请求体和请求内容类型
-            RequestBody fileBody = RequestBody.create(MediaType.parse("audio/mpeg"), file);
+            // 构建文件请求体
+            MultipartBody.Builder requestBodyBuilder = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM);
+            for (MultipartFile file : files) {
+                RequestBody fileBody = RequestBody.create(MediaType.parse("audio/mpeg"), file.getBytes());
+                requestBodyBuilder.addFormDataPart("files", file.getOriginalFilename(),fileBody);
+            }
 
-            // 构建请求体
-            MultipartBody requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("file", file.getName(), fileBody)
-                    .build();
+            // 构建multipart请求体
+            MultipartBody requestBody = requestBodyBuilder.build();
 
             // 构建请求
             Request request = new Request.Builder()

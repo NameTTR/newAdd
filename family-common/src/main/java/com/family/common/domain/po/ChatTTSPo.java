@@ -3,6 +3,8 @@ package com.family.common.domain.po;
 import com.google.gson.annotations.SerializedName;
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * <p>
  * chatTTS实体类

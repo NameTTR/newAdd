@@ -31,7 +31,7 @@ public class CcCharacterGroupController extends BaseController {
      * @return
      */
     @GetMapping("{chapterId}")
-    public AjaxResult getCcCharacterGroup(@PathVariable("chapterId") Long chapterId) {
+    public AjaxResult getCharacterGroup(@PathVariable("chapterId") Long chapterId) {
         return ccCharacterGroupService.getCcCharacterGroup(chapterId);
     }
 }

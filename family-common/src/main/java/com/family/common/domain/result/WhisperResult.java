@@ -2,6 +2,8 @@ package com.family.common.domain.result;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * <p>
  * whisper模型返回结果
@@ -26,5 +28,5 @@ public class WhisperResult {
     /**
      * 返回的结果
      */
-    private String text;
+    private List<String> text;
 }

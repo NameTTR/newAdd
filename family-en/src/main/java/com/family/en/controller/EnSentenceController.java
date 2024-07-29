@@ -30,7 +30,7 @@ public class EnSentenceController {
      * @return
      */
     @GetMapping("{chapterId}")
-    public AjaxResult getCcCharacterGroup(@PathVariable("chapterId") Long chapterId) {
+    public AjaxResult getWordGroup(@PathVariable("chapterId") Long chapterId) {
         return enSentenceService.getEnSentence(chapterId);
     }
 }

@@ -55,9 +55,15 @@
             <artifactId>family-common</artifactId>
             <version>3.8.7</version>
         </dependency>
+        <!-- 判断拼音工具 -->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.houbb</groupId>
+            <artifactId>pinyin</artifactId>
+            <version>0.4.0</version>
         </dependency>
     </dependencies>
 </project>

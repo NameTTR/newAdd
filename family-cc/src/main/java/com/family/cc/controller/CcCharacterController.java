@@ -31,7 +31,7 @@ public class CcCharacterController extends BaseController {
     private ICcCharacterService ccCharacterService;
 
     /**
-     * 导入Excel数据
+     * 导入汉字Excel数据
      * @param file 上传的文件
      * @return
      */
