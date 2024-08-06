@@ -1,4 +1,4 @@
-package com.family.pl.domain.VO;
+package com.family.pl.domain.VO.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;

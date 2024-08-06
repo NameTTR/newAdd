@@ -1,9 +1,10 @@
-package com.family.pl.domain.VO;
+package com.family.pl.domain.VO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,7 +23,16 @@ public class SelectChildTaskVO {
     private Long childTaskId;
 
     /**
+     * 子任务标题
+     */
+    private String title;
+
+    /**
      * 子任务列表
      */
     private List<SelectChildTaskVO> childTaskVOS;
+
+    public <E> SelectChildTaskVO(Long id, ArrayList<E> es) {
+
+    }
 }
