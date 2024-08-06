@@ -3,11 +3,14 @@ package com.family.pl.constant;
 import com.ruoyi.common.constant.Constants;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/5/20 9:04
+ * <p>
+ * 任务常量类，用于定义和任务相关的常量。
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-5-20
  */
-public class TaskConstants extends Constants {
+public class TaskConstants {
     /**
      * 定时任务白名单配置（仅允许访问的包名，如其他需要可以自行添加）
      */

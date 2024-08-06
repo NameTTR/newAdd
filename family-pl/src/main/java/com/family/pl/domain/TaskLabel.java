@@ -9,8 +9,12 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
+ * <p>
  * 任务标签表
- * @TableName pl_task_label
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @TableName(value ="pl_task_label")
 @Data

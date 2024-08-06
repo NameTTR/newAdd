@@ -19,9 +19,12 @@ import java.util.Date;
 import java.util.List;
 
 /**
+ * <p>
  * 定时任务处理（允许并发执行）
+ * </p>
  *
- * @author ruoyi
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @Component
 @PersistJobDataAfterExecution

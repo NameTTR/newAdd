@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
+ * <p>
  * 每天统计表
- * @TableName pl_statistics_date
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @TableName(value ="pl_statistics_date")
 @Data
@@ -40,7 +44,7 @@ public class StatisticsDate implements Serializable {
     /**
      * 用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

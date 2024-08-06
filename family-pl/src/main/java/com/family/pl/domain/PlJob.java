@@ -18,10 +18,12 @@ import javax.validation.constraints.Size;
 import java.util.Date;
 
 /**
- * 名称：任务类
- * 功能：用于表示定时任务的详细信息，包括任务的ID、名称、组名、调用目标、cron表达式、计划策略、并发执行设置、任务状态等。
- * 作者：Name
- * 日期：2024/7/5
+ * <p>
+ * 任务类
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @AllArgsConstructor
 @NoArgsConstructor
@@ -47,7 +49,7 @@ public class PlJob extends BaseEntity
 
     /** 调用目标字符串 */
     @Excel(name = "调用目标字符串")
-    private String invokeTarget = "com.family.pl.task.TestTask.test";
+    private String invokeTarget = "com.family.pl.task.TestTask.test()";
 
     /** cron执行表达式 */
     @Excel(name = "执行表达式 ")
@@ -55,11 +57,11 @@ public class PlJob extends BaseEntity
 
     /** cron计划策略 */
     @Excel(name = "计划策略 ", readConverterExp = "0=默认,1=立即触发执行,2=触发一次执行,3=不触发立即执行")
-    private String misfirePolicy = ScheduleConstants.MISFIRE_DEFAULT;
+    private String misfirePolicy = ScheduleConstants.MISFIRE_DO_NOTHING;
 
     /** 是否并发执行（0允许 1禁止） */
     @Excel(name = "并发执行", readConverterExp = "0=允许,1=禁止")
-    private String concurrent = "1";
+    private String concurrent = "0";
 
     /** 任务状态（0正常 1暂停） */
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")

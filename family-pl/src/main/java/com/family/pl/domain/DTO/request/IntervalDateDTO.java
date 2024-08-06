@@ -1,23 +1,24 @@
-package com.family.pl.domain.VO.request;
+package com.family.pl.domain.DTO.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDate;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/7/10 11:34
+ * <p>
+ * 间隔日期数据传输对象。
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IntervalDateVO {
+public class IntervalDateDTO {
     /**
      * 开始日期
      */

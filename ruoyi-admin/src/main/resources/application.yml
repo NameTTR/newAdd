@@ -31,11 +31,20 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
 
-# 日志配置
+## 日志配置
+#logging:
+#  level:
+#    com.ruoyi: debug
+#    org.springframework: warn
+
 logging:
   level:
-    com.ruoyi: debug
-    org.springframework: warn
+    root: INFO
+    org.springframework.messaging.simp: DEBUG
+    com:
+      family:
+        pl:
+          task: DEBUG # 替换为你的包名
 
 # 用户配置
 user:
@@ -91,6 +100,24 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  spring:
+    rabbitmq:
+      port: 5672
+      host: 8.138.130.112
+      username: admin
+      password: txDNJM3s
+      #这个配置是保证提供者确保消息推送到交换机中，不管成不成功，都会回调
+      publisher-confirm-type: correlated
+      #保证交换机能把消息推送到队列中
+      publisher-returns: true
+      virtual-host: /
+      #这个配置是保证消费者会消费消息，手动确认
+      listener:
+        simple:
+          acknowledge-mode: manual
+      template:
+        mandatory: true
+
 
 --- #################### 定时任务相关配置 ####################
 
@@ -122,6 +149,10 @@ spring:
             class: org.quartz.simpl.SimpleThreadPool # 线程池类型
     jdbc: # 使用 JDBC 的 JobStore 的时候，JDBC 的配置
       initialize-schema: always # 是否自动使用 SQL 初始化 Quartz 表结构。这里设置成 never ，我们手动创建表结构。
+
+
+
+
 
 # token配置
 token:
@@ -176,4 +207,8 @@ xss:
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
+calendarific:
+  api:
+    url: https://calendarific.com/api/v2/holidays
+    key: C33ICvZX2UGcbTZbtaqUS04RegACfdxL
 

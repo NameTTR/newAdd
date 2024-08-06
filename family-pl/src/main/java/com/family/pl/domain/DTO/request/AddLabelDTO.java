@@ -1,18 +1,21 @@
-package com.family.pl.domain.VO.request;
+package com.family.pl.domain.DTO.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/7/9 10:54
+ * <p>
+ * 数据传输对象，用于添加标签的信息传递。
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class AddLabelVO {
+public class AddLabelDTO {
     /**
      * 标签名称
      */

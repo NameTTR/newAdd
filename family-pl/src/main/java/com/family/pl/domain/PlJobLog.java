@@ -8,9 +8,12 @@ import org.apache.commons.lang3.builder.ToStringStyle;
 import java.util.Date;
 
 /**
+ * <p>
  * 定时任务调度日志表 sys_job_log
- * 
- * @author ruoyi
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 public class PlJobLog extends BaseEntity
 {

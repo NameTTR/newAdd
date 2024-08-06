@@ -6,10 +6,12 @@ import java.text.ParseException;
 import java.util.Date;
 
 /**
+ * <p>
  * cron表达式工具类
- * 
- * @author ruoyi
+ * </p>
  *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 public class PlCronUtils
 {

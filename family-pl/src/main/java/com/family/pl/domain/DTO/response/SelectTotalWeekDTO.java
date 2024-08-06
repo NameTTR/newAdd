@@ -1,18 +1,20 @@
-package com.family.pl.domain.VO.response;
+package com.family.pl.domain.DTO.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/7/10 11:42
+ * <p>
+ * 选择任务的数据传输对象
+ * </p>
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SelectTotalWeekVO {
+public class SelectTotalWeekDTO {
     /**
      * 完成任务的数量
      */

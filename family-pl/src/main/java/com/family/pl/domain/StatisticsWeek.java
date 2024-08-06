@@ -10,8 +10,12 @@ import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
+ * <P>
  * 每周统计表
- * @TableName pl_statistics_week
+ * </P>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @TableName(value ="pl_statistics_week")
 @Data

@@ -9,12 +9,16 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import org.quartz.*;
 
+import java.text.ParseException;
 import java.time.LocalDateTime;
 
 /**
+ * <p>
  * 定时任务工具类
+ * </p>
  *
- * @author ruoyi
+ * @author 高俊炜
+ * @since 2024-7-5
  */
 public class PlScheduleUtils {
     /**
@@ -59,7 +63,7 @@ public class PlScheduleUtils {
     /**
      * 创建定时任务
      */
-    public static void createScheduleJob(Scheduler scheduler, PlJob job) throws SchedulerException, TaskException {
+    public static void createScheduleJob(Scheduler scheduler, PlJob job) throws SchedulerException, TaskException, ParseException {
         Long startTime = System.currentTimeMillis();
         Class<? extends Job> jobClass = getQuartzJobClass(job);
         // 构建job信息
@@ -79,11 +83,14 @@ public class PlScheduleUtils {
 
         SimpleScheduleBuilder simpleScheduleBuilder = SimpleScheduleBuilder.simpleSchedule();
 
+        TaskDateUtils.calculateStartTime(job.getStartTime(), job.getRemindByDate(), job.getRemindByDate());
         // 判断是否存在
         if (scheduler.checkExists(getJobKey(jobId))) {
             // 防止创建时存在数据问题 先移除，然后在执行创建操作
             scheduler.deleteJob(getJobKey(jobId));
         }
+
+
         // 按新的cronExpression表达式构建一个新的trigger
         CronTrigger trigger = null;
         if (StringUtils.isNotNull(job.getRepeatEnd())) {
@@ -91,13 +98,7 @@ public class PlScheduleUtils {
                     .endAt(job.getRepeatEnd())
                     .startAt(job.getStartTime())
                     .withSchedule(cronScheduleBuilder).build();
-        }else if(job.getRepeat() == 0){
-            SimpleTrigger oneTrigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
-                    .startAt(job.getStartTime())
-                    .withSchedule(simpleScheduleBuilder).build();
-            scheduler.scheduleJob(jobDetail, oneTrigger);
-            return;
-        }else {
+        } else {
             trigger = TriggerBuilder.newTrigger().withIdentity(getTriggerKey(jobId))
                     .startAt(job.getStartTime())
                     .withSchedule(cronScheduleBuilder).build();

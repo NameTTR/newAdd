@@ -1,13 +1,21 @@
 package com.family.pl.utils;
 
+import com.family.common.util.ExceptionLogUtil;
+import org.quartz.CronExpression;
+
+import java.text.ParseException;
 import java.time.*;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/6/27 10:42
+ * <p>
+ * 日期工具类
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-6-27
  */
 public class TaskDateUtils {
 
@@ -23,15 +31,19 @@ public class TaskDateUtils {
         calendar.setTime(taskTime);
 
         switch (remindByTime) {
-            case 1: // On time
+            // On time
+            case 1:
                 break;
-            case 2: // 5 minutes early
+            // 5 minutes early
+            case 2:
                 calendar.add(Calendar.MINUTE, +5);
                 break;
-            case 3: // 30 minutes early
+            // 30 minutes early
+            case 3:
                 calendar.add(Calendar.MINUTE, +30);
                 break;
-            case 4: // 1 day early
+            // 1 day early
+            case 4:
                 calendar.add(Calendar.DAY_OF_YEAR, +1);
                 break;
             default: // No reminder
@@ -53,15 +65,19 @@ public class TaskDateUtils {
         calendar.setTime(taskDate);
 
         switch (remindByDate) {
-            case 1: // On the same day
+            // On the same day
+            case 1:
                 break;
-            case 2: // 1 day early
+            // 1 day early
+            case 2:
                 calendar.add(Calendar.DAY_OF_YEAR, +1);
                 break;
-            case 3: // 2 days early
+            // 2 days early
+            case 3:
                 calendar.add(Calendar.DAY_OF_YEAR, +2);
                 break;
-            case 4: // 3 days early
+            // 3 days early
+            case 4:
                 calendar.add(Calendar.DAY_OF_YEAR, +3);
                 break;
             default: // No reminder
@@ -83,15 +99,19 @@ public class TaskDateUtils {
         calendar.setTime(taskTime);
 
         switch (remindByTime) {
-            case 1: // On time
+            // On time
+            case 1:
                 break;
-            case 2: // 5 minutes early
+            // 5 minutes early
+            case 2:
                 calendar.add(Calendar.MINUTE, -5);
                 break;
-            case 3: // 30 minutes early
+            // 30 minutes early
+            case 3:
                 calendar.add(Calendar.MINUTE, -30);
                 break;
-            case 4: // 1 day early
+            // 1 day early
+            case 4:
                 calendar.add(Calendar.DAY_OF_YEAR, -1);
                 break;
             default: // No reminder
@@ -113,15 +133,19 @@ public class TaskDateUtils {
         calendar.setTime(taskDate);
 
         switch (remindByDate) {
-            case 1: // On the same day
+            // On the same day
+            case 1:
                 break;
-            case 2: // 1 day early
+            // 1 day early
+            case 2:
                 calendar.add(Calendar.DAY_OF_YEAR, -1);
                 break;
-            case 3: // 2 days early
+            // 2 days early
+            case 3:
                 calendar.add(Calendar.DAY_OF_YEAR, -2);
                 break;
-            case 4: // 3 days early
+            // 3 days early
+            case 4:
                 calendar.add(Calendar.DAY_OF_YEAR, -3);
                 break;
             default: // No reminder
@@ -323,4 +347,28 @@ public class TaskDateUtils {
 
         return nextExecutionDateTime;
     }
+
+    public static Date calculateStartTime(Date date, int remindByTime, int remindByDate) throws ParseException {
+
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(date);
+
+            // 根据 remindByTime 和 remindByDate 调整时间
+            if (remindByTime == 4) {
+                cal.add(Calendar.DATE, -1);
+            } else if (remindByTime == 3) {
+                cal.add(Calendar.MINUTE, -30);
+            } else if (remindByTime == 2) {
+                cal.add(Calendar.MINUTE, -5);
+            }
+
+            if (remindByDate >= 1 && remindByDate <= 4) {
+                cal.add(Calendar.DATE, -(remindByDate - 1));
+            }
+
+            return cal.getTime();
+
+    }
+
+
 }

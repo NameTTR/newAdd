@@ -18,9 +18,12 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * <p>
  * 定时任务处理（禁止并发执行）
+ * </p>
  *
- * @author ruoyi
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @DisallowConcurrentExecution
 @PersistJobDataAfterExecution

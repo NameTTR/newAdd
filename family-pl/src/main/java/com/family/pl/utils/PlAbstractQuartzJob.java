@@ -17,9 +17,12 @@ import org.slf4j.LoggerFactory;
 import java.util.Date;
 
 /**
+ * <p>
  * 抽象quartz调用
+ * </p>
  *
- * @author ruoyi
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @PersistJobDataAfterExecution
 public abstract class PlAbstractQuartzJob implements Job

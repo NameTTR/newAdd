@@ -1,4 +1,4 @@
-package com.family.pl.domain.VO.response;
+package com.family.pl.domain.DTO.response;
 
 import com.family.pl.domain.TaskLabel;
 import com.family.pl.domain.TaskRemind;
@@ -10,16 +10,16 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 名称：任务VO类
- * 功能：用于表示完整的任务信息，包括任务的提醒、标签和子任务
- * 作者：Name
- * 日期：2024/7/5
- * 版本：
+ * <p>
+ * 用于表示选择子任务的数据传输对象。
+ * </p>
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class SelectTaskVO {
+public class SelectTaskDTO {
     /**
      * 任务
      */
@@ -28,15 +28,15 @@ public class SelectTaskVO {
     /**
      * 任务提醒
      */
-    private List<TaskRemind> TaskReminds;
+    private List<TaskRemind> taskRemindList;
 
     /**
      * 任务标签
      */
-    private List<TaskLabel> TaskLabels;
+    private List<TaskLabel> taskLabelList;
 
     /**
      * 子任务
      */
-    private List<SelectChildTaskVO> childTaskVOS;
+    private List<SelectChildTaskDTO> childTaskDTOList;
 }

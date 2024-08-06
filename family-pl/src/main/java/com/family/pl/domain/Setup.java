@@ -6,11 +6,17 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
+ * <p>
  * 设置表
- * @TableName pl_setup
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @TableName(value ="pl_setup")
 @Data
@@ -24,7 +30,9 @@ public class Setup implements Serializable {
     /**
      * 提醒重复：0：无；1：每天；2：每月；3：每年；4：工作日；5：法定工作日；6：艾宾浩斯记忆法
      */
-    private Object repeat;
+    @JsonProperty("`repeat`")
+    @TableField(value = "`repeat`")
+    private Integer repeat;
 
     /**
      * 已完成任务是否隐藏：0：不隐藏；1：隐藏
@@ -54,7 +62,7 @@ public class Setup implements Serializable {
     /**
      * 用户ID
      */
-    private Integer userId;
+    private Long userId;
 
     /**
      * 创建时间

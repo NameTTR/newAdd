@@ -10,9 +10,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 /**
+ * <p>
  * 任务执行工具
+ * </p>
  *
- * @author ruoyi
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 public class PlJobInvokeUtil
 {

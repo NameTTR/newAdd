@@ -1,4 +1,4 @@
-package com.family.pl.domain.VO.request;
+package com.family.pl.domain.DTO.request;
 
 import com.family.pl.domain.TimeRemindDefault;
 import lombok.AllArgsConstructor;
@@ -8,16 +8,19 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/7/10 9:12
+ * <p>
+ * 任务默认值传输对象。
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @AllArgsConstructor
 @NoArgsConstructor
 @Data
-public class UpdateRemindDefaultVO {
+public class UpdateRemindDefaultDTO {
     /**
      * 任务提醒默认值
      */
-    private List<TimeRemindDefault> timeRemindDefaults;
+    private List<TimeRemindDefault> remindDefaultList;
 }

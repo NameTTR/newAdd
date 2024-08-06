@@ -1,4 +1,4 @@
-package com.family.pl.domain.VO.request;
+package com.family.pl.domain.DTO.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -8,14 +8,17 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDate;
 
 /**
- * 功能：
- * 作者：Name
- * 日期：2024/7/11 0:08
+ * <p>
+ * 日期数据传输对象类。
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-11
  */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DateVO {
+public class DateDTO {
     @JsonFormat(pattern = "yyyy-MM-dd")
     public LocalDate date;
 }

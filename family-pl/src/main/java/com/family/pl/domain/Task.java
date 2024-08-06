@@ -14,8 +14,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 /**
+ * <p>
  * 任务表
- * @TableName pl_task
+ * </p>
+ *
+ * @author 高俊炜
+ * @since 2024-7-9
  */
 @TableName(value ="pl_task")
 @Data
