@@ -204,8 +204,11 @@
         <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
         <module>family-us</module>
+        <module>family-cc</module>
         <module>family-common</module>
         <module>family-pl</module>
+        <module>family-pi</module>
+        <module>family-en</module>
     </modules>
     <packaging>pom</packaging>
 

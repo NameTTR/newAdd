@@ -68,10 +68,37 @@
             <version>3.8.7</version>
         </dependency>
 
-<!--        定时计划模块-->
+       <!--定时计划模块-->
         <dependency>
             <groupId>com.family</groupId>
             <artifactId>family-pl</artifactId>
+            <version>3.8.7</version>
+        </dependency>
+        <!-- 识字模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-cc</artifactId>
+            <version>3.8.7</version>
+        </dependency>
+
+        <!-- 通用模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-common</artifactId>
+            <version>3.8.7</version>
+        </dependency>
+
+        <!-- 拼音模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-pi</artifactId>
+            <version>3.8.7</version>
+        </dependency>
+
+        <!-- 单词模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-en</artifactId>
             <version>3.8.7</version>
         </dependency>
 
