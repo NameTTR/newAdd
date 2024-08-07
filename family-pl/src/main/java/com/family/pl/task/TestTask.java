@@ -17,7 +17,6 @@ import org.springframework.stereotype.Component;
  * @since 2024-7-9
  */
 @Slf4j
-@Component
 public class TestTask {
 
     //private static final Logger logger = LoggerFactory.getLogger(TestTask.class);
