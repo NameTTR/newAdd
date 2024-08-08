@@ -41,19 +41,42 @@ public class SysJob extends BaseEntity
     /** cron执行表达式 */
     @Excel(name = "执行表达式 ")
     //每天凌晨一点执行一次
-    private String cronExpression = "0 0 1 * * ?";
+    private String cronExpression;
 
     /** cron计划策略 */
     @Excel(name = "计划策略 ", readConverterExp = "0=默认,1=立即触发执行,2=触发一次执行,3=不触发立即执行")
-    private String misfirePolicy = ScheduleConstants.MISFIRE_DEFAULT;
+    private String misfirePolicy = ScheduleConstants.MISFIRE_DO_NOTHING;
 
     /** 是否并发执行（0允许 1禁止） */
     @Excel(name = "并发执行", readConverterExp = "0=允许,1=禁止")
-    private String concurrent;
+    private String concurrent = "1";
 
     /** 任务状态（0正常 1暂停） */
     @Excel(name = "任务状态", readConverterExp = "0=正常,1=暂停")
-    private String status;
+    private String status = "0";
+
+    /** 执行次数 */
+    private int times;
+
+    /** 结束时间 */
+    private Date endTime;
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
+    }
+
 
     public Long getJobId()
     {
@@ -168,5 +191,22 @@ public class SysJob extends BaseEntity
             .append("updateTime", getUpdateTime())
             .append("remark", getRemark())
             .toString();
+    }
+
+    public static SysJob createJob(String jobName,
+                                      String jobGroup,
+                                      String invokeTarget,
+                                      String cronExpression){
+        SysJob sysJob = new SysJob();
+        sysJob.setJobName(jobName);
+        sysJob.setJobGroup(jobGroup);
+        sysJob.setInvokeTarget(invokeTarget);
+        sysJob.setCronExpression(cronExpression);
+
+        return sysJob;
+    }
+
+    private SysJob(){
+
     }
 }

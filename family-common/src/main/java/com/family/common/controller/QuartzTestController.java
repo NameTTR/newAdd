@@ -1,6 +1,5 @@
 package com.family.common.controller;
 
-import com.family.common.util.FamilySchedulerUtil;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.ScheduleConstants;
 import com.ruoyi.common.core.domain.AjaxResult;
@@ -37,22 +36,17 @@ public class QuartzTestController {
 
     @PostMapping("/test")
     public AjaxResult test(JobExecutionContext context) throws SchedulerException, TaskException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException {
-        SysJob sysJob = new SysJob();
-        sysJob.setJobName("测试任务");
-        sysJob.setJobGroup("family-test");
-        sysJob.setCronExpression("0/5 * * * * ?");
-        sysJob.setInvokeTarget("com.family.common.task.Test.test(org.quartz.JobExecutionContext)");
-        sysJob.setConcurrent("0");
-        sysJob.setStatus(ScheduleConstants.Status.NORMAL.getValue());
+        SysJob sysJob = SysJob.createJob("测试任务", "family-test",  "com.family.common.task.Test.test(org.quartz.JobExecutionContext)","0/5 * * * * ?");
+        sysJob.setTimes(3);
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("name", "测试参数");
         dataMap.put("test", "测试");
         int rows = jobMapper.insertJob(sysJob);
         if (rows > 0)
         {
-            FamilySchedulerUtil.createScheduleJob(scheduler, sysJob, dataMap);
-
+            ScheduleUtils.createScheduleJob(scheduler, sysJob, dataMap);
         }
+
         return AjaxResult.success();
     }
 }

@@ -2,6 +2,7 @@ package com.ruoyi.quartz.util;
 
 import org.quartz.JobExecutionContext;
 import com.ruoyi.quartz.domain.SysJob;
+import org.quartz.PersistJobDataAfterExecution;
 
 /**
  * 定时任务处理（允许并发执行）
@@ -9,11 +10,12 @@ import com.ruoyi.quartz.domain.SysJob;
  * @author ruoyi
  *
  */
+@PersistJobDataAfterExecution
 public class QuartzJobExecution extends AbstractQuartzJob
 {
     @Override
     protected void doExecute(JobExecutionContext context, SysJob sysJob) throws Exception
     {
-        JobInvokeUtil.invokeMethod(sysJob);
+        JobInvokeUtil.invokeMethod(sysJob, context);
     }
 }

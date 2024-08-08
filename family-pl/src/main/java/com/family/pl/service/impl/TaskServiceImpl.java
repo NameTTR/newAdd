@@ -86,7 +86,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
     public IPage<SelectTaskDTO> selectCompleteTasks(Integer pageNum, LocalDate date) {
         Long userId = 1L;
         // 固定页面大小为10
-        int pageSize = 10;
+        int pageSize = 15;
 
         // Step 1: 获取所有符合条件的任务，包括主任务和子任务
         QueryWrapper<Task> baseWrapper = new QueryWrapper<>();
@@ -150,7 +150,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
     public IPage<SelectTaskDTO> selectInCompleteTasks(Integer pageNum, LocalDate date) {
         Long userId = 1L;
         // 固定页面大小为10
-        int pageSize = 10;
+        int pageSize = 15;
 
         // Step 1: 获取所有符合条件的任务，包括主任务和子任务
         List<Task> allTasks = baseMapper.selectAllTaskByOneDate(date, userId);
@@ -850,7 +850,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         // 用户ID，此处为演示数据
         Long userId = 1L;
         // 固定页面大小为10
-        int pageSize = 10;
+        int pageSize = 15;
 
         // Step 1: 获取所有符合条件的任务，包括主任务和子任务
         List<Task> allTasks = baseMapper.selectAllTaskByOneDate(date, userId);
@@ -925,7 +925,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
     public IPage<SelectTaskDTO> selectComTaskOrderPriority(Integer pageNum, LocalDate date) {
         Long userId = 1L;
         // 固定页面大小为10
-        int pageSize = 10;
+        int pageSize = 15;
 
         // Step 1: 获取所有符合条件的任务，包括主任务和子任务
         QueryWrapper<Task> baseWrapper = new QueryWrapper<>();
@@ -992,7 +992,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         // 用户ID，此处为演示数据
         Long userId = 1L;
         // 固定页面大小为10
-        int pageSize = 10;
+        int pageSize = 15;
 
         // Step 1: 获取所有符合条件的任务，包括主任务和子任务
         List<Task> allTasks = baseMapper.selectAllTaskByOneDateOrderPriority(date, userId, priority);
