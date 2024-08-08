@@ -89,7 +89,7 @@ public class ExceptionLogUtil {
         ExceptionLog exceptionLog = new ExceptionLog();
         exceptionLog.setExceptionMessage(exceptionMessage);
         exceptionLog.setExceptionStackTrace(exceptionStackTrace);
-        exceptionLog.setTimestamp(timestamp);
+        exceptionLog.setCreatedTime(timestamp);
         exceptionLog.setEndpoint(endpoint);
         exceptionLog.setHttpMethod(httpMethod);
         exceptionLog.setRequestParams(requestParams);

@@ -34,7 +34,7 @@ public class ExceptionLog implements Serializable {
     /**
      * 异常发生的时间
      */
-    private LocalDateTime timestamp;
+    private LocalDateTime createdTime;
 
     /**
      * 请求的端点URL
@@ -104,7 +104,7 @@ public class ExceptionLog implements Serializable {
         return (this.getId() == null ? other.getId() == null : this.getId().equals(other.getId()))
             && (this.getExceptionMessage() == null ? other.getExceptionMessage() == null : this.getExceptionMessage().equals(other.getExceptionMessage()))
             && (this.getExceptionStackTrace() == null ? other.getExceptionStackTrace() == null : this.getExceptionStackTrace().equals(other.getExceptionStackTrace()))
-            && (this.getTimestamp() == null ? other.getTimestamp() == null : this.getTimestamp().equals(other.getTimestamp()))
+            && (this.getCreatedTime() == null ? other.getCreatedTime() == null : this.getCreatedTime().equals(other.getCreatedTime()))
             && (this.getEndpoint() == null ? other.getEndpoint() == null : this.getEndpoint().equals(other.getEndpoint()))
             && (this.getHttpMethod() == null ? other.getHttpMethod() == null : this.getHttpMethod().equals(other.getHttpMethod()))
             && (this.getRequestParams() == null ? other.getRequestParams() == null : this.getRequestParams().equals(other.getRequestParams()))
@@ -124,7 +124,7 @@ public class ExceptionLog implements Serializable {
         result = prime * result + ((getId() == null) ? 0 : getId().hashCode());
         result = prime * result + ((getExceptionMessage() == null) ? 0 : getExceptionMessage().hashCode());
         result = prime * result + ((getExceptionStackTrace() == null) ? 0 : getExceptionStackTrace().hashCode());
-        result = prime * result + ((getTimestamp() == null) ? 0 : getTimestamp().hashCode());
+        result = prime * result + ((getCreatedTime() == null) ? 0 : getCreatedTime().hashCode());
         result = prime * result + ((getEndpoint() == null) ? 0 : getEndpoint().hashCode());
         result = prime * result + ((getHttpMethod() == null) ? 0 : getHttpMethod().hashCode());
         result = prime * result + ((getRequestParams() == null) ? 0 : getRequestParams().hashCode());
@@ -147,7 +147,7 @@ public class ExceptionLog implements Serializable {
         sb.append(", id=").append(id);
         sb.append(", exceptionMessage=").append(exceptionMessage);
         sb.append(", exceptionStackTrace=").append(exceptionStackTrace);
-        sb.append(", timestamp=").append(timestamp);
+        sb.append(", timestamp=").append(createdTime);
         sb.append(", endpoint=").append(endpoint);
         sb.append(", httpMethod=").append(httpMethod);
         sb.append(", requestParams=").append(requestParams);
