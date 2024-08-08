@@ -56,16 +56,16 @@ public class SysJob extends BaseEntity
     private String status = "0";
 
     /** 执行次数 */
-    private int times;
+    private String times;
 
     /** 结束时间 */
     private Date endTime;
 
-    public Integer getTimes() {
+    public String getTimes() {
         return times;
     }
 
-    public void setTimes(Integer times) {
+    public void setTimes(String times) {
         this.times = times;
     }
 

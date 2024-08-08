@@ -37,7 +37,7 @@ public class QuartzTestController {
     @PostMapping("/test")
     public AjaxResult test(JobExecutionContext context) throws SchedulerException, TaskException, ClassNotFoundException, InstantiationException, IllegalAccessException, InvocationTargetException {
         SysJob sysJob = SysJob.createJob("测试任务", "family-test",  "com.family.common.task.Test.test(org.quartz.JobExecutionContext)","0/5 * * * * ?");
-        sysJob.setTimes(3);
+        sysJob.setTimes("3");
         Map<String, Object> dataMap = new HashMap<>();
         dataMap.put("name", "测试参数");
         dataMap.put("test", "测试");

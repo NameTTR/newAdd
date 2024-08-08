@@ -97,9 +97,9 @@ public abstract class AbstractQuartzJob implements Job {
                 times++;
                 jobDataMap.put(ScheduleConstants.EXECUTION_TIMES, times);
                 System.out.println(jobDataMap.get(ScheduleConstants.EXECUTION_TIMES).toString());
-                if (times == sysJob.getTimes()) {
+                if (times == Integer.parseInt(sysJob.getTimes())) {
                     try {
-                        jobService.pauseJob(sysJob);
+                        jobService.deleteJob(sysJob);
                     } catch (SchedulerException ex) {
                         sysJobLog.setStatus(Constants.FAIL);
                         String errorMsg = StringUtils.substring(ExceptionUtil.getExceptionMessage(ex), 0, 2000);
@@ -111,8 +111,6 @@ public abstract class AbstractQuartzJob implements Job {
 
             }
         }
-
-
     }
 
     /**
