@@ -147,7 +147,7 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
      * @return 返回分页后的未完成任务列表
      */
     @Override
-    public IPage<SelectTaskDTO> selectInCompleteTasks(Integer pageNum, LocalDate date) {
+    public IPage<SelectTaskDTO> selectInCompleteTasksAndInTime(Integer pageNum, LocalDate date) {
         Long userId = 1L;
         // 固定页面大小为10
         int pageSize = 15;
@@ -155,11 +155,22 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         // Step 1: 获取所有符合条件的任务，包括主任务和子任务
         List<Task> allTasks = baseMapper.selectAllTaskByOneDate(date, userId);
         Map<Long, Task> legalTasks = allTasks.stream().collect(Collectors.toMap(Task::getId, task -> task));
+        LocalDateTime nowTime = LocalDateTime.now();
+        LocalDate nowDate = LocalDate.now();
         allTasks.stream().forEach(task -> {
             Optional.ofNullable(task.getRelatedTaskId()).ifPresent(id -> {
                 legalTasks.remove(id);
                 legalTasks.remove(task.getId());
             });
+            if (StringUtils.isNull(task.getTaskTimeEnd()) && date.isBefore(nowDate)) {
+                legalTasks.remove(task.getId());
+
+            } else if (StringUtils.isNotNull(task.getTaskTimeEnd())) {
+                LocalDateTime timeEnd = LocalDateTime.of(date, task.getTaskTimeEnd());
+                if (timeEnd.isBefore(nowTime)) {
+                    legalTasks.remove(task.getId());
+                }
+            }
         });
         if (allTasks.isEmpty()) {
             return new Page<>(pageNum, pageSize);
@@ -1049,6 +1060,69 @@ public class TaskServiceImpl extends ServiceImpl<TaskMapper, Task>
         resultPage.setRecords(paginatedList);
 
         // 返回分页结果
+        return resultPage;
+    }
+
+    @Override
+    public IPage<SelectTaskDTO> selectInCompleteTaskAndOutTime(Integer pageNum, LocalDate date) {
+        Long userId = 1L;
+        // 固定页面大小为10
+        int pageSize = 15;
+
+        // Step 1: 获取所有符合条件的任务，包括主任务和子任务
+        List<Task> allTasks = baseMapper.selectAllTaskByOneDate(date, userId);
+        Map<Long, Task> legalTasks = allTasks.stream().collect(Collectors.toMap(Task::getId, task -> task));
+        LocalDateTime nowTime = LocalDateTime.now();
+        LocalDate nowDate = LocalDate.now();
+        allTasks.stream().forEach(task -> {
+            Optional.ofNullable(task.getRelatedTaskId()).ifPresent(id -> {
+                legalTasks.remove(id);
+                legalTasks.remove(task.getId());
+            });
+            if (StringUtils.isNull(task.getTaskTimeEnd()) && date.isAfter(nowDate)) {
+                legalTasks.remove(task.getId());
+
+            } else if (StringUtils.isNotNull(task.getTaskTimeEnd())) {
+                LocalDateTime timeEnd = LocalDateTime.of(date, task.getTaskTimeEnd());
+                if (timeEnd.isAfter(nowTime)) {
+                    legalTasks.remove(task.getId());
+                }
+            }
+        });
+        if (allTasks.isEmpty()) {
+            return new Page<>(pageNum, pageSize);
+        }
+
+        //将taskMap转为List<Task>类型的list
+        List<Task> Tasks = new ArrayList<>(legalTasks.values());
+        // Step 2: 获取所有任务的标签和提醒
+        List<Long> taskIds = allTasks.stream().map(Task::getId).collect(Collectors.toList());
+
+        QueryWrapper<TaskRemind> remindWrapper = new QueryWrapper<>();
+        remindWrapper.in("task_id", taskIds);
+        List<TaskRemind> taskReminds = taskRemindMapper.selectList(remindWrapper);
+
+        QueryWrapper<TaskLabel> labelWrapper = new QueryWrapper<>();
+        labelWrapper.in("task_id", taskIds);
+        List<TaskLabel> taskLabels = taskLabelMapper.selectList(labelWrapper);
+
+        // Step 3: 转换为SelectTaskVO对象
+        List<SelectTaskDTO> selectTaskDTOS = mapTasksToSelectTaskVOs(Tasks, taskReminds, taskLabels, legalTasks, date);
+
+        // Step 4: 排序
+        selectTaskDTOS.sort(Comparator.comparing((SelectTaskDTO vo) ->
+                        Optional.ofNullable(vo.getTask().getTaskTimeBegin()).orElse(LocalTime.MAX))
+                .thenComparing(vo -> vo.getTask().getCreatedTime()));
+
+        // Step 5: 分页处理
+        int start = (pageNum - 1) * pageSize;
+        int end = Math.min(start + pageSize, selectTaskDTOS.size());
+        List<SelectTaskDTO> paginatedList = selectTaskDTOS.subList(start, end);
+
+        // Step 6: 将转换后的任务对象设定到分页对象中
+        Page<SelectTaskDTO> resultPage = new Page<>(pageNum, pageSize, selectTaskDTOS.size());
+        resultPage.setRecords(paginatedList);
+
         return resultPage;
     }
 

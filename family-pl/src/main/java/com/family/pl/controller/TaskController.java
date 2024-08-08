@@ -37,28 +37,39 @@ public class TaskController extends BaseController {
     /**
      * 根据指定日期查询已完成的任务。
      *
-     * @param date 查询日期。
+     * @param date    查询日期。
      * @param pageNum 分页页码。
      * @return 包含已完成任务的分页结果。
      */
     @GetMapping("/complete/time")
-    public AjaxResult selectComTaskByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                          @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+    public AjaxResult selectComTaskByDate(@RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectCompleteTasks(pageNum, date);
         return AjaxResult.success(SelectTaskVOS);
     }
 
     /**
-     * 根据指定日期查询未完成的任务。
+     * 根据指定日期查询未完成且未超时的任务。
+     *
+     * @param date    查询日期。
+     * @param pageNum 分页页码。
+     * @return 包含未完成任务的分页结果。
+     */
+    @GetMapping("/incomplete/in_time")
+    public AjaxResult selectUnComTaskByInDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectInCompleteTasksAndInTime(pageNum, date);
+        return AjaxResult.success(SelectTaskVOS);
+    }
+
+    /**
+     * 根据指定日期查询未完成且已超时的任务。
      *
      * @param date 查询日期。
      * @param pageNum 分页页码。
      * @return 包含未完成任务的分页结果。
      */
-    @GetMapping("/incomplete/time")
-    public AjaxResult selectUnComTaskByDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                            @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
-        IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectInCompleteTasks(pageNum, date);
+    @GetMapping("/incomplete/out_time")
+    public AjaxResult selectUnComTaskByOutDate(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+        IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectInCompleteTaskAndOutTime(pageNum, date);
         return AjaxResult.success(SelectTaskVOS);
     }
 
@@ -67,13 +78,12 @@ public class TaskController extends BaseController {
      * 通过GET请求，使用AjaxResult封装返回结果，提供前端展示或操作
      * 主要用于根据指定日期和页数获取任务列表，以便于前端根据优先级进行任务管理
      *
-     * @param date 任务日期，用于筛选特定日期的任务
+     * @param date    任务日期，用于筛选特定日期的任务
      * @param pageNum 页码，用于分页查询任务，默认为第1页
      * @return 返回AjaxResult对象，包含查询到的任务信息
      */
     @GetMapping("/incomplete/priority")
-    public AjaxResult selectInTaskOrderPriority(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+    public AjaxResult selectInTaskOrderPriority(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectInTaskOrderPriority(pageNum, date);
         return AjaxResult.success(SelectTaskVOS);
     }
@@ -81,32 +91,29 @@ public class TaskController extends BaseController {
     /**
      * 根据优先级查询已完成的任务
      *
-     * @param date 任务完成的日期
+     * @param date    任务完成的日期
      * @param pageNum 页码，默认为1
      * @return 返回AjaxResult对象，其中包含查询结果
      */
     @GetMapping("/complete/priority")
-    public AjaxResult selectComTaskOrderPriority(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                                 @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+    public AjaxResult selectComTaskOrderPriority(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectComTaskOrderPriority(pageNum, date);
         return AjaxResult.success(SelectTaskVOS);
     }
 
     /**
      * 根据优先级查询任务订单
-     *
+     * <p>
      * 此方法用于根据指定的优先级、日期和页码查询任务订单它通过Ajax请求与前端进行交互，
      * 返回一个AjaxResult对象，其中包含查询结果
      *
      * @param priority 任务订单的优先级，用于筛选查询结果
-     * @param date 查询日期，用于筛选特定日期的任务订单
-     * @param pageNum 页码，默认为1，用于分页查询
+     * @param date     查询日期，用于筛选特定日期的任务订单
+     * @param pageNum  页码，默认为1，用于分页查询
      * @return 返回AjaxResult对象，其中包含查询到的任务订单数据
      */
     @GetMapping("/priority/{priority}")
-    public AjaxResult selectInTaskOrderPriority(@PathVariable(value = "priority") Integer priority,
-                                                @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
-                                                @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
+    public AjaxResult selectInTaskOrderPriority(@PathVariable(value = "priority") Integer priority, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date, @RequestParam(value = "pageNum", defaultValue = "1") Integer pageNum) {
         IPage<SelectTaskDTO> SelectTaskVOS = taskService.selectInTaskOrderPriority(pageNum, date, priority);
         return AjaxResult.success(SelectTaskVOS);
     }
@@ -143,7 +150,7 @@ public class TaskController extends BaseController {
         } catch (TaskException e) {
             ExceptionLogUtil.saveExceptionLog(e);
             return AjaxResult.error("添加任务失败");
-        } catch (ParseException e){
+        } catch (ParseException e) {
             ExceptionLogUtil.saveExceptionLog(e);
             return AjaxResult.error("系统错误，添加任务失败");
         }
@@ -180,10 +187,9 @@ public class TaskController extends BaseController {
      */
     @PutMapping("/incomplete/{taskId}")
     public AjaxResult unComTask(@PathVariable Long taskId) {
-        try{
+        try {
             taskService.unComTask(taskId);
-        }
-        catch (SchedulerException e){
+        } catch (SchedulerException e) {
             ExceptionLogUtil.saveExceptionLog(e);
             return AjaxResult.error("添加任务失败");
         } catch (ParseException e) {
@@ -218,6 +224,8 @@ public class TaskController extends BaseController {
         }
         return AjaxResult.success();
     }
+
+
 }
 
 

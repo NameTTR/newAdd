@@ -44,7 +44,7 @@ public interface TaskService extends IService<Task> {
      * @param date    查询日期
      * @return 返回分页后的未完成任务列表
      */
-    IPage<SelectTaskDTO> selectInCompleteTasks(Integer pageNum, LocalDate date);
+    IPage<SelectTaskDTO> selectInCompleteTasksAndInTime(Integer pageNum, LocalDate date);
 
     /**
      * 根据任务ID查询任务详情，包括任务本身、提醒、标签和子任务。
@@ -143,6 +143,9 @@ public interface TaskService extends IService<Task> {
      * @return 分页后的任务列表，按优先级、开始时间和创建时间排序
      */
     IPage<SelectTaskDTO> selectInTaskOrderPriority(Integer pageNum, LocalDate date, Integer priority);
+
+
+    IPage<SelectTaskDTO> selectInCompleteTaskAndOutTime(Integer pageNum, LocalDate date);
 
 
 //    boolean dTask();

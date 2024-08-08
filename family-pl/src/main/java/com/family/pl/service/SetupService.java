@@ -68,4 +68,21 @@ public interface SetupService extends IService<Setup> {
      */
     int updateOrder(Integer order, Long userId);
 
+    /**
+     * 根据用户ID选择对应的用户设置
+     * 此方法主要用于获取用户设置的隐藏完成状态
+     *
+     * @param userId 用户的ID
+     * @return 返回用户的隐藏完成设置值如果用户尚未设置，则返回默认值1
+     */
+    Integer selectGroup(Long userId);
+
+    /**
+     * 更新用户所在的用户组
+     *
+     * @param group 用户组ID，用于指定用户将要被更新到的用户组
+     * @param userId 用户ID，用于确定需要更新的用户
+     * @return 操作标志，1表示操作成功，其他值表示操作失败
+     */
+    int updateGroup(Integer group, Long userId);
 }

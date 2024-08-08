@@ -161,7 +161,7 @@ public class SetupServiceImpl extends ServiceImpl<SetupMapper, Setup>
         Setup setup = setupMapper.selectOne(new LambdaQueryWrapper<Setup>()
                 .eq(Setup::getUserId, userId));
 
-        // 检查查询结果是否为空，如果为空则表示该用户尚未设置隐藏完成状态
+        // 检查查询结果是否为空，如果为空则表示该用户尚未设置
         if (StringUtils.isNull(setup)) {
             // 为用户初始化设置
             initSetup(userId);
@@ -177,7 +177,7 @@ public class SetupServiceImpl extends ServiceImpl<SetupMapper, Setup>
     /**
      * 更新用户的选定排序设置。
      *
-     * @param order 用户新选定的排序值。
+     * @param order  用户新选定的排序值。
      * @param userId 用户的ID，用于指定更新哪个用户的设置。
      * @return 返回操作标志，1表示操作成功，其他值表示操作失败。
      */
@@ -193,6 +193,50 @@ public class SetupServiceImpl extends ServiceImpl<SetupMapper, Setup>
         // 调用Mapper接口的update方法，尝试更新设置的隐藏完成设置。
         flag = baseMapper.update(null, queryWrapper);
 
+        // 返回操作标志
+        return flag;
+    }
+
+    /**
+     * 根据用户ID选择对应的用户设置
+     * 此方法主要用于获取用户设置的隐藏完成状态
+     *
+     * @param userId 用户的ID
+     * @return 返回用户的隐藏完成设置值如果用户尚未设置，则返回默认值1
+     */
+    @Override
+    public Integer selectGroup(Long userId) {
+        // 使用LambdaQueryWrapper查询符合条件的第一个Setup对象
+        Setup setup = setupMapper.selectOne(new LambdaQueryWrapper<Setup>()
+                .eq(Setup::getUserId, userId));
+        // 检查查询结果是否为空，如果为空则表示该用户尚未设置
+        if (StringUtils.isNull(setup)) {
+            // 为用户初始化设置
+            initSetup(userId);
+            // 返回默认值0，表示尚未设置隐藏完成
+            return 1;
+        }
+        // 返回查询到的用户的隐藏完成设置值
+        Integer group = setup.getSelectedOrder();
+        return group;
+    }
+
+    /**
+     * 更新用户所在的用户组
+     *
+     * @param group  用户组ID，用于指定用户将要被更新到的用户组
+     * @param userId 用户ID，用于确定需要更新的用户
+     * @return 操作标志，1表示操作成功，其他值表示操作失败
+     */
+    @Override
+    public int updateGroup(Integer group, Long userId) {
+        // 初始化操作标志为1，表示操作成功。
+        int flag = 1;
+        // 构建更新条件，指定更新用户的隐藏完成设置。
+        UpdateWrapper<Setup> queryWrapper = new UpdateWrapper<>();
+        queryWrapper.lambda().eq(Setup::getUserId, userId).set(Setup::getSelectedOrder, group);
+        // 调用Mapper接口的update方法，尝试更新设置的隐藏完成设置。
+        flag = baseMapper.update(null, queryWrapper);
         // 返回操作标志
         return flag;
     }

@@ -1,10 +1,8 @@
 package com.family.pl.controller;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.family.pl.service.SetupService;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -125,6 +123,46 @@ public class SetupController extends BaseController {
         Long userId = 1L;
         // 调用setupService中的updateOrder方法更新订单排序，并将结果转换为AjaxResult返回
         return toAjax(setupService.updateOrder(order, userId));
+    }
+
+    /**
+     * 查询用户组别
+     *
+     * 通过GET请求访问"/group"端点，用于查询当前用户的组别信息
+     *
+     * @return 返回一个AjaxResult对象，包含用户组别信息
+     */
+    @GetMapping("/group")
+    public AjaxResult selectGroupCompletion() {
+        // 模拟获取用户ID，实际应用中应通过安全框架或上下文获取当前用户ID
+        Long userId = 1L;
+
+        // 调用service层方法，根据用户ID查询用户组别
+        Integer group = setupService.selectGroup(userId);
+
+        // 创建映射对象，用于存放查询到的组别信息
+        Map<String, Integer> map = new HashMap<>();
+        // 将组别信息放入映射对象中
+        map.put("group", group);
+
+        // 返回一个成功的AjaxResult对象，将用户组别信息作为数据携带
+        return AjaxResult.success(map);
+    }
+
+    /**
+     * 更新用户组信息
+     * 通过接收前端发送的PUT请求，更新指定的用户组信息
+     * 本方法主要负责将请求转发给服务层进行处理，并将处理结果封装为AjaxResult对象返回给前端
+     *
+     * @param group 用户组ID，从路径变量中获取，用于标识需要更新的用户组
+     * @return 返回更新操作的结果，包含状态码和消息，用于告知前端操作是否成功
+     */
+    @PutMapping("/group/{group}")
+    public AjaxResult updateGroup(@PathVariable Integer group) {
+        // 模拟当前操作的用户ID，用于识别操作是由哪个用户执行的
+        Long userId = 1L;
+        // 调用服务层方法更新用户组信息，并将结果封装为AjaxResult对象返回
+        return toAjax(setupService.updateGroup(group, userId));
     }
 
 }
