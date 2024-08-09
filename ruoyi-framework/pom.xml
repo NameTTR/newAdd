@@ -75,6 +75,12 @@
             <version>3.8.7</version>
         </dependency>
 
+        <!-- 奖励模块 -->
+        <dependency>
+            <groupId>com.family</groupId>
+            <artifactId>family-re</artifactId>
+            <version>3.8.7</version>
+        </dependency>
     </dependencies>
 
 </project>
