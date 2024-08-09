@@ -39,12 +39,8 @@ server:
 
 logging:
   level:
-    root: INFO
-    org.springframework.messaging.simp: DEBUG
-    com:
-      family:
-        pl:
-          task: DEBUG # 替换为你的包名
+    com.ruoyi: debug
+    org.springframework: warn
 
 # 用户配置
 user:
