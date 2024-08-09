@@ -2,6 +2,7 @@ package com.family.cc.service;
 
 import com.family.cc.domain.po.CcCharacterGroup;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ruoyi.common.core.domain.AjaxResult;
 
 /**
  * <p>
@@ -13,4 +14,10 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface ICcCharacterGroupService extends IService<CcCharacterGroup> {
 
+    /**
+     * 获取章节中汉字的组词信息
+     * @param chapterId 章节ID
+     * @return
+     */
+    AjaxResult getCcCharacterGroup(Long chapterId);
 }

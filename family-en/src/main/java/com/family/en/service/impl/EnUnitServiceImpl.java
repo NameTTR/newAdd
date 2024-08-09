@@ -102,52 +102,34 @@ public class EnUnitServiceImpl extends ServiceImpl<EnUnitMapper, EnUnit> impleme
         Map<Long, EnChapterStudy> chapterStudyMap = chapterStudies.stream().collect(Collectors.toMap(EnChapterStudy::getChapterId, c -> c));
 
         //3. 查询所有章节的单词信息
-        for (EnChapter chapter : chapters) {
-            //3.1 查询当前章节的单词信息
-            List<EnWord> words = Db.lambdaQuery(EnWord.class)
-                    .eq(EnWord::getChapterId, chapter.getId())
-                    .list();
-            List<Long> wordIds = new ArrayList<>(words.size());
-            words.forEach(c -> wordIds.add(c.getId()));
+        //3.1 查询当前单元下的所有章节的单词信息
+        List<Long> chapterIds = chapters.stream().map(EnChapter::getId).collect(Collectors.toList());
 
-            //3.2 查询单词的学习情况
-            String idsStr = StrUtil.join(",", wordIds);
-            List<EnStudy> studies = Db.lambdaQuery(EnStudy.class)
-                    .in(EnStudy::getWordId, wordIds)
-                    .eq(EnStudy::getUserId, userId)
-                    .last("ORDER BY FIELD(id," + idsStr + ")")
-                    .list();
+        // 需要的单词信息
+        List<EnWord> words = Db.lambdaQuery(EnWord.class)
+                .in(EnWord::getChapterId, chapterIds)
+                .list();
+        List<Long> wordIds = words.stream().map(EnWord::getId).collect(Collectors.toList());
 
-            //3.3 封装章节信息
-            //3.3.1 单词学习学习情况
-            List<EnWordDTO> enWordDTOS = BeanUtil.copyToList(words, EnWordDTO.class);
-            //3.3.2 单词的句子信息
-            List<EnSentence> characterGroups = Db.lambdaQuery(EnSentence.class)
-                    .in(EnSentence::getWordId, wordIds)
-                    .list();
-            Map<Long, List<EnSentence>> groupMap = characterGroups.stream().collect(Collectors.groupingBy(EnSentence::getWordId));
+        // 需要的单词学习记录
+        List<EnStudy> studies = Db.lambdaQuery(EnStudy.class)
+                .in(EnStudy::getWordId, wordIds)
+                .eq(EnStudy::getUserId, userId)
+                .list();
+        Map<Long, EnStudy> studyMap = studies.stream().collect(Collectors.toMap(EnStudy::getWordId, c -> c));
 
-            for (int i = 0; i < enWordDTOS.size(); i++) {
-                EnWordDTO ccCharacterDTO = enWordDTOS.get(i);
-                ccCharacterDTO.setState(studies.get(i).getState());
-
-                if (groupMap.get(ccCharacterDTO.getId()) == null){
-                    ccCharacterDTO.setOrdinary(Collections.emptyList());
-                    ccCharacterDTO.setProverb(Collections.emptyList());
-                    continue;
-                }
-                List<EnSentence> ordinary = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 1).collect(Collectors.toList());
-                List<EnSentence> proverb = groupMap.get(ccCharacterDTO.getId()).stream().filter(c -> c.getType() == 2).collect(Collectors.toList());
-
-                ccCharacterDTO.setOrdinary(ordinary);
-                ccCharacterDTO.setProverb(proverb);
-            }
-
-            //3.4 放入单元信息
-            unitDate.add(EnChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(),enWordDTOS));
+        //3.2 封装单元信息
+        //3.2.1 章节信息
+        List<EnWordDTO> EnWordDTOS = BeanUtil.copyToList(words, EnWordDTO.class);
+        EnWordDTOS.forEach(c -> c.setState(studyMap.get(c.getId()).getState()));
+        //3.3 按章节将单词分组
+        Map<Long, List<EnWordDTO>> chapterMapOfwordDTOS = EnWordDTOS.stream().collect(Collectors.groupingBy(EnWordDTO::getChapterId));
+        for (EnChapter chapter : chapters){
+            List<EnWordDTO> wordDTOS = chapterMapOfwordDTOS.get(chapter.getId());
+            unitDate.add(EnChapterDTO.of(chapter,chapterStudyMap.get(chapter.getId()).getState(), wordDTOS));
         }
 
-        //3. 返回结果
+        //4. 返回结果
         return AjaxResult.success(EnUnitDTO.of(unit, unitDate));
     }
 

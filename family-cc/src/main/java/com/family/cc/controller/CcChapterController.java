@@ -1,10 +1,15 @@
 package com.family.cc.controller;
 
-
-import com.family.cc.domain.dto.CcChapterDTO;
+import com.family.common.domain.result.ChatTTSResult;
+import com.family.common.domain.result.WhisperResult;
+import com.family.common.service.OkHttpService;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.AjaxResult;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -16,6 +21,21 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/family/cc/chapter")
+@AllArgsConstructor
 public class CcChapterController extends BaseController {
-    
+
+    private final OkHttpService okHttpService;
+    @PostMapping("/chat")
+    public List<ChatTTSResult> test(@RequestBody List<String> texts) {
+        List<ChatTTSResult> chatTTSResults = new ArrayList<>();
+        for (String text : texts) {
+            chatTTSResults.add(okHttpService.getAudioOfChatTTS(text));
+        }
+        return chatTTSResults;
+    }
+
+    @PostMapping("/whisper")
+    public WhisperResult whisper(@RequestBody MultipartFile[] files) {
+        return okHttpService.getTextOfWhisper(files);
+    }
 }

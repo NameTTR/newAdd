@@ -1,16 +1,23 @@
 package com.family.cc.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.family.cc.domain.dto.CcTestDetailsDTO;
 import com.family.cc.domain.po.*;
+import com.family.cc.enums.CcCharacterState;
 import com.family.cc.enums.CcCharacterTestState;
 import com.family.cc.enums.CcTestState;
 import com.family.cc.mapper.CcTestDetailMapper;
 import com.family.cc.service.ICcTestDetailService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.family.common.domain.result.WhisperResult;
+import com.family.common.service.OkHttpService;
+import com.github.houbb.pinyin.util.PinyinHelper;
 import com.ruoyi.common.core.domain.AjaxResult;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,8 +35,17 @@ import java.util.stream.Collectors;
  * @since 2024-04-28
  */
 @Service
+@AllArgsConstructor
 public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcTestDetail> implements ICcTestDetailService {
 
+    //okHttp服务类
+    private final OkHttpService okHttpService;
+
+    /**
+     * 新增汉字测试
+     * @param chapterId 章节ID
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public AjaxResult addTest(Long chapterId) {
@@ -93,16 +109,29 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
         }
     }
 
+    /**
+     * 获取完成的测试详情
+     * @return
+     */
     @Override
     public AjaxResult getTestFinished() {
         return AjaxResult.success(getTestDetailsDTOList(0));
     }
 
+    /**
+     * 获取 未完成/未测试 的测试详情
+     * @return
+     */
     @Override
     public AjaxResult getTestNotFinished() {
         return AjaxResult.success(getTestDetailsDTOList(1));
     }
 
+    /**
+     * 删除测试记录
+     * @param testID 测试记录ID
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public AjaxResult deleteTest(Long testID) {
@@ -127,6 +156,97 @@ public class CcTestDetailServiceImpl extends ServiceImpl<CcTestDetailMapper, CcT
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("删除测试记录失败，请重试！");
+        }
+    }
+
+    /**
+     * 批改测试结果
+     *
+     * @param testID        测试记录ID
+     * @param files         音频文件
+     * @param testDetailIds 测试详情ID
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult checkTest(Long testID, MultipartFile[] files, List<Long> testDetailIds) {
+        if(files == null || testDetailIds == null || testDetailIds.size() != files.length){
+            return AjaxResult.error("参数错误，请重试！");
+        }
+
+        try {
+            //1.获取用户id
+//        Long userId = SecurityUtils.getUserId();
+            Long userId = 1L;
+
+            //2.获取音频转文本信息
+            WhisperResult whisperResult = okHttpService.getTextOfWhisper(files);
+            if (whisperResult.getCode() == 0){
+    //            throw new RuntimeException(whisperResult.getMsg());
+                return AjaxResult.error("音频转文本失败，请重试！");
+            }
+
+            //3.获取测试详情
+            String idStr = StrUtil.join(",", testDetailIds);
+            List<CcTestDetail> testDetails = lambdaQuery()
+                    .eq(CcTestDetail::getTestId, testID)
+                    .eq(CcTestDetail::getUserId, userId)
+                    .in(CcTestDetail::getId, testDetailIds)
+                    .last("ORDER BY FIELD(id," + idStr + ")")
+                    .list();
+
+            //4.判断题目的对错
+            List<String> resultText = whisperResult.getText();
+            for (int i = 0; i < testDetailIds.size(); i++) {
+                String result = resultText.get(i);
+                CcTestDetail testDetail = testDetails.get(i);
+
+                if (result == null || result.isEmpty())
+                    testDetail.setResult(CcCharacterTestState.ERROR);
+
+
+                //4.1.将音频转文本的结果与汉字对比
+                boolean isCorrect = false;
+                char[] charArray = result.toCharArray();
+                for (char c : charArray) {
+                    if(c == ' ') continue;
+                    if(PinyinHelper.hasSamePinyin(c, testDetail.getCharacter().charAt(0))){
+                        isCorrect = true;
+                        break;
+                    }
+                }
+
+                //4.2.根据结果设置状态码
+                if (isCorrect)
+                    testDetail.setResult(CcCharacterTestState.READY);
+                else
+                    testDetail.setResult(CcCharacterTestState.ERROR);
+            }
+
+            //5.更新测试详情中汉字结果判断
+            boolean isSuccess = updateBatchById(testDetails);
+            if (!isSuccess) return AjaxResult.error("更新测试详情失败，请重试！");
+
+            //6.更新测试状态
+            List<CcTestDetail> nowTest = lambdaQuery()
+                    .eq(CcTestDetail::getTestId, testID)
+                    .eq(CcTestDetail::getUserId, userId)
+                    .list();
+
+            //6.1.判断测试是否完成
+            long count = nowTest.stream().filter(t -> t.getResult() == CcCharacterTestState.NOTFINISHED).count();
+            if (count == 0){
+                boolean isUpdate = Db.lambdaUpdate(CcTest.class)
+                        .eq(CcTest::getId, testID)
+                        .eq(CcTest::getUserId, userId)
+                        .set(CcTest::getState, CcTestState.FINISHED)
+                        .update();
+                if (!isUpdate) return AjaxResult.error("更新测试状态失败，请重试！");
+            }
+
+            return AjaxResult.success("批改测试结果成功！");
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

@@ -8,11 +8,12 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
+import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.List;
 
 /**
- * 单个汉字DTO
+ * 单个拼音DTO
  *
  * @author 陈文杰
  * @since 2024-05-04
@@ -23,11 +24,6 @@ import java.util.List;
 @AllArgsConstructor(staticName = "of")
 @NoArgsConstructor
 public class PiPinyinDTO extends PiPinyin {
-    /**
-     *  组词
-     */
-    private List<PiPinyinGroup> compounds;
-
     /**
      *  状态  0：未学；1：已学完；2：未掌握
      */

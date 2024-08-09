@@ -1,16 +1,19 @@
 package com.family.cc.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
-import com.family.cc.domain.dto.CcCharacterDTO;
 import com.family.cc.domain.po.CcCharacter;
 import com.family.cc.domain.po.CcStudy;
+import com.family.cc.enums.CcCharacterState;
 import com.family.cc.mapper.CcStudyMapper;
 import com.family.cc.service.ICcStudyService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.family.cc.enums.CcCharacterState.LEARNED_FINISH;
 import static com.family.cc.enums.CcCharacterState.NOT_MASTERED;
@@ -75,6 +78,43 @@ public class CcStudyServiceImpl extends ServiceImpl<CcStudyMapper, CcStudy> impl
             e.printStackTrace();
             throw new RuntimeException("更新学习记录失败");
 
+        }
+    }
+
+    /**
+     * 新增用户汉字学习记录
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public AjaxResult addStudyRecord() {
+        try {
+            //1.获取用户id
+//        Long userId = SecurityUtils.getUserId();
+            Long userId = 1L;
+
+            //2.添加所有汉字学习记录
+            List<CcCharacter> characters = Db.lambdaQuery(CcCharacter.class).list();
+            List<Long> Ids = characters.stream().map(CcCharacter::getId).collect(Collectors.toList());
+
+            List<CcStudy> characterStudies = new ArrayList<>(characters.size());
+            characterStudies.addAll(Ids.stream().map(id -> {
+                CcStudy characterStudy = new CcStudy();
+                characterStudy.setCharacterId(id);
+                characterStudy.setState(CcCharacterState.UNLEARNED);
+                characterStudy.setUserId(userId);
+                return characterStudy;
+            }).collect(Collectors.toList()));
+
+            boolean isSaved = saveOrUpdateBatch(characterStudies);
+            if(!isSaved){
+                return AjaxResult.error("新增用户汉字学习记录失败！");
+            }
+
+            return AjaxResult.success("新增用户汉字学习记录成功！");
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("新增用户汉字学习记录失败！");
         }
     }
 }

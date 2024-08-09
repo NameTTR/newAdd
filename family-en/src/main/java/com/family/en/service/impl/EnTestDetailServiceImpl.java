@@ -30,6 +30,11 @@ import java.util.stream.Collectors;
 @Service
 public class EnTestDetailServiceImpl extends ServiceImpl<EnTestDetailMapper, EnTestDetail> implements IEnTestDetailService {
 
+    /**
+     * 新增单词测试
+     * @param chapterId 章节ID
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public AjaxResult addTest(Long chapterId) {
@@ -93,16 +98,29 @@ public class EnTestDetailServiceImpl extends ServiceImpl<EnTestDetailMapper, EnT
         }
     }
 
+    /**
+     * 获取完成的测试详情
+     * @return
+     */
     @Override
     public AjaxResult getTestFinished() {
         return AjaxResult.success(getTestDetailsDTOList(0));
     }
 
+    /**
+     * 获取 未完成/未测试 的测试详情
+     * @return
+     */
     @Override
     public AjaxResult getTestNotFinished() {
         return AjaxResult.success(getTestDetailsDTOList(1));
     }
 
+    /**
+     * 删除测试记录
+     * @param testID
+     * @return
+     */
     @Transactional(rollbackFor = Exception.class)
     @Override
     public AjaxResult deleteTest(Long testID) {

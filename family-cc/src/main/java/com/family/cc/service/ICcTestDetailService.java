@@ -3,6 +3,9 @@ package com.family.cc.service;
 import com.family.cc.domain.po.CcTestDetail;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.domain.AjaxResult;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * <p>
@@ -39,4 +42,14 @@ public interface ICcTestDetailService extends IService<CcTestDetail> {
      * @return
      */
     AjaxResult deleteTest(Long testID);
+
+    /**
+     * 批改测试结果
+     *
+     * @param testID        测试记录ID
+     * @param files         音频文件
+     * @param testDetailIds 测试详情ID
+     * @return
+     */
+    AjaxResult checkTest(Long testID, MultipartFile[] files, List<Long> testDetailIds);
 }
