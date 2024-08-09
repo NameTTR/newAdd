@@ -11,7 +11,7 @@ import lombok.Data;
  * 日期：2024/5/13 9:09
  */
 @Data
-public class UsUserRegister extends SmsLoginBody {
+public class UsUserRegisterVO extends SmsLoginBody {
     String password;
     String nickname;
     Integer sex;

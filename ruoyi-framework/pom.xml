@@ -23,6 +23,8 @@
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
+
+
         <!-- SpringBoot 拦截器 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -66,17 +68,10 @@
             <version>3.8.7</version>
         </dependency>
 
-        <!-- 识字模块 -->
+        <!--定时计划模块-->
         <dependency>
             <groupId>com.family</groupId>
-            <artifactId>family-cc</artifactId>
-            <version>3.8.7</version>
-        </dependency>
-
-        <!-- 通用模块 -->
-        <dependency>
-            <groupId>com.family</groupId>
-            <artifactId>family-common</artifactId>
+            <artifactId>family-pl</artifactId>
             <version>3.8.7</version>
         </dependency>
 

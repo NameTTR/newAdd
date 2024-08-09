@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.pl.mapper.SetupMapper">
+
+    <resultMap id="BaseResultMap" type="com.family.pl.domain.Setup">
+            <id property="id" column="ID" jdbcType="BIGINT"/>
+            <result property="repeat" column="repeat" jdbcType="OTHER"/>
+            <result property="hideComplete" column="hide_complete" jdbcType="TINYINT"/>
+            <result property="selectedGroups" column="selected_groups" jdbcType="TINYINT"/>
+            <result property="selectedOrder" column="selected_order" jdbcType="TINYINT"/>
+            <result property="remindWechat" column="remind_wechat" jdbcType="TINYINT"/>
+            <result property="remindCalendar" column="remind_calendar" jdbcType="TINYINT"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,repeat,hide_complete,
+        selected_groups,selected_order,remind_wechat,
+        remind_calendar,user_id,created_time
+    </sql>
+</mapper>

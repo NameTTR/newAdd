@@ -43,7 +43,7 @@ public class CcTestDetailsDTO {
     private String chapter;
 
     /**
-     * 测试结果：0：错；1：对；2：未测
+     * 测试状态：0：未完成；1：进行中；2：已完成
      */
     private CcTestState state;
 

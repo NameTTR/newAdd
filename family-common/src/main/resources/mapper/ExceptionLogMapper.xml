@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.common.mapper.ExceptionLogMapper">
+
+    <resultMap id="BaseResultMap" type="com.family.common.domain.ExceptionLog">
+            <id property="id" column="id" jdbcType="BIGINT"/>
+            <result property="exceptionMessage" column="exception_message" jdbcType="VARCHAR"/>
+            <result property="exceptionStackTrace" column="exception_stack_trace" jdbcType="VARCHAR"/>
+            <result property="timestamp" column="timestamp" jdbcType="TIMESTAMP"/>
+            <result property="endpoint" column="endpoint" jdbcType="VARCHAR"/>
+            <result property="httpMethod" column="http_method" jdbcType="VARCHAR"/>
+            <result property="requestParams" column="request_params" jdbcType="VARCHAR"/>
+            <result property="requestHeaders" column="request_headers" jdbcType="VARCHAR"/>
+            <result property="sessionId" column="session_id" jdbcType="VARCHAR"/>
+            <result property="userAgent" column="user_agent" jdbcType="VARCHAR"/>
+            <result property="clientIp" column="client_ip" jdbcType="VARCHAR"/>
+            <result property="exceptionClass" column="exception_class" jdbcType="VARCHAR"/>
+            <result property="exceptionMethod" column="exception_method" jdbcType="VARCHAR"/>
+            <result property="userId" column="user_id" jdbcType="BIGINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,exception_message,exception_stack_trace,
+        timestamp,endpoint,http_method,
+        request_params,request_headers,session_id,
+        user_agent,client_ip,exception_class,
+        exception_method,user_id
+    </sql>
+</mapper>

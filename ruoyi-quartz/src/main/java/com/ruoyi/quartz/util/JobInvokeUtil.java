@@ -7,6 +7,7 @@ import java.util.List;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.quartz.domain.SysJob;
+import org.quartz.JobExecutionContext;
 
 /**
  * 任务执行工具
@@ -63,6 +64,67 @@ public class JobInvokeUtil
     }
 
     /**
+     * 根据定时任务配置动态调用方法
+     *
+     * @param sysJob 定时任务信息，包含调用目标等关键信息
+     * @param jobExecutionContext Job执行上下文，用于传递给目标方法
+     * @throws Exception 在调用方法过程中可能抛出的异常
+     */
+    public static void invokeMethod(SysJob sysJob, JobExecutionContext jobExecutionContext) throws Exception
+    {
+        // 获取调用目标，即配置的任务执行逻辑
+        String invokeTarget = sysJob.getInvokeTarget();
+        // 解析调用目标，获取bean名称
+        String beanName = getBeanName(invokeTarget);
+        // 解析调用目标，获取方法名称
+        String methodName = getMethodName(invokeTarget);
+        // 解析调用目标，获取方法参数列表
+        List<Object[]> methodParams = getMethodParams(invokeTarget);
+
+        // 检查bean名称是否为合法的类名
+        if (!isValidClassName(beanName))
+        {
+            // 从Spring容器中获取bean实例
+            Object bean = SpringUtils.getBean(beanName);
+            // 将Job执行上下文添加到方法参数列表中
+            addJobExecutionContextToParams(methodParams, jobExecutionContext);
+            // 调用bean的指定方法
+            invokeMethod(bean, methodName, methodParams);
+        }
+        else
+        {
+            // 通过类名动态创建bean实例
+            Object bean = Class.forName(beanName).getDeclaredConstructor().newInstance();
+            // 将Job执行上下文添加到方法参数列表中
+            addJobExecutionContextToParams(methodParams, jobExecutionContext);
+            // 调用bean的指定方法
+            invokeMethod(bean, methodName, methodParams);
+        }
+    }
+
+
+    /**
+     * 将JobExecutionContext对象添加到方法参数列表中
+     *
+     * 此方法确保了在调用其他方法时，能够将JobExecutionContext上下文信息作为参数传递，
+     * 使得被调用的方法能够访问到JobExecutionContext对象
+     *
+     * @param methodParams 方法参数列表，用于存储传递给方法的所有参数
+     * @param jobExecutionContext JobExecutionContext对象，包含调度任务的上下文信息
+     */
+    private static void addJobExecutionContextToParams(List<Object[]> methodParams, JobExecutionContext jobExecutionContext)
+    {
+        // 检查方法参数列表是否为空，如果为空则初始化为一个新的LinkedList
+        if (methodParams == null)
+        {
+            methodParams = new LinkedList<>();
+        }
+
+        // 将JobExecutionContext对象及其类类型添加到方法参数列表中
+        methodParams.add(new Object[] { jobExecutionContext, JobExecutionContext.class });
+    }
+
+    /**
      * 校验是否为为class包名
      * 
      * @param invokeTarget 名称
@@ -103,8 +165,7 @@ public class JobInvokeUtil
      * @param invokeTarget 目标字符串
      * @return method方法相关参数列表
      */
-    public static List<Object[]> getMethodParams(String invokeTarget)
-    {
+    public static List<Object[]> getMethodParams(String invokeTarget) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         String methodStr = StringUtils.substringBetween(invokeTarget, "(", ")");
         if (StringUtils.isEmpty(methodStr))
         {
@@ -134,6 +195,11 @@ public class JobInvokeUtil
             else if (StringUtils.endsWith(str, "D"))
             {
                 classs.add(new Object[] { Double.valueOf(StringUtils.substring(str, 0, str.length() - 1)), Double.class });
+            }
+            // 处理自定义类型，例如org.quartz.JobExecutionContext
+            else if (str.contains("."))
+            {
+                continue;
             }
             // 其他类型归类为整形
             else

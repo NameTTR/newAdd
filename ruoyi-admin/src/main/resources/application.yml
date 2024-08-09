@@ -45,7 +45,12 @@ server:
       # Tomcat启动初始化的线程数，默认值10
       min-spare: 100
 
-# 日志配置
+## 日志配置
+#logging:
+#  level:
+#    com.ruoyi: debug
+#    org.springframework: warn
+
 logging:
   level:
     com.ruoyi: debug
@@ -88,7 +93,7 @@ spring:
     # 数据库索引
     database: 0
     # 密码
-    password: 3791
+    password:
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -105,6 +110,55 @@ spring:
     hiddenmethod:
       filter:
         enabled: true
+  spring:
+    rabbitmq:
+      port: 5672
+      host: 8.138.130.112
+      username: admin
+      password: txDNJM3s
+      #这个配置是保证提供者确保消息推送到交换机中，不管成不成功，都会回调
+      publisher-confirm-type: correlated
+      #保证交换机能把消息推送到队列中
+      publisher-returns: true
+      virtual-host: /
+      #这个配置是保证消费者会消费消息，手动确认
+      listener:
+        simple:
+          acknowledge-mode: manual
+      template:
+        mandatory: true
+
+
+--- #################### 定时任务相关配置 ####################
+
+# Quartz 配置项，对应 QuartzProperties 配置类
+spring:
+  quartz:
+    auto-startup: true # 测试环境，需要开启 Job
+    scheduler-name: NameTTR # Scheduler 名字。默认为 schedulerName
+    job-store-type: jdbc # Job 存储器类型。默认为 memory 表示内存，可选 jdbc 使用数据库。
+    wait-for-jobs-to-complete-on-shutdown: true # 应用关闭时，是否等待定时任务执行完成。默认为 false ，建议设置为 true
+    properties: # 添加 Quartz Scheduler 附加属性，更多可以看 http://www.quartz-scheduler.org/documentation/2.4.0-SNAPSHOT/configuration.html 文档
+      org:
+        quartz:
+          # Scheduler 相关配置
+          scheduler:
+            instanceName: schedulerName
+            instanceId: AUTO # 自动生成 instance ID
+          # JobStore 相关配置
+          jobStore:
+            # JobStore 实现类。可见博客：https://blog.csdn.net/weixin_42458219/article/details/122247162
+            class: org.springframework.scheduling.quartz.LocalDataSourceJobStore
+            isClustered: true # 是集群模式
+            clusterCheckinInterval: 1000 # 集群检查频率，单位：毫秒。默认为 15000，即 15 秒
+            misfireThreshold: 1000 # misfire 阀值，单位：毫秒。
+          # 线程池相关配置
+          threadPool:
+            threadCount: 25 # 线程池大小。默认为 10 。
+            threadPriority: 5 # 线程优先级
+            class: org.quartz.simpl.SimpleThreadPool # 线程池类型
+    jdbc: # 使用 JDBC 的 JobStore 的时候，JDBC 的配置
+      initialize-schema: never # 是否自动使用 SQL 初始化 Quartz 表结构。这里设置成 never ，我们手动创建表结构。
 
 # token配置
 token:
@@ -130,6 +184,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
+      logic-delete-field: deleted
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false
@@ -157,3 +212,9 @@ xss:
   excludes: /system/notice
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
+
+calendarific:
+  api:
+    url: https://calendarific.com/api/v2/holidays
+    key: C33ICvZX2UGcbTZbtaqUS04RegACfdxL
+

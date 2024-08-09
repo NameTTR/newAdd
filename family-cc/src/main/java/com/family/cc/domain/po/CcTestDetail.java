@@ -51,7 +51,7 @@ public class CcTestDetail implements Serializable {
     private String character;
 
     /**
-     * 测试结果：0：错；1：对；2：未测
+     * 测试结果：0：错；1：对；2：未测试
      */
     private CcCharacterTestState result;
 
