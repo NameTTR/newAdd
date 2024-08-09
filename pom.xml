@@ -45,6 +45,7 @@
                 <scope>import</scope>
             </dependency>
 
+
             <!-- SpringBoot的依赖配置-->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -205,6 +206,8 @@
         <module>family-us</module>
         <module>family-cc</module>
         <module>family-common</module>
+        <module>family-re</module>
+        <module>family-pl</module>
         <module>family-pi</module>
         <module>family-en</module>
         <module>family-th</module>

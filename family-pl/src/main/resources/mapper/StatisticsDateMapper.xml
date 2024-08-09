@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.pl.mapper.StatisticsDateMapper">
+
+    <resultMap id="BaseResultMap" type="com.family.pl.domain.StatisticsDate">
+            <id property="id" column="ID" jdbcType="BIGINT"/>
+            <result property="taskDate" column="task_date" jdbcType="DATE"/>
+            <result property="countTask" column="count_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteTask" column="count_complete_task" jdbcType="SMALLINT"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="flagDelete" column="flag_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,task_date,count_task,
+        count_complete_task,user_id,created_time,
+        update_time,flag_delete
+    </sql>
+</mapper>

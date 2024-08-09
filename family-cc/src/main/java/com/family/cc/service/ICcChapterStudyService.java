@@ -22,4 +22,10 @@ public interface ICcChapterStudyService extends IService<CcChapterStudy> {
      * @return
      */
     AjaxResult updateChapterStudy(Long chapterId,Long nextChapterId,int sign);
+
+    /**
+     * 新增用户章节学习记录
+     * @return
+     */
+    AjaxResult addChapterStudy();
 }

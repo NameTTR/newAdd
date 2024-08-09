@@ -36,4 +36,13 @@ public class CcChapterStudyController extends BaseController {
             @RequestParam(value = "sign",defaultValue = "0") int sign) {
         return ccChapterStudyService.updateChapterStudy(chapterId,nextChapterId,sign);
     }
+
+    /**
+     * 新增用户章节学习记录
+     * @return
+     */
+    @PostMapping
+    public AjaxResult addChapterStudy(){
+        return ccChapterStudyService.addChapterStudy();
+    }
 }

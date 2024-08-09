@@ -24,21 +24,6 @@ import java.util.List;
 @NoArgsConstructor
 public class CcCharacterDTO extends CcCharacter {
     /**
-     *  组词
-     */
-    private List<CcCharacterGroup> compounds;
-
-    /**
-     *  近义词
-     */
-    private List<CcCharacterGroup> synonyms;
-
-    /**
-     *  反义词
-     */
-    private List<CcCharacterGroup> antonyms;
-
-    /**
      *  状态  0：未学；1：已学完；2：未掌握
      */
     private CcCharacterState state;

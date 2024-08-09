@@ -7,6 +7,9 @@ import com.ruoyi.common.core.domain.AjaxResult;
 import org.aspectj.weaver.loadtime.Aj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 /**
  * <p>
@@ -53,11 +56,25 @@ public class CcTestDetailController extends BaseController {
 
     /**
      * 删除测试记录
-     * @param testID
+     * @param testID 测试记录ID
      * @return
      */
     @DeleteMapping("{testID}")
     public AjaxResult deleteTest(@PathVariable("testID") Long testID) {
         return ccTestDetailService.deleteTest(testID);
+    }
+
+    /**
+     * 批改测试结果
+     * @param testID        测试记录ID
+     * @param files         音频文件
+     * @param testDetailIds 测试详情ID
+     * @return
+     */
+    @PostMapping("whisper/{testID}")
+    public AjaxResult checkTest(@PathVariable("testID") Long testID,
+                                @RequestBody MultipartFile[] files,
+                                @RequestParam("testDetailIds") List<Long> testDetailIds) {
+         return ccTestDetailService.checkTest(testID, files, testDetailIds);
     }
 }

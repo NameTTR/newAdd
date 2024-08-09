@@ -20,4 +20,10 @@ public interface ICcStudyService extends IService<CcStudy> {
      * @return
      */
     AjaxResult updateStudyRecord(Long characterId);
+
+    /**
+     * 新增用户汉字学习记录
+     * @return
+     */
+    AjaxResult addStudyRecord();
 }

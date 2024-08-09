@@ -6,6 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
  * 启动程序
@@ -15,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication(exclude = { DataSourceAutoConfiguration.class })
 @MapperScan(value = {"com.family.*.mapper","com.rouyi.*.*.mapper"})
 @ComponentScan(value = {"com.family","com.ruoyi"})
+@EnableScheduling
 public class RuoYiApplication
 {
     public static void main(String[] args)

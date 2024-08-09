@@ -30,4 +30,13 @@ public class CcStudyController extends BaseController {
     public AjaxResult updateStudyRecord(@PathVariable("characterId") Long characterId) {
         return ccStudyService.updateStudyRecord(characterId);
     }
+
+    /**
+     * 新增用户汉字学习记录
+     * @return
+     */
+    @PostMapping
+    public AjaxResult addStudyRecord() {
+        return ccStudyService.addStudyRecord();
+    }
 }

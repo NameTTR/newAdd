@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.pl.mapper.StatisticsWeekMapper">
+
+    <resultMap id="BaseResultMap" type="com.family.pl.domain.StatisticsWeek">
+            <id property="id" column="ID" jdbcType="BIGINT"/>
+            <result property="taskYear" column="task_year" jdbcType="SMALLINT"/>
+            <result property="taskWeek" column="task_week" jdbcType="TINYINT"/>
+            <result property="beginDate" column="begin_date" jdbcType="DATE"/>
+            <result property="endDate" column="end_date" jdbcType="DATE"/>
+            <result property="countTask" column="count_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteTask" column="count_complete_task" jdbcType="SMALLINT"/>
+            <result property="countOntimeTask" column="count_ontime_task" jdbcType="SMALLINT"/>
+            <result property="countHighTask" column="count_high_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteHighTask" column="count_complete_high_task" jdbcType="SMALLINT"/>
+            <result property="countMidTask" column="count_mid_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteMidTask" column="count_complete_mid_task" jdbcType="SMALLINT"/>
+            <result property="countLowTask" column="count_low_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteLowTask" column="count_complete_low_task" jdbcType="SMALLINT"/>
+            <result property="countNoTask" column="count_no_task" jdbcType="SMALLINT"/>
+            <result property="countCompleteNoTask" column="count_complete_no_task" jdbcType="SMALLINT"/>
+            <result property="userId" column="user_id" jdbcType="INTEGER"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+            <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+            <result property="flagDelete" column="flag_delete" jdbcType="TINYINT"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,task_year,task_week,
+        begin_date,end_date,count_task,
+        count_complete_task,count_ontime_task,count_high_task,
+        count_complete_high_task,count_mid_task,count_complete_mid_task,
+        count_low_task,count_complete_low_task,count_no_task,
+        count_complete_no_task,user_id,created_time,
+        update_time,flag_delete
+    </sql>
+</mapper>

@@ -3,7 +3,7 @@ package com.family.us.service.impl;
 import com.family.common.exception.CustomException;
 import com.family.us.domain.UsLoginUser;
 import com.family.us.domain.UsUser;
-import com.family.us.domain.VO.UsUserRegister;
+import com.family.us.domain.VO.UsUserRegisterVO;
 import com.family.us.service.FamilyTokenService;
 import com.family.us.service.RegisterService;
 import com.family.us.service.UsUserService;
@@ -11,8 +11,6 @@ import com.family.us.smsConfig.SmsCodeAuthenticationToken;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.core.domain.entity.SysUser;
-import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +38,7 @@ public class RegisterServiceImpl implements RegisterService {
     private UsUserService userService;
 
     @Override
-    public AjaxResult register(UsUserRegister registerBody) {
+    public AjaxResult register(UsUserRegisterVO registerBody) {
 
         UsUser nowUser = userService.selectUsUserByTel(registerBody.getTel());
         if(nowUser != null){

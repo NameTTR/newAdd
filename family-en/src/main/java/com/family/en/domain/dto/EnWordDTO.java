@@ -24,16 +24,6 @@ import java.util.List;
 @NoArgsConstructor
 public class EnWordDTO extends EnWord {
     /**
-     * 普通句子
-     */
-    private List<EnSentence> ordinary;
-
-    /**
-     * 谚语
-     */
-    private List<EnSentence> proverb;
-
-    /**
      *  状态  0：未学；1：已学完；2：未掌握
      */
     private EnWordState state;
