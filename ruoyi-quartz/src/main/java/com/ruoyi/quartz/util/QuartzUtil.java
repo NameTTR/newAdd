@@ -114,6 +114,20 @@ public class QuartzUtil {
     }
 
     /**
+     * 暂停调度任务
+     * 该方法通过任务ID查找并暂停相应的任务如果任务不存在或已经处于暂停状态，则返回false
+     *
+     * @param jobId 任务的ID
+     * @return 暂停任务操作的成功与否，成功返回true，否则返回false
+     */
+    public static boolean pauseJob(Long jobId) throws SchedulerException {
+        // 通过任务ID查询任务信息
+        SysJob job = staticJobMapper.selectJobById(jobId);
+        // 调用专门的方法来暂停任务，参数是查询到的任务对象
+        return pauseJob(job);
+    }
+
+    /**
      * 恢复任务
      *
      * @param job 待恢复的任务
@@ -141,6 +155,20 @@ public class QuartzUtil {
     }
 
     /**
+     * 恢复任务
+     *
+     * @param jobId 待恢复的任务的ID
+     * @return 如果任务恢复成功，则返回true；否则返回false
+     * @throws SchedulerException 如果在任务恢复过程中出现异常
+     */
+    public static boolean resumeJob(Long jobId) throws SchedulerException {
+        // 通过任务ID查询任务信息
+        SysJob job = staticJobMapper.selectJobById(jobId);
+        // 调用专门的方法来恢复任务，参数是查询到的任务对象
+        return resumeJob(job);
+    }
+
+    /**
      * 删除定时任务
      * 此方法负责删除指定的定时任务它首先尝试从数据库中删除任务记录，
      * 如果删除成功（即影响的行数大于0），则从调度器中删除相应的任务
@@ -165,6 +193,21 @@ public class QuartzUtil {
         }
         // 返回删除失败标志
         return false;
+    }
+
+    /**
+     * 删除定时任务
+     * 此方法负责删除指定的定时任务它首先尝试从数据库中删除任务记录，
+     * 如果删除成功（即影响的行数大于0），则从调度器中删除相应的任务
+     *
+     * @param jobId 待删除的定时任务的ID
+     * @return 如果任务删除成功，返回true；否则返回false
+     */
+    public static boolean deleteJob(Long jobId) throws SchedulerException {
+        // 通过任务ID查询任务信息
+        SysJob job = staticJobMapper.selectJobById(jobId);
+        // 调用专门的方法来删除任务，参数是查询到的任务对象
+        return deleteJob(job);
     }
 
 }
