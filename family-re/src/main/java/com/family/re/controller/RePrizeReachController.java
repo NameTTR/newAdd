@@ -2,7 +2,6 @@ package com.family.re.controller;
 
 
 import com.family.re.service.IRePrizeReachService;
-import com.family.re.service.impl.RePrizeReachServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -44,8 +43,8 @@ public class RePrizeReachController {
 
 
     /**
-     * 获取所有的奖品池兑现明细表
-     * @return 所有的奖品池兑现明细表
+     * 获取所有已经抽奖的奖品池兑现明细表
+     * @return 所有已经抽奖的奖品池兑现明细表
      */
     @GetMapping("/all")
     public AjaxResult getAllPrizeReachList() {

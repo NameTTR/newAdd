@@ -3,10 +3,10 @@ package com.family.re.controller;
 
 import com.family.re.domain.po.RePrize;
 import com.family.re.service.IRePrizeService;
-import com.family.re.service.impl.RePrizeServiceImpl;
 import com.ruoyi.common.core.domain.AjaxResult;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -33,6 +33,7 @@ public class RePrizeController {
      */
     @GetMapping()
     public AjaxResult getPrizeList(@RequestParam List<String> name) {
+
         return rePrizeService.getPrizeList(name);
     }
 
@@ -46,15 +47,16 @@ public class RePrizeController {
         return rePrizeService.deletePrize(prizeId);
     }
 
+
     /**
-     * 添加奖品
-     * @param prizeIco 要添加的奖品图标
-     * @param prizeName 要添加的奖品名称
-     * @return 往奖品总池中添加奖品的结果
+     * 添加总池中的奖品
+     * @param file 奖品图片
+     * @param prizeName 奖品名称
+     * @return 添加总池中的奖品的结果
      */
     @PostMapping()
-    public AjaxResult addPrize(String prizeIco, String prizeName) {
-        return rePrizeService.addPrize(prizeIco, prizeName);
+    public AjaxResult addPrize(@RequestParam("prizeIco") MultipartFile file, @RequestParam("prizeName") String prizeName) {
+        return rePrizeService.addPrize(file, prizeName);
     }
 
     /**

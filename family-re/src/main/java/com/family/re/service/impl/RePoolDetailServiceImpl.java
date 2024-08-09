@@ -1,13 +1,12 @@
 package com.family.re.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.family.re.domain.po.RePool;
 import com.family.re.domain.po.RePoolDetail;
 import com.family.re.domain.po.RePrize;
 import com.family.re.mapper.RePoolDetailMapper;
 import com.family.re.service.IRePoolDetailService;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.family.re.service.IRePrizeService;
 import com.ruoyi.common.core.domain.AjaxResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,16 +88,19 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
                     .eq(RePrize::getId, prizeId)
                     .one();
             //判断奖品是否存在奖品的总池中
-            if(data==null)
+            if(data==null) {
                 return AjaxResult.error("奖品不存在");
+            }
+            //获取奖品池
             RePool rePool = Db.lambdaQuery(RePool.class)
                     .eq(RePool::getId, prizePoolId)
                     .one();
             if (rePool == null) {
                 return AjaxResult.error("奖品池不存在");
             }
-            if(rePool.getCountPrize()==8)
+            if(rePool.getCountPrize()==8) {
                 return AjaxResult.error("奖品池已满");
+            }
             //判断奖品是否已存在于奖品池
             if(lambdaQuery()
                     .eq(RePoolDetail::getPoolId,prizePoolId)
@@ -112,8 +114,9 @@ public class RePoolDetailServiceImpl extends ServiceImpl<RePoolDetailMapper, ReP
             rePoolDetail.setPrizeIco(data.getPrizeIco());
             rePoolDetail.setPrizeName(data.getPrizeName());
             //保存奖品
-            if(!save(rePoolDetail))
+            if(!save(rePoolDetail)) {
                 return AjaxResult.error("添加奖品失败");
+            }
 
             // 增加 getCountPrize 的值
             int newCount = rePool.getCountPrize() + 1;

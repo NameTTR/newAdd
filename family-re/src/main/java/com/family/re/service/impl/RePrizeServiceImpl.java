@@ -6,8 +6,12 @@ import com.family.re.domain.po.RePrize;
 import com.family.re.mapper.RePrizeMapper;
 import com.family.re.service.IRePrizeService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.config.FamilyConfig;
 import com.ruoyi.common.core.domain.AjaxResult;
+import com.ruoyi.common.utils.file.FileUploadUtils;
+import com.ruoyi.common.utils.file.MimeTypeUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -85,14 +89,20 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
 
     /**
      * 添加奖品
-     * @param prizeIco 要添加的奖品图标
+     * @param file 要添加的奖品图标
      * @param prizeName 要添加的奖品名称
      * @return 往奖品总池中添加奖品的结果
      */
     @Override
-    public AjaxResult addPrize(String prizeIco, String prizeName) {
+    public AjaxResult addPrize(MultipartFile file, String prizeName) {
 
         try {
+            if(file.isEmpty()) {
+                return AjaxResult.error("图片不能为空");
+            }
+            if (prizeName.isEmpty()) {
+                return AjaxResult.error("奖品名称不能为空");
+            }
             //判断奖品是否存在
             RePrize one = lambdaQuery().eq(RePrize::getCreatedUserId,1).eq(RePrize::getPrizeName,prizeName).one();
             if(one!=null)
@@ -101,7 +111,15 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
             RePrize rePrize = new RePrize();
 
             //添加奖品信息
-            rePrize.setPrizeIco(prizeIco);
+            String iconUrl = FileUploadUtils.upload(FamilyConfig.getIconPath(), file, MimeTypeUtils.IMAGE_EXTENSION);
+            //获取图片的url
+            String url = removeFirstTwoDirectories(iconUrl);
+
+            //判断图片是否上传成功
+            if(url.isEmpty()) {
+                return AjaxResult.error("图片上传失败");
+            }
+            rePrize.setPrizeIco(url);
             rePrize.setPrizeName(prizeName);
             rePrize.setCreatedUserId(1L);
             rePrize.setFlagDelete(0);
@@ -114,6 +132,21 @@ public class RePrizeServiceImpl extends ServiceImpl<RePrizeMapper, RePrize> impl
             e.printStackTrace();
             throw new RuntimeException("添加奖品失败");
         }
+    }
+
+    /**
+     * 获取图片的url
+     * @param iconUrl 图片的原始url
+     * @return 图片的绝对url
+     */
+    private String removeFirstTwoDirectories(String iconUrl) {
+        int firstSlash = iconUrl.indexOf('/');
+        int secondSlash = iconUrl.indexOf('/', firstSlash + 1);
+
+        if (firstSlash!= -1 && secondSlash!= -1) {
+            return iconUrl.substring(secondSlash);
+        }
+        return iconUrl;
     }
 
     /**

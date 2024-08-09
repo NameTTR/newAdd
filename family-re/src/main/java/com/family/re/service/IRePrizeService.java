@@ -3,6 +3,7 @@ package com.family.re.service;
 import com.family.re.domain.po.RePrize;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.domain.AjaxResult;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -32,11 +33,11 @@ public interface IRePrizeService extends IService<RePrize> {
 
     /**
      * 添加奖品
-     * @param prizeIco 要添加的奖品图标
+     * @param file 要添加的奖品图标
      * @param prizeName 要添加的奖品名称
      * @return 往奖品总池中添加奖品的结果
      */
-    AjaxResult addPrize(String prizeIco, String prizeName);
+    AjaxResult addPrize(MultipartFile file, String prizeName);
 
     /**
      * 修改总池中的奖品

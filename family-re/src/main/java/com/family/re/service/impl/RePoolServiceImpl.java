@@ -143,21 +143,21 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult addPrizePool(RePool pool) {
+    public Integer addPrizePool(RePool pool) {
 
         try {
 
             //判断用户输入的数据是否为空
             if(pool.getTitle()==null)
-                return AjaxResult.error("请输入奖品池标题!!!");
+                return RewardConstants.REWARD_POOL_TITLE_ERROR;
             if (pool.getRewardCycle()==null)
-                return AjaxResult.error("请输入奖品池周期!!!");
+                return RewardConstants.REWARD_POOL_CYCLE_ERROR;
             if (pool.getRewardConditions()==null)
-                return AjaxResult.error("请输入奖品池奖励条件!!!");
+                return RewardConstants.REWARD_POOL_REWARD_CONDITIONS_ERROR;
             if (pool.getStarTime()==null)
-                return AjaxResult.error("请输入奖品池开始时间!!!");
+                return RewardConstants.REWARD_POOL_START_TIME_ERROR;
             if (pool.getEndTime()==null)
-                return AjaxResult.error("请输入奖品池结束时间!!!");
+                return RewardConstants.REWARD_POOL_END_TIME_ERROR;
 
             //小孩id
             Long userId=1L;
@@ -170,7 +170,7 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
             //将奖品池添加到数据库
             save(rePool);
 
-            return AjaxResult.success("添加奖品池成功",rePool.getId());
+            return RewardConstants.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("添加奖品池失败");
@@ -200,7 +200,7 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public AjaxResult revisionPool(RePool rePool) {
+    public Integer revisionPool(RePool rePool) {
         try {
             if(!lambdaUpdate().eq(RePool::getId, rePool.getId())
                     .set(RePool::getTitle, rePool.getTitle())
@@ -210,8 +210,8 @@ public class RePoolServiceImpl extends ServiceImpl<RePoolMapper, RePool> impleme
                     .set(RePool::getEndTime, rePool.getEndTime())
                     .set(RePool::getState, rePool.getState())
                     .update())
-                return AjaxResult.error("修改奖品池失败");
-            return AjaxResult.success("修改奖品池成功");
+                return RewardConstants.REWARD_POOL_ERROR;
+            return RewardConstants.SUCCESS;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("修改奖品池失败");

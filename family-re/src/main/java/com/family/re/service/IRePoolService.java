@@ -32,14 +32,14 @@ public interface IRePoolService extends IService<RePool> {
      * @param pool 奖品池类，传递用户需要填写的数据
      * @return 添加信息
      */
-    AjaxResult addPrizePool(RePool pool);
+    Integer addPrizePool(RePool pool);
 
     /**
      * 修改奖品池
      * @param rePool 奖品池类，传递用户需要修改的数据
      * @return 修改信息
      */
-    AjaxResult revisionPool(RePool rePool);
+    Integer revisionPool(RePool rePool);
 
     //定时执行的模块(未开启)
     void reJob() throws SchedulerException, TaskException;

@@ -27,6 +27,11 @@ public class RePoolController {
 
     private final IRePoolService rePoolService;
 
+    @GetMapping("/text")
+    public AjaxResult text() {
+        return AjaxResult.success("测试成功");
+    }
+
     /**
      * 删除奖品池列表
      * @param prizePoolId 奖品池id
@@ -52,7 +57,21 @@ public class RePoolController {
      */
     @PostMapping()
     public AjaxResult addPool(@RequestBody RePool pool){
-        return rePoolService.addPrizePool(pool);
+        Integer type = rePoolService.addPrizePool(pool);
+        if (type.equals(RewardConstants.REWARD_POOL_TITLE_ERROR)){
+            return AjaxResult.error("奖品池标题错误");
+        } else if (type.equals(RewardConstants.REWARD_POOL_CYCLE_ERROR)) {
+            return AjaxResult.error("奖品池周期错误");
+        } else if (type.equals(RewardConstants.REWARD_POOL_REWARD_CONDITIONS_ERROR)) {
+            return AjaxResult.error("奖品池奖励条件错误");
+        } else if (type.equals(RewardConstants.REWARD_POOL_START_TIME_ERROR)) {
+            return AjaxResult.error("奖品池开始时间错误");
+        } else if (type.equals(RewardConstants.REWARD_POOL_END_TIME_ERROR)) {
+            return AjaxResult.error("奖品池结束时间错误");
+        } else {
+            return AjaxResult.success("添加奖品池成功");
+        }
+
     }
 
     /**
@@ -62,7 +81,12 @@ public class RePoolController {
      */
     @PutMapping()
     public AjaxResult revPool(@RequestBody RePool pool){
-        return rePoolService.revisionPool(pool);
+        Integer type = rePoolService.revisionPool(pool);
+        if (type.equals(RewardConstants.REWARD_POOL_ERROR)) {
+            return AjaxResult.error("修改奖品池失败");
+        } else {
+            return AjaxResult.success("修改奖品池成功");
+        }
     }
 
 //    /**

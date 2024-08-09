@@ -1,6 +1,5 @@
 package com.family.re.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.toolkit.Db;
 import com.family.re.domain.po.RePoolDetail;
 import com.family.re.domain.po.RePrizeReachDetail;
@@ -92,7 +91,9 @@ public class RePrizeReachDetailServiceImpl extends ServiceImpl<RePrizeReachDetai
         List<RePoolDetail> list = Db.lambdaQuery(RePoolDetail.class)
                 .eq(RePoolDetail::getPoolId, rePoolId).list();
 
+        //创建一个奖品池兑现明细表的list
         List<RePrizeReachDetail> rePrizeReachDetails = new ArrayList<>();
+
         //将查询到的数据添加到奖品池兑现明细表中
         for(RePoolDetail entity : list) {
             RePrizeReachDetail rePrizeReachDetail = new RePrizeReachDetail();
@@ -102,18 +103,20 @@ public class RePrizeReachDetailServiceImpl extends ServiceImpl<RePrizeReachDetai
             rePrizeReachDetail.setIsCheck(0);
             rePrizeReachDetails.add(rePrizeReachDetail);
         }
-        //如果奖品数量不足8个，将"谢谢参与"奖品添加到奖品池兑现明细表中
+
+        //如果奖品数量不足8个，将"这里什么都没有"奖品添加到奖品池兑现明细表中
         int count = list.size();
         if(count < 8) {
             for(int i = 0; i < 8 - count; i++) {
                 RePrizeReachDetail rePrizeReachDetail = new RePrizeReachDetail();
                 rePrizeReachDetail.setPrizeReachId(rePrizeReachId);
-                rePrizeReachDetail.setPrizeName("谢谢参与");
+                rePrizeReachDetail.setPrizeName("这里什么都没有");
                 rePrizeReachDetail.setPrizeIco("/");
                 rePrizeReachDetail.setIsCheck(0);
                 rePrizeReachDetails.add(rePrizeReachDetail);
             }
         }
+
         // 打乱列表
         Collections.shuffle(rePrizeReachDetails);
 
