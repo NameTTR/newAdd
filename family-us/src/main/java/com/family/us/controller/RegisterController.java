@@ -1,17 +1,14 @@
 package com.family.us.controller;
 
-import com.family.us.domain.VO.UsUserRegister;
+import com.family.us.domain.VO.UsUserRegisterVO;
 import com.family.us.service.RegisterService;
 import com.ruoyi.common.annotation.Anonymous;
 import com.ruoyi.common.core.domain.AjaxResult;
-import com.ruoyi.common.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.Resource;
 
 import static com.ruoyi.common.core.domain.AjaxResult.error;
 import static com.ruoyi.common.core.domain.AjaxResult.success;
@@ -29,7 +26,7 @@ public class RegisterController {
     private RegisterService registerService;
 
     @PostMapping("/us/register")
-    public AjaxResult register(@RequestBody UsUserRegister user){
+    public AjaxResult register(@RequestBody UsUserRegisterVO user){
         AjaxResult ajax = registerService.register(user);
         return ajax;
     }

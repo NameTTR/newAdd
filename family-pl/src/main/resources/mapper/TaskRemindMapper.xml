@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.family.pl.mapper.TaskRemindMapper">
+
+    <resultMap id="BaseResultMap" type="com.family.pl.domain.TaskRemind">
+            <id property="id" column="ID" jdbcType="BIGINT"/>
+            <result property="taskId" column="task_id" jdbcType="BIGINT"/>
+            <result property="type" column="type" jdbcType="OTHER"/>
+            <result property="remindByTime" column="remind_by_time" jdbcType="OTHER"/>
+            <result property="remindByDate" column="remind_by_date" jdbcType="OTHER"/>
+            <result property="corn" column="corn" jdbcType="VARCHAR"/>
+            <result property="createdTime" column="created_time" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        ID,task_id,type,
+        remind_by_time,remind_by_date,corn,
+        created_time
+    </sql>
+</mapper>

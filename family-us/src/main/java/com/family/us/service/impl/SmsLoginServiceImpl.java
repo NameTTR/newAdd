@@ -2,7 +2,6 @@ package com.family.us.service.impl;
 
 import com.family.us.constant.SmsConstants;
 import com.family.us.domain.UsLoginUser;
-import com.family.us.domain.VO.UsUserRegister;
 import com.family.us.service.FamilyTokenService;
 import com.family.us.service.SmsLoginService;
 import com.family.us.smsConfig.SmsCodeAuthenticationToken;
@@ -15,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
