@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -43,8 +44,7 @@ public class StatisticsDateServiceImpl extends ServiceImpl<StatisticsDateMapper,
      */
     @Override
     public int addOrUpdateDate(LocalDate date) {
-        // 初始化标志变量，用于后续判断操作是更新还是插入
-        int flag = 0;
+        int flag = 1;
         // 模拟默认用户ID，用于统计任务归属
         Long userId = 1L;
         // 获取待统计的日期
@@ -69,22 +69,53 @@ public class StatisticsDateServiceImpl extends ServiceImpl<StatisticsDateMapper,
         if (StringUtils.isNotNull(statisticsDate1)) {
             statisticsDate1.setCountCompleteTask(countCompleteTask);
             statisticsDate1.setCountTask(allTasks);
+            if (allTasks != 0) {
+                statisticsDate1.setCompletion(countCompleteTask * 100 / allTasks);
+            } else {
+                statisticsDate1.setCompletion(0);
+            }
             // 更新统计数据，并返回操作状态
             flag = baseMapper.updateById(statisticsDate1);
         } else {
             // 如果统计数据不存在，则创建新的统计数据项
-            StatisticsDate statisticsDate = new StatisticsDate();
-            statisticsDate.setCountCompleteTask(countCompleteTask);
-            statisticsDate.setCountTask(allTasks);
-            statisticsDate.setTaskDate(date);
-            statisticsDate.setUserId(userId);
-            // 插入新的统计数据，并返回操作状态
-            flag = baseMapper.insert(statisticsDate);
+            flag = initStatisticsDate(startDate, allTasks, countCompleteTask, userId);
         }
         // 返回操作状态码
         return flag;
     }
 
+    /**
+     * 初始化统计数据
+     * 该方法用于计算和记录指定日期的统计数据，包括任务总数、完成任务数、完成率等
+     *
+     * @param date          统计数据的日期
+     * @param allTasks      当日所有任务数量
+     * @param countCompleteTask  当日完成的任务数量
+     * @param userId        用户ID，用于区分不同用户的统计数据
+     * @return              返回操作状态，通常用于判断数据是否插入成功
+     */
+    private int initStatisticsDate(LocalDate date, int allTasks, int countCompleteTask, Long userId) {
+        // 创建新的统计数据对象
+        StatisticsDate statisticsDate = new StatisticsDate();
+        // 设置完成任务数量
+        statisticsDate.setCountCompleteTask(countCompleteTask);
+        // 设置总任务数量
+        statisticsDate.setCountTask(allTasks);
+        // 设置统计数据的日期
+        statisticsDate.setTaskDate(date);
+        // 计算任务完成率，避免除以0的情况
+        if (allTasks != 0) {
+            statisticsDate.setCompletion(countCompleteTask * 100 / allTasks);
+        } else {
+            statisticsDate.setCompletion(0);
+        }
+        // 设置用户ID，用于区分不同用户的统计数据
+        statisticsDate.setUserId(userId);
+        // 插入新的统计数据，并返回操作状态
+        int flag = baseMapper.insert(statisticsDate);
+        // 返回操作状态，用于判断数据是否插入成功
+        return flag;
+    }
 
     /**
      * 根据指定的日期和用户ID查询统计数据日期信息。
@@ -101,6 +132,27 @@ public class StatisticsDateServiceImpl extends ServiceImpl<StatisticsDateMapper,
                 .eq(StatisticsDate::getTaskDate, date)
                 .eq(StatisticsDate::getUserId, userId)
                 .eq(StatisticsDate::getFlagDelete, TaskConstants.TASK_NOT_DELETE));
+        if(StringUtils.isNull(statisticsDate)){
+            // 获取待统计的日期
+            LocalDate startDate = date;
+            LocalDate endDate = date;
+            // 统计指定日期范围内的所有任务数量
+            int allTasks = statisticsWeekService.getTaskExecutionCount(startDate, endDate, userId);
+            // 统计指定日期、用户、未删除且已完成的任务数量
+            long count = taskService.count(new LambdaQueryWrapper<Task>()
+                    .eq(Task::getTaskDate, date)
+                    .eq(Task::getUserId, userId)
+                    .eq(Task::getFlagDelete, 0)
+                    .eq(Task::getIsComplete, TaskConstants.TASK_COMMPLETE));
+            // 将任务数量转换为整型
+            //count转换成int
+            int countCompleteTask = (int) count;
+            int flag = initStatisticsDate(startDate, allTasks, countCompleteTask, userId);
+            statisticsDate = baseMapper.selectOne(new LambdaQueryWrapper<StatisticsDate>()
+                    .eq(StatisticsDate::getTaskDate, date)
+                    .eq(StatisticsDate::getUserId, userId)
+                    .eq(StatisticsDate::getFlagDelete, TaskConstants.TASK_NOT_DELETE));
+        }
         // 返回查询结果
         return statisticsDate;
     }
@@ -133,6 +185,13 @@ public class StatisticsDateServiceImpl extends ServiceImpl<StatisticsDateMapper,
         }
         // 返回操作状态码
         return flag;
+    }
+
+    @Override
+    public List<StatisticsDate> selectRangeDate(LocalDate startDate, LocalDate endDate) {
+        Long userId = 1L;
+
+        return null;
     }
 
 }

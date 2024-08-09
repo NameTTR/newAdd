@@ -42,6 +42,11 @@ public class StatisticsDate implements Serializable {
     private Integer countCompleteTask;
 
     /**
+     * 完成率
+     */
+    private Integer completion;
+
+    /**
      * 用户ID
      */
     private Long userId;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.family.pl.domain.DTO.request.DateDTO;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * <p>
@@ -43,4 +44,6 @@ public interface StatisticsDateService extends IService<StatisticsDate> {
      * @return 返回操作状态码，0表示未操作，非0表示操作成功。
      */
     int deleteDate(LocalDate date);
+
+    List<StatisticsDate> selectRangeDate(LocalDate startDate, LocalDate endDate);
 }

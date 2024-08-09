@@ -10,6 +10,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -76,5 +77,17 @@ public class StatisticsDateController extends BaseController {
         StatisticsDate statisticsDate = Optional.ofNullable(statisticsDateService.selectDate(date)).orElseThrow(() -> new IllegalArgumentException("日期不存在"));
         // 返回查询成功的AjaxResult，其中包含StatisticsDate对象
         return AjaxResult.success(statisticsDate);
+    }
+
+    @GetMapping("/start_date/{start_date}/end/{end_date}")
+    public AjaxResult selectRangeDate(@PathVariable(value = "start_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
+                                      @PathVariable(value = "end_date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        // 检查dateVO中的日期是否为空，如果为空则抛出IllegalArgumentException异常
+        Optional.ofNullable(startDate).orElseThrow(() -> new IllegalArgumentException("开始日期不能为空"));
+        Optional.ofNullable(endDate).orElseThrow(() -> new IllegalArgumentException("结束日期不能为空"));
+
+        List<StatisticsDate> statisticsDateList =  statisticsDateService.selectRangeDate(startDate, endDate);
+
+        return AjaxResult.success();
     }
 }

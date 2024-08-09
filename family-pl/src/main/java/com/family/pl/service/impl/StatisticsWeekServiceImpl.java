@@ -163,9 +163,14 @@ public class StatisticsWeekServiceImpl extends ServiceImpl<StatisticsWeekMapper,
      */
     @Override
     public int getTaskExecutionCount(LocalDate startDate, LocalDate endDate, Long userId) {
+        List<Task> tasks = null;
         // 通过TaskMapper查询在给定日期范围内的任务列表
-        // 使用 TaskMapper 查询在给定日期范围内的任务
-        List<Task> tasks = taskMapper.selectAllTaskByRangeDate(startDate, endDate, userId);
+        if (startDate.equals(endDate)) {
+            tasks = taskMapper.selectAllTaskByOneDate(startDate, userId);
+        } else {
+            // 使用 TaskMapper 查询在给定日期范围内的任务
+            tasks = taskMapper.selectAllTaskByRangeDate(startDate, endDate, userId);
+        }
         // 初始化总执行次数为0
         int totalExecutionCount = 0;
 
@@ -177,6 +182,46 @@ public class StatisticsWeekServiceImpl extends ServiceImpl<StatisticsWeekMapper,
 
         // 返回总执行次数
         return totalExecutionCount;
+    }
+
+    public Map<LocalDate, Integer> setStatisticsDate(LocalDate startDate, LocalDate endDate, Long userId) {
+        List<Task> tasks = null;
+        // 通过TaskMapper查询在给定日期范围内的任务列表
+
+        // 使用 TaskMapper 查询在给定日期范围内的任务
+        tasks = taskMapper.selectAllTaskByRangeDate(startDate, endDate, userId);
+
+        // 初始化总执行次数为0
+        int totalExecutionCount = 0;
+
+        List<Task> taskList = taskService.list(new LambdaQueryWrapper<Task>().between(Task::getTaskDate, startDate, endDate)
+                .eq(Task::getUserId, userId)
+                .eq(Task::getFlagDelete, TaskConstants.TASK_NOT_DELETE)
+                .eq(Task::getIsComplete, TaskConstants.TASK_COMMPLETE));
+        Map<LocalDate, Integer> map = new HashMap<>();
+        for(LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)){
+            map.put(date, 0);
+        }
+        for(Task task : taskList){
+            map.put(task.getTaskDate(), map.get(task.getTaskDate()) + 1);
+        }
+
+        Map<LocalDate, Integer> data = new HashMap<>();
+
+        for(LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)){
+            for(Task task : tasks){
+                int executionCount = calculateExecutionCount(date, date, task);
+                Integer completeCount = map.get(date);
+                if(completeCount != 0){
+                    data.put(date, completeCount * 100 / executionCount);
+                }else {
+                    data.put(date, 0);
+                }
+            }
+        }
+
+        // 返回总执行次数
+        return data;
     }
 
 
