@@ -210,7 +210,7 @@
         <module>family-pl</module>
         <module>family-pi</module>
         <module>family-en</module>
-
+        <module>family-th</module>
     </modules>
     <packaging>pom</packaging>
 

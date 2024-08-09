@@ -61,7 +61,8 @@ public class EnStudyServiceImpl extends ServiceImpl<EnStudyMapper, EnStudy> impl
             }
             boolean isSuccess = lambdaUpdate().eq(EnStudy::getUserId, userId)
                     .eq(EnStudy::getWordId, wordId)
-                    .update(study);
+                    .set(EnStudy::getState, study.getState())
+                    .update();
 
             //4. 返回结果
             //4.1. 如果更新失败，返回失败信息

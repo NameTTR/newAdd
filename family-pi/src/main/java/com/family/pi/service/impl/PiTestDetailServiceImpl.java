@@ -197,7 +197,7 @@ public class PiTestDetailServiceImpl extends ServiceImpl<PiTestDetailMapper, PiT
             PiTestDetailsDTO testDTO = new PiTestDetailsDTO();
             List<PiTestDetail> details = map.get(t.getId());
             long totalCount = details.size();
-            long passCount = details.stream().filter(c -> c.getResult() == PiPinyinTestState.READY).count();
+            long passCount = details.stream().filter(c -> c.getResult() == PiPinyinTestState.RIGHT).count();
 
             testDTO.setTestId(t.getId());
             testDTO.setUnit(unitMap.get(t.getUnitId()).getUnit());

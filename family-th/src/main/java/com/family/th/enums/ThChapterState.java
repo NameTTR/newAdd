@@ -1,24 +1,24 @@
-package com.family.cc.enums;
+package com.family.th.enums;
 
 import com.baomidou.mybatisplus.annotation.EnumValue;
 import com.fasterxml.jackson.annotation.JsonValue;
 
 /**
- * 汉字测试 状态枚举类
+ * 章节 状态枚举类
  *
  * @author 陈文杰
- * @since 2024-05-04
+ * @since 2024-07-01
  */
-public enum CcCharacterTestState {
-    ERROR(0, "错误"), // 错误
-    RIGHT(1, "正确"),  // 正确
-    NOTFINISHED(2, "未测试"), // 未测试
+public enum ThChapterState {
+    UNLEARNED0(0, "未学"), // 未学
+    LEARNING(1, "学习中"),  // 学习中
+    LEARNED(2, "已学完")   // 已学完
     ;
     @EnumValue
     @JsonValue
     private int value;
     private String decs;
-    CcCharacterTestState(int value, String decs) {
+    ThChapterState(int value, String decs) {
         this.value = value;
         this.decs = decs;
     }

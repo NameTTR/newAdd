@@ -198,7 +198,7 @@ public class EnTestDetailServiceImpl extends ServiceImpl<EnTestDetailMapper, EnT
             EnTestDetailsDTO testDTO = new EnTestDetailsDTO();
             EnChapter chapter = chapterMap.get(t.getChapterId());
             List<EnTestDetail> details = map.get(t.getId());
-            long count = details.stream().filter(c -> c.getResult() == EnWordTestState.READY).count();
+            long count = details.stream().filter(c -> c.getResult() == EnWordTestState.RIGHT).count();
 
             testDTO.setTestId(t.getId());
             testDTO.setChapter(chapter.getChapter());
